@@ -1,0 +1,474 @@
+
+[2020-10-13 23:21:48.008] /p4.v1.P4Runtime/SetForwardingPipelineConfig
+---
+device_id: 6
+election_id {
+  low: 1
+}
+action: VERIFY_AND_COMMIT
+config {
+  p4info {
+    pkg_info {
+      arch: "v1model"
+    }
+    tables {
+      preamble {
+        id: 33614140
+        name: "ThisIngress.finger_table_lookup"
+        alias: "finger_table_lookup"
+      }
+      match_fields {
+        id: 1
+        name: "hdr.dht.group_id"
+        bitwidth: 6
+        match_type: EXACT
+      }
+      match_fields {
+        id: 2
+        name: "hdr.dht.id"
+        bitwidth: 6
+        match_type: RANGE
+      }
+      action_refs {
+        id: 16798624
+      }
+      action_refs {
+        id: 16831935
+      }
+      action_refs {
+        id: 16800567
+      }
+      size: 1024
+    }
+    tables {
+      preamble {
+        id: 33592730
+        name: "ThisIngress.ipv4_lpm"
+        alias: "ipv4_lpm"
+      }
+      match_fields {
+        id: 1
+        name: "hdr.ipv4.dstAddr"
+        bitwidth: 32
+        match_type: LPM
+      }
+      action_refs {
+        id: 16822804
+      }
+      action_refs {
+        id: 16780402
+      }
+      action_refs {
+        id: 16800567
+      }
+      size: 1024
+    }
+    actions {
+      preamble {
+        id: 16800567
+        name: "NoAction"
+        alias: "NoAction"
+      }
+    }
+    actions {
+      preamble {
+        id: 16780402
+        name: "ThisIngress.drop"
+        alias: "drop"
+      }
+    }
+    actions {
+      preamble {
+        id: 16822804
+        name: "ThisIngress.ipv4_forward"
+        alias: "ipv4_forward"
+      }
+      params {
+        id: 1
+        name: "dstAddr"
+        bitwidth: 48
+      }
+      params {
+        id: 2
+        name: "port"
+        bitwidth: 9
+      }
+    }
+    actions {
+      preamble {
+        id: 16798624
+        name: "ThisIngress.dht_rewrite"
+        alias: "dht_rewrite"
+      }
+      params {
+        id: 1
+        name: "dht_address"
+        bitwidth: 32
+      }
+    }
+    actions {
+      preamble {
+        id: 16831935
+        name: "ThisIngress.send_to_controller"
+        alias: "send_to_controller"
+      }
+    }
+    actions {
+      preamble {
+        id: 16793772
+        name: "ThisIngress.first_contact"
+        alias: "first_contact"
+      }
+    }
+    counters {
+      preamble {
+        id: 302053357
+        name: "ThisIngress.ingressDHTCounter"
+        alias: "ingressDHTCounter"
+      }
+      spec {
+        unit: BOTH
+      }
+      size: 8192
+    }
+    counters {
+      preamble {
+        id: 302005222
+        name: "ThisIngress.egressDHTCounter"
+        alias: "egressDHTCounter"
+      }
+      spec {
+        unit: BOTH
+      }
+      size: 8192
+    }
+    type_info {
+    }
+  }
+  p4_device_config: "\010\001\032\351\312\001{\n  \"header_types\" : [\n    {\n      \"name\" : \"scalars_0\",\n      \"id\" : 0,\n      \"fields\" : [\n        [\"tmp\", 32, false]\n      ]\n    },\n    {\n      \"name\" : \"standard_metadata\",\n      \"id\" : 1,\n      \"fields\" : [\n        [\"ingress_port\", 9, false],\n        [\"egress_spec\", 9, false],\n        [\"egress_port\", 9, false],\n        [\"instance_type\", 32, false],\n        [\"packet_length\", 32, false],\n        [\"enq_timestamp\", 32, false],\n        [\"enq_qdepth\", 19, false],\n        [\"deq_timedelta\", 32, false],\n        [\"deq_qdepth\", 19, false],\n        [\"ingress_global_timestamp\", 48, false],\n        [\"egress_global_timestamp\", 48, false],\n        [\"mcast_grp\", 16, false],\n        [\"egress_rid\", 16, false],\n        [\"checksum_error\", 1, false],\n        [\"parser_error\", 32, false],\n        [\"priority\", 3, false],\n        [\"_padding\", 3, false]\n      ]\n    },\n    {\n      \"name\" : \"ethernet_t\",\n      \"id\" : 2,\n      \"fields\" : [\n        [\"dstAddr\", 48, false],\n        [\"srcAddr\", 48, false],\n        [\"etherType\", 16, false]\n      ]\n    },\n    {\n      \"name\" : \"ipv4_t\",\n      \"id\" : 3,\n      \"fields\" : [\n        [\"version\", 4, false],\n        [\"ihl\", 4, false],\n        [\"diffserv\", 8, false],\n        [\"totalLen\", 16, false],\n        [\"identification\", 16, false],\n        [\"flags\", 3, false],\n        [\"fragOffset\", 13, false],\n        [\"ttl\", 8, false],\n        [\"protocol\", 8, false],\n        [\"hdrChecksum\", 16, false],\n        [\"srcAddr\", 32, false],\n        [\"dstAddr\", 32, false]\n      ]\n    },\n    {\n      \"name\" : \"dht_t\",\n      \"id\" : 4,\n      \"fields\" : [\n        [\"message_type\", 2, false],\n        [\"id\", 6, false],\n        [\"group_id\", 6, false],\n        [\"counter\", 10, false]\n      ]\n    }\n  ],\n  \"headers\" : [\n    {\n      \"name\" : \"scalars\",\n      \"id\" : 0,\n      \"header_type\" : \"scalars_0\",\n      \"metadata\" : true,\n      \"pi_omit\" : true\n    },\n    {\n      \"name\" : \"standard_metadata\",\n      \"id\" : 1,\n      \"header_type\" : \"standard_metadata\",\n      \"metadata\" : true,\n      \"pi_omit\" : true\n    },\n    {\n      \"name\" : \"ethernet\",\n      \"id\" : 2,\n      \"header_type\" : \"ethernet_t\",\n      \"metadata\" : false,\n      \"pi_omit\" : true\n    },\n    {\n      \"name\" : \"ipv4\",\n      \"id\" : 3,\n      \"header_type\" : \"ipv4_t\",\n      \"metadata\" : false,\n      \"pi_omit\" : true\n    },\n    {\n      \"name\" : \"dht\",\n      \"id\" : 4,\n      \"header_type\" : \"dht_t\",\n      \"metadata\" : false,\n      \"pi_omit\" : true\n    }\n  ],\n  \"header_stacks\" : [],\n  \"header_union_types\" : [],\n  \"header_unions\" : [],\n  \"header_union_stacks\" : [],\n  \"field_lists\" : [],\n  \"errors\" : [\n    [\"NoError\", 1],\n    [\"PacketTooShort\", 2],\n    [\"NoMatch\", 3],\n    [\"StackOutOfBounds\", 4],\n    [\"HeaderTooShort\", 5],\n    [\"ParserTimeout\", 6],\n    [\"ParserInvalidArgument\", 7]\n  ],\n  \"enums\" : [],\n  \"parsers\" : [\n    {\n      \"name\" : \"parser\",\n      \"id\" : 0,\n      \"init_state\" : \"start\",\n      \"parse_states\" : [\n        {\n          \"name\" : \"start\",\n          \"id\" : 0,\n          \"parser_ops\" : [\n            {\n              \"parameters\" : [\n                {\n                  \"type\" : \"regular\",\n                  \"value\" : \"ethernet\"\n                }\n              ],\n              \"op\" : \"extract\"\n            }\n          ],\n          \"transitions\" : [\n            {\n              \"type\" : \"hexstr\",\n              \"value\" : \"0x0800\",\n              \"mask\" : null,\n              \"next_state\" : \"parse_ipv4\"\n            },\n            {\n              \"value\" : \"default\",\n              \"mask\" : null,\n              \"next_state\" : \"parse_ipv4\"\n            }\n          ],\n          \"transition_key\" : [\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"ethernet\", \"etherType\"]\n            }\n          ]\n        },\n        {\n          \"name\" : \"parse_dht\",\n          \"id\" : 1,\n          \"parser_ops\" : [\n            {\n              \"parameters\" : [\n                {\n                  \"type\" : \"regular\",\n                  \"value\" : \"dht\"\n                }\n              ],\n              \"op\" : \"extract\"\n            }\n          ],\n          \"transitions\" : [\n            {\n              \"value\" : \"default\",\n              \"mask\" : null,\n              \"next_state\" : null\n            }\n          ],\n          \"transition_key\" : []\n        },\n        {\n          \"name\" : \"parse_ipv4\",\n          \"id\" : 2,\n          \"parser_ops\" : [\n            {\n              \"parameters\" : [\n                {\n                  \"type\" : \"regular\",\n                  \"value\" : \"ipv4\"\n                }\n              ],\n              \"op\" : \"extract\"\n            }\n          ],\n          \"transitions\" : [\n            {\n              \"type\" : \"hexstr\",\n              \"value\" : \"0x02\",\n              \"mask\" : null,\n              \"next_state\" : \"parse_dht\"\n            },\n            {\n              \"value\" : \"default\",\n              \"mask\" : null,\n              \"next_state\" : null\n            }\n          ],\n          \"transition_key\" : [\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"ipv4\", \"protocol\"]\n            }\n          ]\n        }\n      ]\n    }\n  ],\n  \"parse_vsets\" : [],\n  \"deparsers\" : [\n    {\n      \"name\" : \"deparser\",\n      \"id\" : 0,\n      \"source_info\" : {\n        \"filename\" : \"compare_dht_rewrite.p4\",\n        \"line\" : 301,\n        \"column\" : 8,\n        \"source_fragment\" : \"ThisDeparser\"\n      },\n      \"order\" : [\"ethernet\", \"ipv4\", \"dht\"]\n    }\n  ],\n  \"meter_arrays\" : [],\n  \"counter_arrays\" : [\n    {\n      \"name\" : \"ThisIngress.ingressDHTCounter\",\n      \"id\" : 0,\n      \"source_info\" : {\n        \"filename\" : \"compare_dht_rewrite.p4\",\n        \"line\" : 141,\n        \"column\" : 49,\n        \"source_fragment\" : \"ingressDHTCounter\"\n      },\n      \"size\" : 8192,\n      \"is_direct\" : false\n    },\n    {\n      \"name\" : \"ThisIngress.egressDHTCounter\",\n      \"id\" : 1,\n      \"source_info\" : {\n        \"filename\" : \"compare_dht_rewrite.p4\",\n        \"line\" : 142,\n        \"column\" : 49,\n        \"source_fragment\" : \"egressDHTCounter\"\n      },\n      \"size\" : 8192,\n      \"is_direct\" : false\n    }\n  ],\n  \"register_arrays\" : [],\n  \"calculations\" : [\n    {\n      \"name\" : \"calc\",\n      \"id\" : 0,\n      \"algo\" : \"crc32\",\n      \"input\" : [\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"srcAddr\"]\n        },\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"dstAddr\"]\n        },\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"protocol\"]\n        }\n      ]\n    },\n    {\n      \"name\" : \"calc_0\",\n      \"id\" : 1,\n      \"source_info\" : {\n        \"filename\" : \"compare_dht_rewrite.p4\",\n        \"line\" : 277,\n        \"column\" : 1,\n        \"source_fragment\" : \"update_checksum( ...\"\n      },\n      \"algo\" : \"csum16\",\n      \"input\" : [\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"version\"]\n        },\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"ihl\"]\n        },\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"diffserv\"]\n        },\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"totalLen\"]\n        },\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"identification\"]\n        },\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"flags\"]\n        },\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"fragOffset\"]\n        },\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"ttl\"]\n        },\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"protocol\"]\n        },\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"srcAddr\"]\n        },\n        {\n          \"type\" : \"field\",\n          \"value\" : [\"ipv4\", \"dstAddr\"]\n        }\n      ]\n    }\n  ],\n  \"learn_lists\" : [],\n  \"actions\" : [\n    {\n      \"name\" : \"NoAction\",\n      \"id\" : 0,\n      \"runtime_data\" : [],\n      \"primitives\" : []\n    },\n    {\n      \"name\" : \"NoAction\",\n      \"id\" : 1,\n      \"runtime_data\" : [],\n      \"primitives\" : []\n    },\n    {\n      \"name\" : \"ThisIngress.drop\",\n      \"id\" : 2,\n      \"runtime_data\" : [],\n      \"primitives\" : [\n        {\n          \"op\" : \"mark_to_drop\",\n          \"parameters\" : [\n            {\n              \"type\" : \"header\",\n              \"value\" : \"standard_metadata\"\n            }\n          ],\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 149,\n            \"column\" : 8,\n            \"source_fragment\" : \"mark_to_drop(standard_metadata)\"\n          }\n        }\n      ]\n    },\n    {\n      \"name\" : \"ThisIngress.ipv4_forward\",\n      \"id\" : 3,\n      \"runtime_data\" : [\n        {\n          \"name\" : \"dstAddr\",\n          \"bitwidth\" : 48\n        },\n        {\n          \"name\" : \"port\",\n          \"bitwidth\" : 9\n        }\n      ],\n      \"primitives\" : [\n        {\n          \"op\" : \"assign\",\n          \"parameters\" : [\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"ethernet\", \"srcAddr\"]\n            },\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"ethernet\", \"dstAddr\"]\n            }\n          ],\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 157,\n            \"column\" : 8,\n            \"source_fragment\" : \"hdr.ethernet.srcAddr = hdr.ethernet.dstAddr\"\n          }\n        },\n        {\n          \"op\" : \"assign\",\n          \"parameters\" : [\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"ethernet\", \"dstAddr\"]\n            },\n            {\n              \"type\" : \"runtime_data\",\n              \"value\" : 0\n            }\n          ],\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 158,\n            \"column\" : 8,\n            \"source_fragment\" : \"hdr.ethernet.dstAddr = dstAddr\"\n          }\n        },\n        {\n          \"op\" : \"assign\",\n          \"parameters\" : [\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"standard_metadata\", \"egress_spec\"]\n            },\n            {\n              \"type\" : \"runtime_data\",\n              \"value\" : 1\n            }\n          ],\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 159,\n            \"column\" : 8,\n            \"source_fragment\" : \"standard_metadata.egress_spec = port\"\n          }\n        },\n        {\n          \"op\" : \"assign\",\n          \"parameters\" : [\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"ipv4\", \"ttl\"]\n            },\n            {\n              \"type\" : \"expression\",\n              \"value\" : {\n                \"type\" : \"expression\",\n                \"value\" : {\n                  \"op\" : \"&\",\n                  \"left\" : {\n                    \"type\" : \"expression\",\n                    \"value\" : {\n                      \"op\" : \"+\",\n                      \"left\" : {\n                        \"type\" : \"field\",\n                        \"value\" : [\"ipv4\", \"ttl\"]\n                      },\n                      \"right\" : {\n                        \"type\" : \"hexstr\",\n                        \"value\" : \"0xff\"\n                      }\n                    }\n                  },\n                  \"right\" : {\n                    \"type\" : \"hexstr\",\n                    \"value\" : \"0xff\"\n                  }\n                }\n              }\n            }\n          ],\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 160,\n            \"column\" : 8,\n            \"source_fragment\" : \"hdr.ipv4.ttl = hdr.ipv4.ttl - 1\"\n          }\n        }\n      ]\n    },\n    {\n      \"name\" : \"ThisIngress.dht_rewrite\",\n      \"id\" : 4,\n      \"runtime_data\" : [\n        {\n          \"name\" : \"dht_address\",\n          \"bitwidth\" : 32\n        }\n      ],\n      \"primitives\" : [\n        {\n          \"op\" : \"assign\",\n          \"parameters\" : [\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"ipv4\", \"dstAddr\"]\n            },\n            {\n              \"type\" : \"runtime_data\",\n              \"value\" : 0\n            }\n          ],\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 164,\n            \"column\" : 8,\n            \"source_fragment\" : \"hdr.ipv4.dstAddr=dht_address\"\n          }\n        }\n      ]\n    },\n    {\n      \"name\" : \"ThisIngress.send_to_controller\",\n      \"id\" : 5,\n      \"runtime_data\" : [],\n      \"primitives\" : [\n        {\n          \"op\" : \"assign\",\n          \"parameters\" : [\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"standard_metadata\", \"egress_spec\"]\n            },\n            {\n              \"type\" : \"hexstr\",\n              \"value\" : \"0x000e\"\n            }\n          ],\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 23,\n            \"column\" : 28,\n            \"source_fragment\" : \"0xE; ...\"\n          }\n        }\n      ]\n    },\n    {\n      \"name\" : \"ThisIngress.first_contact\",\n      \"id\" : 6,\n      \"runtime_data\" : [],\n      \"primitives\" : [\n        {\n          \"op\" : \"assign\",\n          \"parameters\" : [\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"dht\", \"message_type\"]\n            },\n            {\n              \"type\" : \"expression\",\n              \"value\" : {\n                \"type\" : \"expression\",\n                \"value\" : {\n                  \"op\" : \"&\",\n                  \"left\" : {\n                    \"type\" : \"expression\",\n                    \"value\" : {\n                      \"op\" : \"&\",\n                      \"left\" : {\n                        \"type\" : \"field\",\n                        \"value\" : [\"dht\", \"id\"]\n                      },\n                      \"right\" : {\n                        \"type\" : \"hexstr\",\n                        \"value\" : \"0x03\"\n                      }\n                    }\n                  },\n                  \"right\" : {\n                    \"type\" : \"hexstr\",\n                    \"value\" : \"0x03\"\n                  }\n                }\n              }\n            }\n          ],\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 188,\n            \"column\" : 8,\n            \"source_fragment\" : \"hdr.dht.message_type= hdr.dht.id[1:0]\"\n          }\n        },\n        {\n          \"op\" : \"modify_field_with_hash_based_offset\",\n          \"parameters\" : [\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"dht\", \"id\"]\n            },\n            {\n              \"type\" : \"hexstr\",\n              \"value\" : \"0x01\"\n            },\n            {\n              \"type\" : \"calculation\",\n              \"value\" : \"calc\"\n            },\n            {\n              \"type\" : \"hexstr\",\n              \"value\" : \"0x20\"\n            }\n          ],\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 199,\n            \"column\" : 8,\n            \"source_fragment\" : \"hash (hdr.dht.id, ...\"\n          }\n        }\n      ]\n    },\n    {\n      \"name\" : \"act\",\n      \"id\" : 7,\n      \"runtime_data\" : [],\n      \"primitives\" : [\n        {\n          \"op\" : \"assign\",\n          \"parameters\" : [\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"scalars\", \"tmp\"]\n            },\n            {\n              \"type\" : \"expression\",\n              \"value\" : {\n                \"type\" : \"expression\",\n                \"value\" : {\n                  \"op\" : \"&\",\n                  \"left\" : {\n                    \"type\" : \"field\",\n                    \"value\" : [\"dht\", \"id\"]\n                  },\n                  \"right\" : {\n                    \"type\" : \"hexstr\",\n                    \"value\" : \"0xffffffff\"\n                  }\n                }\n              }\n            }\n          ],\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 242,\n            \"column\" : 36,\n            \"source_fragment\" : \"(bit<32>) hdr.dht.id\"\n          }\n        },\n        {\n          \"op\" : \"count\",\n          \"parameters\" : [\n            {\n              \"type\" : \"counter_array\",\n              \"value\" : \"ThisIngress.ingressDHTCounter\"\n            },\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"scalars\", \"tmp\"]\n            }\n          ],\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 242,\n            \"column\" : 12,\n            \"source_fragment\" : \"ingressDHTCounter.count((bit<32>) hdr.dht.id)\"\n          }\n        },\n        {\n          \"op\" : \"assign\",\n          \"parameters\" : [\n            {\n              \"type\" : \"field\",\n              \"value\" : [\"dht\", \"counter\"]\n            },\n            {\n              \"type\" : \"expression\",\n              \"value\" : {\n                \"type\" : \"expression\",\n                \"value\" : {\n                  \"op\" : \"&\",\n                  \"left\" : {\n                    \"type\" : \"expression\",\n                    \"value\" : {\n                      \"op\" : \"+\",\n                      \"left\" : {\n                        \"type\" : \"field\",\n                        \"value\" : [\"dht\", \"counter\"]\n                      },\n                      \"right\" : {\n                        \"type\" : \"hexstr\",\n                        \"value\" : \"0x0001\"\n                      }\n                    }\n                  },\n                  \"right\" : {\n                    \"type\" : \"hexstr\",\n                    \"value\" : \"0x03ff\"\n                  }\n                }\n              }\n            }\n          ],\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 243,\n            \"column\" : 12,\n            \"source_fragment\" : \"hdr.dht.counter=hdr.dht.counter+1\"\n          }\n        }\n      ]\n    }\n  ],\n  \"pipelines\" : [\n    {\n      \"name\" : \"ingress\",\n      \"id\" : 0,\n      \"source_info\" : {\n        \"filename\" : \"compare_dht_rewrite.p4\",\n        \"line\" : 136,\n        \"column\" : 8,\n        \"source_fragment\" : \"ThisIngress\"\n      },\n      \"init_table\" : \"node_2\",\n      \"tables\" : [\n        {\n          \"name\" : \"tbl_first_contact\",\n          \"id\" : 0,\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 240,\n            \"column\" : 16,\n            \"source_fragment\" : \"first_contact()\"\n          },\n          \"key\" : [],\n          \"match_type\" : \"exact\",\n          \"type\" : \"simple\",\n          \"max_size\" : 1024,\n          \"with_counters\" : false,\n          \"support_timeout\" : false,\n          \"direct_meters\" : null,\n          \"action_ids\" : [6],\n          \"actions\" : [\"ThisIngress.first_contact\"],\n          \"base_default_next\" : \"tbl_act\",\n          \"next_tables\" : {\n            \"ThisIngress.first_contact\" : \"tbl_act\"\n          },\n          \"default_entry\" : {\n            \"action_id\" : 6,\n            \"action_const\" : true,\n            \"action_data\" : [],\n            \"action_entry_const\" : true\n          }\n        },\n        {\n          \"name\" : \"tbl_act\",\n          \"id\" : 1,\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 242,\n            \"column\" : 12,\n            \"source_fragment\" : \"ingressDHTCounter.count((bit<32>) hdr.dht.id); ...\"\n          },\n          \"key\" : [],\n          \"match_type\" : \"exact\",\n          \"type\" : \"simple\",\n          \"max_size\" : 1024,\n          \"with_counters\" : false,\n          \"support_timeout\" : false,\n          \"direct_meters\" : null,\n          \"action_ids\" : [7],\n          \"actions\" : [\"act\"],\n          \"base_default_next\" : \"ThisIngress.finger_table_lookup\",\n          \"next_tables\" : {\n            \"act\" : \"ThisIngress.finger_table_lookup\"\n          },\n          \"default_entry\" : {\n            \"action_id\" : 7,\n            \"action_const\" : true,\n            \"action_data\" : [],\n            \"action_entry_const\" : true\n          }\n        },\n        {\n          \"name\" : \"ThisIngress.finger_table_lookup\",\n          \"id\" : 2,\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 211,\n            \"column\" : 10,\n            \"source_fragment\" : \"finger_table_lookup\"\n          },\n          \"key\" : [\n            {\n              \"match_type\" : \"exact\",\n              \"name\" : \"hdr.dht.group_id\",\n              \"target\" : [\"dht\", \"group_id\"],\n              \"mask\" : null\n            },\n            {\n              \"match_type\" : \"range\",\n              \"name\" : \"hdr.dht.id\",\n              \"target\" : [\"dht\", \"id\"],\n              \"mask\" : null\n            }\n          ],\n          \"match_type\" : \"range\",\n          \"type\" : \"simple\",\n          \"max_size\" : 1024,\n          \"with_counters\" : false,\n          \"support_timeout\" : false,\n          \"direct_meters\" : null,\n          \"action_ids\" : [4, 5, 0],\n          \"actions\" : [\"ThisIngress.dht_rewrite\", \"ThisIngress.send_to_controller\", \"NoAction\"],\n          \"base_default_next\" : \"ThisIngress.ipv4_lpm\",\n          \"next_tables\" : {\n            \"ThisIngress.dht_rewrite\" : \"ThisIngress.ipv4_lpm\",\n            \"ThisIngress.send_to_controller\" : \"ThisIngress.ipv4_lpm\",\n            \"NoAction\" : \"ThisIngress.ipv4_lpm\"\n          },\n          \"default_entry\" : {\n            \"action_id\" : 0,\n            \"action_const\" : false,\n            \"action_data\" : [],\n            \"action_entry_const\" : false\n          }\n        },\n        {\n          \"name\" : \"ThisIngress.ipv4_lpm\",\n          \"id\" : 3,\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 225,\n            \"column\" : 10,\n            \"source_fragment\" : \"ipv4_lpm\"\n          },\n          \"key\" : [\n            {\n              \"match_type\" : \"lpm\",\n              \"name\" : \"hdr.ipv4.dstAddr\",\n              \"target\" : [\"ipv4\", \"dstAddr\"],\n              \"mask\" : null\n            }\n          ],\n          \"match_type\" : \"lpm\",\n          \"type\" : \"simple\",\n          \"max_size\" : 1024,\n          \"with_counters\" : false,\n          \"support_timeout\" : false,\n          \"direct_meters\" : null,\n          \"action_ids\" : [3, 2, 1],\n          \"actions\" : [\"ThisIngress.ipv4_forward\", \"ThisIngress.drop\", \"NoAction\"],\n          \"base_default_next\" : null,\n          \"next_tables\" : {\n            \"ThisIngress.ipv4_forward\" : null,\n            \"ThisIngress.drop\" : null,\n            \"NoAction\" : null\n          },\n          \"default_entry\" : {\n            \"action_id\" : 2,\n            \"action_const\" : false,\n            \"action_data\" : [],\n            \"action_entry_const\" : false\n          }\n        }\n      ],\n      \"action_profiles\" : [],\n      \"conditionals\" : [\n        {\n          \"name\" : \"node_2\",\n          \"id\" : 0,\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 238,\n            \"column\" : 12,\n            \"source_fragment\" : \"hdr.dht.isValid()\"\n          },\n          \"expression\" : {\n            \"type\" : \"expression\",\n            \"value\" : {\n              \"op\" : \"d2b\",\n              \"left\" : null,\n              \"right\" : {\n                \"type\" : \"field\",\n                \"value\" : [\"dht\", \"$valid$\"]\n              }\n            }\n          },\n          \"true_next\" : \"node_3\",\n          \"false_next\" : \"ThisIngress.ipv4_lpm\"\n        },\n        {\n          \"name\" : \"node_3\",\n          \"id\" : 1,\n          \"source_info\" : {\n            \"filename\" : \"compare_dht_rewrite.p4\",\n            \"line\" : 239,\n            \"column\" : 16,\n            \"source_fragment\" : \"hdr.dht.message_type==0\"\n          },\n          \"expression\" : {\n            \"type\" : \"expression\",\n            \"value\" : {\n              \"op\" : \"==\",\n              \"left\" : {\n                \"type\" : \"field\",\n                \"value\" : [\"dht\", \"message_type\"]\n              },\n              \"right\" : {\n                \"type\" : \"hexstr\",\n                \"value\" : \"0x00\"\n              }\n            }\n          },\n          \"true_next\" : \"tbl_first_contact\",\n          \"false_next\" : \"tbl_act\"\n        }\n      ]\n    },\n    {\n      \"name\" : \"egress\",\n      \"id\" : 1,\n      \"source_info\" : {\n        \"filename\" : \"compare_dht_rewrite.p4\",\n        \"line\" : 262,\n        \"column\" : 8,\n        \"source_fragment\" : \"ThisEgress\"\n      },\n      \"init_table\" : null,\n      \"tables\" : [],\n      \"action_profiles\" : [],\n      \"conditionals\" : []\n    }\n  ],\n  \"checksums\" : [\n    {\n      \"name\" : \"cksum\",\n      \"id\" : 0,\n      \"source_info\" : {\n        \"filename\" : \"compare_dht_rewrite.p4\",\n        \"line\" : 277,\n        \"column\" : 1,\n        \"source_fragment\" : \"update_checksum( ...\"\n      },\n      \"target\" : [\"ipv4\", \"hdrChecksum\"],\n      \"type\" : \"generic\",\n      \"calculation\" : \"calc_0\",\n      \"verify\" : false,\n      \"update\" : true,\n      \"if_cond\" : {\n        \"type\" : \"expression\",\n        \"value\" : {\n          \"op\" : \"d2b\",\n          \"left\" : null,\n          \"right\" : {\n            \"type\" : \"field\",\n            \"value\" : [\"ipv4\", \"$valid$\"]\n          }\n        }\n      }\n    }\n  ],\n  \"force_arith\" : [],\n  \"extern_instances\" : [],\n  \"field_aliases\" : [\n    [\n      \"queueing_metadata.enq_timestamp\",\n      [\"standard_metadata\", \"enq_timestamp\"]\n    ],\n    [\n      \"queueing_metadata.enq_qdepth\",\n      [\"standard_metadata\", \"enq_qdepth\"]\n    ],\n    [\n      \"queueing_metadata.deq_timedelta\",\n      [\"standard_metadata\", \"deq_timedelta\"]\n    ],\n    [\n      \"queueing_metadata.deq_qdepth\",\n      [\"standard_metadata\", \"deq_qdepth\"]\n    ],\n    [\n      \"intrinsic_metadata.ingress_global_timestamp\",\n      [\"standard_metadata\", \"ingress_global_timestamp\"]\n    ],\n    [\n      \"intrinsic_metadata.egress_global_timestamp\",\n      [\"standard_metadata\", \"egress_global_timestamp\"]\n    ],\n    [\n      \"intrinsic_metadata.mcast_grp\",\n      [\"standard_metadata\", \"mcast_grp\"]\n    ],\n    [\n      \"intrinsic_metadata.egress_rid\",\n      [\"standard_metadata\", \"egress_rid\"]\n    ],\n    [\n      \"intrinsic_metadata.priority\",\n      [\"standard_metadata\", \"priority\"]\n    ]\n  ],\n  \"program\" : \"compare_dht_rewrite.p4\",\n  \"__meta__\" : {\n    \"version\" : [2, 18],\n    \"compiler\" : \"https://github.com/p4lang/p4c\"\n  }\n}"
+}
+---
+
+[2020-10-13 23:21:48.058] /p4.v1.P4Runtime/Write
+---
+device_id: 6
+election_id {
+  low: 1
+}
+updates {
+  type: INSERT
+  entity {
+    table_entry {
+      table_id: 33592730
+      match {
+        field_id: 1
+        lpm {
+          value: "\n\000\006\006"
+          prefix_len: 32
+        }
+      }
+      action {
+        action {
+          action_id: 16822804
+          params {
+            param_id: 1
+            value: "\010\000\000\000\006f"
+          }
+          params {
+            param_id: 2
+            value: "\000\004"
+          }
+        }
+      }
+    }
+  }
+}
+---
+
+[2020-10-13 23:21:48.068] /p4.v1.P4Runtime/Write
+---
+device_id: 6
+election_id {
+  low: 1
+}
+updates {
+  type: INSERT
+  entity {
+    table_entry {
+      table_id: 33592730
+      match {
+        field_id: 1
+        lpm {
+          value: "\n\000\005\005"
+          prefix_len: 32
+        }
+      }
+      action {
+        action {
+          action_id: 16822804
+          params {
+            param_id: 1
+            value: "\010\000\000\000\005U"
+          }
+          params {
+            param_id: 2
+            value: "\000\003"
+          }
+        }
+      }
+    }
+  }
+}
+---
+
+[2020-10-13 23:21:48.073] /p4.v1.P4Runtime/Write
+---
+device_id: 6
+election_id {
+  low: 1
+}
+updates {
+  type: INSERT
+  entity {
+    table_entry {
+      table_id: 33592730
+      match {
+        field_id: 1
+        lpm {
+          value: "\n\000\003\003"
+          prefix_len: 32
+        }
+      }
+      action {
+        action {
+          action_id: 16822804
+          params {
+            param_id: 1
+            value: "\010\000\000\000\001\001"
+          }
+          params {
+            param_id: 2
+            value: "\000\002"
+          }
+        }
+      }
+    }
+  }
+}
+---
+
+[2020-10-13 23:21:48.078] /p4.v1.P4Runtime/Write
+---
+device_id: 6
+election_id {
+  low: 1
+}
+updates {
+  type: INSERT
+  entity {
+    table_entry {
+      table_id: 33592730
+      match {
+        field_id: 1
+        lpm {
+          value: "\n\000\004\004"
+          prefix_len: 32
+        }
+      }
+      action {
+        action {
+          action_id: 16822804
+          params {
+            param_id: 1
+            value: "\010\000\000\000\001\001"
+          }
+          params {
+            param_id: 2
+            value: "\000\002"
+          }
+        }
+      }
+    }
+  }
+}
+---
+
+[2020-10-13 23:21:48.088] /p4.v1.P4Runtime/Write
+---
+device_id: 6
+election_id {
+  low: 1
+}
+updates {
+  type: INSERT
+  entity {
+    table_entry {
+      table_id: 33592730
+      match {
+        field_id: 1
+        lpm {
+          value: "\n\000\007\007"
+          prefix_len: 32
+        }
+      }
+      action {
+        action {
+          action_id: 16822804
+          params {
+            param_id: 1
+            value: "\010\000\000\000\001\001"
+          }
+          params {
+            param_id: 2
+            value: "\000\002"
+          }
+        }
+      }
+    }
+  }
+}
+---
+
+[2020-10-13 23:21:48.099] /p4.v1.P4Runtime/Write
+---
+device_id: 6
+election_id {
+  low: 1
+}
+updates {
+  type: INSERT
+  entity {
+    table_entry {
+      table_id: 33592730
+      match {
+        field_id: 1
+        lpm {
+          value: "\n\000\010\010"
+          prefix_len: 32
+        }
+      }
+      action {
+        action {
+          action_id: 16822804
+          params {
+            param_id: 1
+            value: "\010\000\000\000\001\001"
+          }
+          params {
+            param_id: 2
+            value: "\000\002"
+          }
+        }
+      }
+    }
+  }
+}
+---
+
+[2020-10-13 23:21:48.126] /p4.v1.P4Runtime/Write
+---
+device_id: 6
+election_id {
+  low: 1
+}
+updates {
+  type: INSERT
+  entity {
+    table_entry {
+      table_id: 33592730
+      match {
+        field_id: 1
+        lpm {
+          value: "\n\000\t\t"
+          prefix_len: 32
+        }
+      }
+      action {
+        action {
+          action_id: 16822804
+          params {
+            param_id: 1
+            value: "\010\000\000\000\001\001"
+          }
+          params {
+            param_id: 2
+            value: "\000\002"
+          }
+        }
+      }
+    }
+  }
+}
+---
+
+[2020-10-13 23:21:48.131] /p4.v1.P4Runtime/Write
+---
+device_id: 6
+election_id {
+  low: 1
+}
+updates {
+  type: INSERT
+  entity {
+    table_entry {
+      table_id: 33592730
+      match {
+        field_id: 1
+        lpm {
+          value: "\n\000\002\002"
+          prefix_len: 32
+        }
+      }
+      action {
+        action {
+          action_id: 16822804
+          params {
+            param_id: 1
+            value: "\010\000\000\000\001\001"
+          }
+          params {
+            param_id: 2
+            value: "\000\002"
+          }
+        }
+      }
+    }
+  }
+}
+---
+
+[2020-10-13 23:21:48.136] /p4.v1.P4Runtime/Write
+---
+device_id: 6
+election_id {
+  low: 1
+}
+updates {
+  type: INSERT
+  entity {
+    table_entry {
+      table_id: 33592730
+      match {
+        field_id: 1
+        lpm {
+          value: "\n\000\001\001"
+          prefix_len: 32
+        }
+      }
+      action {
+        action {
+          action_id: 16822804
+          params {
+            param_id: 1
+            value: "\010\000\000\000\001\001"
+          }
+          params {
+            param_id: 2
+            value: "\000\002"
+          }
+        }
+      }
+    }
+  }
+}
+---
