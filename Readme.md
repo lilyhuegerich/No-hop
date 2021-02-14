@@ -5,7 +5,7 @@ No-hop DHT utilizes the programable data plane to speed up the key value look up
 
 No-hop includes two implementations that have different hardware requirments. No-hop -rewrite is losely modeled after [1-hop DHT] (https://www.usenix.org/legacy/events/hotos03/tech/full_papers/gupta/gupta_html/). No-hop-rewrite needs only one programable switch in the entry path of all packets.
 
-No-hop-finger-table is losely based on [CHORD DHT] (http://cs.uccs.edu/~cs622/papers/01180543.pdf) . No-hop-finger-table benefits from smaller tables than 0-hop-rewrite facilitated by Chord's novel finger table concept. No-hop-finger-table releis on all involved switches being programable.
+No-hop-finger-table is losely based on [CHORD DHT] (http://cs.uccs.edu/~cs622/papers/01180543.pdf) . No-hop-finger-table benefits from smaller tables than No-hop-rewrite facilitated by Chord's novel finger table concept. No-hop-finger-table releis on all involved switches being programable.
 
 
 ![](figures/comparsision.png)
