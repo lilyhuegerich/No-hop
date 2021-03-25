@@ -24,7 +24,7 @@ Make\_topology.py generate the controller data to program the [simple\_switch\_g
 ```
 ├── Controller
 │   ├── Data_Plane_DHT.py
-│   ├── Data_Plane_DHT_settings.py - basic settings (ring size which implementation...)
+│   ├── Data_Plane_DHT_settings.py - basic settings (ring size, which implementation, ...)
 │   ├── controller.py
 │   ├── make_topology.py
 │   ├── mycontroller.py
