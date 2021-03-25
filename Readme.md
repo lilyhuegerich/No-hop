@@ -19,5 +19,26 @@ Make\_topology.py generate the controller data to program the [simple\_switch\_g
 ### Compare\_classic\_v\_data\_plane
  Has the neccessary code to run an implementation of No-hop that also runs the classic chord and 1-hop for comparision. Included as well are a couple of test programs to compare the two.
 
+### Important files
 
+```
+├── Controller
+│   ├── Data_Plane_DHT.py
+│   ├── Data_Plane_DHT_settings.py - basic settings (ring size which implementation...)
+│   ├── controller.py
+│   ├── make_topology.py
+│   ├── mycontroller.py
+├── compare_classic_v_dataplane - folder for testing system versus the baseline, P4 code can proccess classic IP and No-hop packets. 
+│   ├── compare_dht_ft.p4 - No-hop fingertable implementation
+│   ├── compare_dht_rewrite.p4 - No-hop rewrite implementation
+│   ├── logs - Logs and runtime requests of individual switches from most recent run through
+│   ├── send_and_recieve_dht.py
+│   ├── test_logs - Results from different test runs (zip files contain logs of all servers)
+│   ├── test_hops.py
+│   └── test_time.py 
+├── figures - Figure generation scripts and figures
+└── utils - Utilities from the P4 tutorials
+    
+
+```
 
