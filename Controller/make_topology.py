@@ -8,6 +8,7 @@ import os
 
 import shortest_path as shortest_path
 
+""" This file uses the Data_Plane_DHT file to generate different predifened topologies and defines some helper functions for generating topologies"""
 
 class configurationError(Exception):
     pass
@@ -15,6 +16,7 @@ class configurationError(Exception):
 
 
 class topo_tracker():
+    """ Keeps track of generated topology """
     def __init__(self, file_name, file_path="../basic/"):
         self.switches=dict()
         self.links=[]
@@ -26,6 +28,9 @@ class topo_tracker():
 
 
     def add_switches_to_topo(self, switches, fail=False):
+        """ adds generated switches to a already existing topo_tracker
+        fail=True is purposfull failing of a link for testing purposes.   """
+
         for j in switches:
             val=str(j.name)
 
@@ -39,6 +44,7 @@ class topo_tracker():
             self.switches[val]=dict(entry)
 
     def add_hosts_to_topo(self, rings, amount, client=False, connected_switches=[]):
+        """
         for ring in rings:
             for i in range(amount):
                 if (not Data_Plane_DHT_settings.bidirectional_connections==1):

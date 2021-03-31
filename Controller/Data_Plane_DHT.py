@@ -45,7 +45,7 @@ class Ring:
     def add_switch(self, switch, max_port_out=30, max_port_in=30, switch_to_controller_port=1, ID=False, classic=True):
         """
         should in normal cases only be run with a string for a name,
-        switches should only be created insIDe a Ring object
+        switches should only be created inside a Ring object
         """
         if(len(self.switches)>=(self.ID_space-2)):
             """ID_SPACE is the uninclusive max value of valID IDs.
@@ -60,7 +60,7 @@ class Ring:
         elif (type(switch)==str):
             self.switches.append(Switch(switch, self , max_port_out, max_port_in, switch_to_controller_port, ID=ID, classic=classic))
         else:
-            raise ValueError ("Non valID Switch parameter, either object of class switch or string which will be the name of the switch")
+            raise ValueError ("Non valid Switch parameter, either object of class switch or string which will be the name of the switch")
 
         self.switches.sort(key=lambda x: x.ID,  reverse=False)
         return
@@ -168,12 +168,12 @@ class host:
 class Switch:
     """
     In most cases one should never manually call switch init methods,
-    should be done by calling add_switch insIDe a ring object
+    should be done by calling add_switch inside a ring object
     """
 
     def __init__(self, name, ring, max_port_out, max_port_in, switch_to_controller_port, ID=False, classic=True):
 
-        """ For this example we used a pseudo random number gernarator
+        """ For this example we used a pseudo random number gernarator.
         Use a hash function that is fitting to your usability requirments
         """
 
@@ -461,9 +461,9 @@ class connection:
         if (b_port in (i.b_port for i in switch_b.connections_in)):
             raise ValueError ("Port given for incoming port for switch: "+ str(switch_b.name) + "is already in use." )
         if (a_port not in range(-1,switch_a.port_amount_out)):
-            raise ValueError ("Port given for a_port is not a valID port for switch: "+ str(switch_a.name))
+            raise ValueError ("Port given for a_port is not a valid port for switch: "+ str(switch_a.name))
         if (b_port not in range(-1,switch_b.port_amount_in)):
-            raise ValueError ("Port given for a_port is not a valID port for switch: "+ str(switch_b.name))
+            raise ValueError ("Port given for a_port is not a valid port for switch: "+ str(switch_b.name))
         if ((a_port==switch_a.switch_to_controller_port) and not switch_a==host):
             raise ValueError ("port given for a_port is the designated port to controller for  switch "+ str(switch_a.name))
         if ((b_port==switch_b.switch_to_controller_port) and not switch_b==host):
