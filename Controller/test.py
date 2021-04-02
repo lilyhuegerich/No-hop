@@ -4,6 +4,7 @@ import make_topology
 
 
 def main ():
+    """ Sloppy make_topology and Data plane Dht tests"""
 
     AMOUNT_OF_RINGS=3
     AMOUNT_OF_SWITCHES=20

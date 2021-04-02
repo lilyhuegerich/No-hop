@@ -44,7 +44,6 @@ class topo_tracker():
             self.switches[val]=dict(entry)
 
     def add_hosts_to_topo(self, rings, amount, client=False, connected_switches=[]):
-        """
         for ring in rings:
             for i in range(amount):
                 if (not Data_Plane_DHT_settings.bidirectional_connections==1):
@@ -66,6 +65,7 @@ class topo_tracker():
 
 
     def connect_nodes(self,ring_0_nodes, ring_1_nodes):
+        """ connects all nodes in ring 0 to all nodes in ring 1 """
         if (not len(ring_0_nodes)==len(ring_1_nodes)):
             print "must have same amount of nodes from both rings"
             raise ValueError
@@ -81,6 +81,7 @@ class topo_tracker():
                 self.links.append(Data_Plane_DHT.make_string_from_connection(tmp2))
 
     def formalize_table(self, switch, fail=False):
+        """ formalize table values to send to the software switch"""
         lpm_table= self.generate_ipv4_lpm_table(switch, fail=fail)
         formal_table=[]
         #print "lpm table", lpm_table
@@ -235,6 +236,7 @@ class topo_tracker():
                 return (self.file_path+"build/"+str(switch.name)+"P4runtime.json")
 
     def generate_ipv4_lpm_table(self, switch, fail=False):
+        """ IPv4 tables for comparision of No_hop to classic look up proccess  """
         if Data_Plane_DHT_settings.bidirectional_connections==0:
             print "not yet implemented for non bIDirectional connections/ if not in mininet"
             raise Data_Plane_DHT.SettingError
@@ -295,6 +297,7 @@ class topo_tracker():
 
         return lpm_table
     def path_finder_ip(self):
+        """ wrapper for P4 tutorial shortes path function used in LPM tables"""
          # (hosts * switches)*2
 
 
@@ -316,6 +319,9 @@ class topo_tracker():
 
 
     def check_links(self):
+        """
+        Verfiy correct link configuration , especially checking for duplicates
+        """
         links=self.links
         for i in links:
             for j in links:
@@ -341,6 +347,7 @@ class topo_tracker():
                             print j[1], i[0], "duplicate!"
                             raise ValueError
     def create_json(self):
+        """ print topo object to JSON  """
         if (Data_Plane_DHT_settings.generate_topo_json==1):
             topo_dict=dict(hosts=self.hosts, switches= self.switches, links= self.links)
             with open(self.file_path+"topology.json", "w+") as f:
@@ -350,6 +357,7 @@ class topo_tracker():
             print "No json created, to change check settings file"
 
 def create_connected_ring(ring_name, level, amount_of_switches, topo, hosts, ip_base=False, switches=[], IDs=[], classic=True):
+    """ create a ring of amount_of_switches may switches with hosts many swithes, switches are connected in a ring, returns ring object """
     if (amount_of_switches>hosts):
         print "warning all switches must be connected to hosts or another ring"
     if not ip_base:
@@ -373,6 +381,7 @@ def create_connected_ring(ring_name, level, amount_of_switches, topo, hosts, ip_
 
     return ring_v0_1
 def quick_test():
+    """ simple topology for quick testing"""
     topo=topo_tracker("compare_dht_rewrite", file_path="../compare_classic_v_dataplane/")
     ring=create_connected_ring(ring_name="R",level=0, amount_of_switches=1,topo=topo, hosts=2, classic=False)
     topo.check_links()
@@ -397,7 +406,9 @@ def test_ring(failover_test=False):
     return ring
 
 def tree_topo(failover_test=False):
-
+    """
+    tree topology for testing classic data center structures
+    """
     topo=topo_tracker("compare_dht_rewrite", file_path="../compare_classic_v_dataplane/")
     a=create_connected_ring(ring_name="Ra",level=0, amount_of_switches=1,topo=topo, hosts=0, classic=False)
     #b=create_connected_ring(ring_name="Rb",level=0, amount_of_switches=1,topo=topo, hosts=0)
