@@ -82,6 +82,9 @@ def user_input(my_id, direction):
 
 
 def send(ID, message="test rewrite",direction=0, gid=1):
+    """
+    Send No-hop packet 
+    """
     global ring_size
     #ID=bin(ID)
     #ID=ID.zfill(ring_size)

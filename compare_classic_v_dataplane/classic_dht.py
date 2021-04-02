@@ -15,6 +15,9 @@ sys.path.append(
 import Data_Plane_DHT_settings
 
 class table_one_hop():
+    """
+    Simple baseline implementation of a one hop DHT
+    """
 	def __init__(self, name="h_R0", file_topo="topology.json"):
 		with open(file_topo, "r") as f:
 			topo=(json.load(f))
@@ -57,9 +60,12 @@ class table_one_hop():
 		else:
 			raise ValueError ("ID not found in one hop DHT table")
 
-#TODO SOME IDS ARE NOT BEING REGISTERed
+
 
 class table():
+    """
+    Simple baseline implementation of CHORD DHT
+    """
 	def __init__(self, name="h_R0", file_topo="topology.json", preset_ids=True):
 		with open(file_topo, "r") as f:
 				topo=(json.load(f))
