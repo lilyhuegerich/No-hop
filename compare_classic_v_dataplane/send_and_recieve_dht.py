@@ -21,6 +21,7 @@ import readline
 ring_size=6
 
 class P4dht(Packet):
+    """ inhereted from scapy packet class, packets for No-hop"""
     name = "P4dht"
     fields_desc = [BitEnumField(name="message_type", default=2, size=2, enum={0:"FIRST_CONTACT",1:"SEND_TO_CONTROLLER", 2:"LOOKUP_IN", 3:"LOOKUP_OUT" }),
                         BitField(name="gid", default=1, size=6),
