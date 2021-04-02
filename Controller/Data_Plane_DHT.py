@@ -34,6 +34,7 @@ class Ring:
         self.mac_base="08:00:00:00:0"+str(mac_base)+":"
 
     def free_host_ID(self):
+        """ find free host ID """
         ID=len(self.hosts)
         while ID in (j.ID for j in self.hosts):
             ID=ID-1
@@ -116,6 +117,7 @@ class Ring:
         else:
             return connect_tmp1
     def print_switches(self):
+        """ Function to print status and overview of switches """
         if (Data_Plane_DHT_settings.verbose==0):
             return
         print "Ring "+str(self.name)+":"
@@ -131,6 +133,7 @@ class Ring:
 
 
 class host:
+    """ Servers and clients in topology """
     def __init__(self, name, ip, mac, max_port_out=20, max_port_in=20 , ID="ending_num", client=False):
         self.name=name
         if (ID=="ending_num"):
@@ -235,6 +238,7 @@ class Switch:
 
 
     def make_tables(self, fail=False):
+        """ Generate table contents for switch  """
         vertical_in=[]
         vertical_out=[]
         horizontal=[]
@@ -370,6 +374,7 @@ class Switch:
         return horizontal, vertical_lookup_in, vertical_lookup_out
 
 def change_order(key_range, switch):
+    """ change order of ranges, for when a range crosses 0 in the ring """
 
     range_1=(key_range[0],switch.ring.ID_space)
     range_2=(0,key_range[1])
@@ -377,6 +382,7 @@ def change_order(key_range, switch):
     return range_1, range_2
 
 def predesscor(switch):
+    """ find ring list index of predesscor of switch """
     spot=switch.ring.switches.index(switch)
 
     if (len(switch.ring.switches)==1):
@@ -390,7 +396,7 @@ def predesscor(switch):
 
 
 def successor(switch, ID, direction=0):
-
+    """ Find succesor of switch, returns in this order, ring list index, connection port, and switch object of succesor """
     successor=switch
     port=-1
 
@@ -420,6 +426,7 @@ def successor(switch, ID, direction=0):
 
 
 def distance(ID, switch):
+    """ find logical distance between switches in ID space """
     node_ID=switch.ID
     if (node_ID<ID):
         return ((switch.ring.ID_space-ID)+node_ID)
@@ -429,6 +436,7 @@ def distance(ID, switch):
         return 0
 
 def active_ports(switch):
+    """ find in use ports of switch """
     active_ports=[]
     for i in switch.connections_out:
         if i.switch_a==switch:
@@ -461,9 +469,9 @@ class connection:
         if (b_port in (i.b_port for i in switch_b.connections_in)):
             raise ValueError ("Port given for incoming port for switch: "+ str(switch_b.name) + "is already in use." )
         if (a_port not in range(-1,switch_a.port_amount_out)):
-            raise ValueError ("Port given for a_port is not a valid port for switch: "+ str(switch_a.name))
+            raise ValueError ("Port given for a_port is not a valID port for switch: "+ str(switch_a.name))
         if (b_port not in range(-1,switch_b.port_amount_in)):
-            raise ValueError ("Port given for a_port is not a valid port for switch: "+ str(switch_b.name))
+            raise ValueError ("Port given for a_port is not a valD port for switch: "+ str(switch_b.name))
         if ((a_port==switch_a.switch_to_controller_port) and not switch_a==host):
             raise ValueError ("port given for a_port is the designated port to controller for  switch "+ str(switch_a.name))
         if ((b_port==switch_b.switch_to_controller_port) and not switch_b==host):
@@ -545,6 +553,7 @@ class connection:
         self.live=0
 
     def remove(self):
+        """ remove a connection object from both switches connections lists """
         self.switch_a.connections_out.remove(self)
         self.switch_b.connections_in.remove(self)
         del self
@@ -563,6 +572,7 @@ class connection:
 
 
 def make_string_from_connection(c, host="none"):
+    """ return a connection object as a human readable string """
     if "h" in c.switch_a.name:
         host=c.switch_a
     if "h" in c.switch_b.name:
@@ -579,6 +589,7 @@ def make_string_from_connection(c, host="none"):
     return (str1, str2)
 
 def make_bIDirectional_connection(switch_a, switch_b, host="none"):
+    """ Make connection that is bidrectional, returns two connections if settings are set to not biderectional connections, otherwise one """
 
     c_1= connection(switch_a, switch_b, host=host)
 
