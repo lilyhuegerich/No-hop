@@ -18,7 +18,7 @@ class table_one_hop():
     """
     Simple baseline implementation of a one hop DHT
     """
-	def __init__(self, name="h_R0", file_topo="topology.json"):
+    def __init__(self, name="h_R0", file_topo="topology.json"):
 		with open(file_topo, "r") as f:
 			topo=(json.load(f))
 		self.my_name=str(name)
