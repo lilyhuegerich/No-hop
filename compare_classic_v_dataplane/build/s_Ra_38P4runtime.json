@@ -1,0 +1,253 @@
+{
+    "bmv2_json": "../compare_classic_v_dataplane/build/compare_dht_rewrite.json", 
+    "p4info": "../compare_classic_v_dataplane/build/compare_dht_rewrite.p4.p4info.txt", 
+    "table_entries": [
+        {
+            "action_name": "ThisIngress.ipv4_forward", 
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:01", 
+                "port": 5
+            }, 
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.6.6", 
+                    32
+                ]
+            }, 
+            "table": "ThisIngress.ipv4_lpm"
+        }, 
+        {
+            "action_name": "ThisIngress.ipv4_forward", 
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:01", 
+                "port": 5
+            }, 
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.5.5", 
+                    32
+                ]
+            }, 
+            "table": "ThisIngress.ipv4_lpm"
+        }, 
+        {
+            "action_name": "ThisIngress.ipv4_forward", 
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:01", 
+                "port": 3
+            }, 
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.3.3", 
+                    32
+                ]
+            }, 
+            "table": "ThisIngress.ipv4_lpm"
+        }, 
+        {
+            "action_name": "ThisIngress.ipv4_forward", 
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:01", 
+                "port": 3
+            }, 
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.4.4", 
+                    32
+                ]
+            }, 
+            "table": "ThisIngress.ipv4_lpm"
+        }, 
+        {
+            "action_name": "ThisIngress.ipv4_forward", 
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:01", 
+                "port": 5
+            }, 
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.7.7", 
+                    32
+                ]
+            }, 
+            "table": "ThisIngress.ipv4_lpm"
+        }, 
+        {
+            "action_name": "ThisIngress.ipv4_forward", 
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:01", 
+                "port": 5
+            }, 
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.8.8", 
+                    32
+                ]
+            }, 
+            "table": "ThisIngress.ipv4_lpm"
+        }, 
+        {
+            "action_name": "ThisIngress.ipv4_forward", 
+            "action_params": {
+                "dstAddr": "08:00:00:00:09:99", 
+                "port": 2
+            }, 
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.9.9", 
+                    32
+                ]
+            }, 
+            "table": "ThisIngress.ipv4_lpm"
+        }, 
+        {
+            "action_name": "ThisIngress.ipv4_forward", 
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:01", 
+                "port": 3
+            }, 
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.2.2", 
+                    32
+                ]
+            }, 
+            "table": "ThisIngress.ipv4_lpm"
+        }, 
+        {
+            "action_name": "ThisIngress.ipv4_forward", 
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:01", 
+                "port": 3
+            }, 
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.1.1", 
+                    32
+                ]
+            }, 
+            "table": "ThisIngress.ipv4_lpm"
+        }, 
+        {
+            "action_name": "ThisIngress.dht_rewrite", 
+            "action_params": {
+                "dht_address": "10.0.6.6"
+            }, 
+            "match": {
+                "hdr.dht.group_id": 1, 
+                "hdr.dht.id": [
+                    0, 
+                    14
+                ]
+            }, 
+            "priority": 1, 
+            "table": "ThisIngress.finger_table_lookup"
+        }, 
+        {
+            "action_name": "ThisIngress.dht_rewrite", 
+            "action_params": {
+                "dht_address": "10.0.5.5"
+            }, 
+            "match": {
+                "hdr.dht.group_id": 1, 
+                "hdr.dht.id": [
+                    14, 
+                    21
+                ]
+            }, 
+            "priority": 1, 
+            "table": "ThisIngress.finger_table_lookup"
+        }, 
+        {
+            "action_name": "ThisIngress.dht_rewrite", 
+            "action_params": {
+                "dht_address": "10.0.3.3"
+            }, 
+            "match": {
+                "hdr.dht.group_id": 1, 
+                "hdr.dht.id": [
+                    21, 
+                    28
+                ]
+            }, 
+            "priority": 1, 
+            "table": "ThisIngress.finger_table_lookup"
+        }, 
+        {
+            "action_name": "ThisIngress.dht_rewrite", 
+            "action_params": {
+                "dht_address": "10.0.4.4"
+            }, 
+            "match": {
+                "hdr.dht.group_id": 1, 
+                "hdr.dht.id": [
+                    28, 
+                    35
+                ]
+            }, 
+            "priority": 1, 
+            "table": "ThisIngress.finger_table_lookup"
+        }, 
+        {
+            "action_name": "ThisIngress.dht_rewrite", 
+            "action_params": {
+                "dht_address": "10.0.7.7"
+            }, 
+            "match": {
+                "hdr.dht.group_id": 1, 
+                "hdr.dht.id": [
+                    35, 
+                    42
+                ]
+            }, 
+            "priority": 1, 
+            "table": "ThisIngress.finger_table_lookup"
+        }, 
+        {
+            "action_name": "ThisIngress.dht_rewrite", 
+            "action_params": {
+                "dht_address": "10.0.8.8"
+            }, 
+            "match": {
+                "hdr.dht.group_id": 1, 
+                "hdr.dht.id": [
+                    42, 
+                    49
+                ]
+            }, 
+            "priority": 1, 
+            "table": "ThisIngress.finger_table_lookup"
+        }, 
+        {
+            "action_name": "ThisIngress.dht_rewrite", 
+            "action_params": {
+                "dht_address": "10.0.2.2"
+            }, 
+            "match": {
+                "hdr.dht.group_id": 1, 
+                "hdr.dht.id": [
+                    49, 
+                    56
+                ]
+            }, 
+            "priority": 1, 
+            "table": "ThisIngress.finger_table_lookup"
+        }, 
+        {
+            "action_name": "ThisIngress.dht_rewrite", 
+            "action_params": {
+                "dht_address": "10.0.1.1"
+            }, 
+            "match": {
+                "hdr.dht.group_id": 1, 
+                "hdr.dht.id": [
+                    56, 
+                    63
+                ]
+            }, 
+            "priority": 1, 
+            "table": "ThisIngress.finger_table_lookup"
+        }
+    ], 
+    "target": "bmv2"
+}
