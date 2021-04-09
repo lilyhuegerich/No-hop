@@ -28,7 +28,7 @@ Steps to run a basic time and hop test comparing the baslines to the No-hop rewr
 	make
 	```
 2. Mininet will build the example topology and start a mininet command prompt. To check the status of the network run:
-3. 
+
  	 ```
 	 mininet> net
 	 ```
@@ -52,6 +52,12 @@ Steps to run a basic time and hop test comparing the baslines to the No-hop rewr
 	  
 	
 	this will start the test and save the output 	of the tests to individual logs for all hosts in the 	folder test\_logs.
+5.  Once finished run:
+
+	```
+	make clean
+	```
+	Other wise when running the next time make will not work since the links still exist from the prior run.
 
 
 
