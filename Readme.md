@@ -19,6 +19,45 @@ Make\_topology.py generate the controller data to program the [simple\_switch\_g
 ### Compare\_classic\_v\_data\_plane
  Has the neccessary code to run an implementation of No-hop that also runs the classic chord and 1-hop for comparision. Included as well are a couple of test programs to compare the two.
 
+### Running Example
+Steps to run a basic time and hop test comparing the baslines to the No-hop rewrite implementation.
+
+1. In your shell at No-hop/compare\_classic\_v\_dataplane run:
+	
+	```
+	make
+	```
+2. Mininet will build the example topology and start a mininet command prompt. To check the status of the network run:
+3. 
+ 	 ```
+	 mininet> net
+	 ```
+
+3. Now to run scripts on a particular host use a host name returned by the above command to open a terminal for that host. The below example uses a host name given by the example:
+	
+	```
+	mininet> xterm h_Rc0
+	```
+4. If you want to test your own metrics you can use the functions in send\_and\_recieve\_dht.py to build your own server and clients otherwise you can use test\_time.py. To do this run: 
+
+	```
+	python test_time.py <Node Name> 
+	``` 
+	on all hosts and lastly on the client:
+	
+	 ```
+	 python test_time.py client
+	 ``` 
+	  
+	  
+	
+	this will start the test and save the output 	of the tests to individual logs for all hosts in the 	folder test\_logs.
+
+
+
+
+
+
 ### Important files
 
 ```
