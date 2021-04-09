@@ -55,7 +55,7 @@ Steps to run a basic time and hop test comparing the baslines to the No-hop rewr
 5.  Once finished run:
 
 	```
-	make clean
+	sudo mn -c
 	```
 	Other wise when running the next time make will not work since the links still exist from the prior run.
 
