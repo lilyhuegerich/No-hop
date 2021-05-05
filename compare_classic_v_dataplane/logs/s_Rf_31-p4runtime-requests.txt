@@ -1,5 +1,5 @@
 
-[2020-10-13 23:21:47.853] /p4.v1.P4Runtime/SetForwardingPipelineConfig
+[2021-04-09 19:51:42.640] /p4.v1.P4Runtime/SetForwardingPipelineConfig
 ---
 device_id: 8
 election_id {
@@ -149,7 +149,7 @@ config {
 }
 ---
 
-[2020-10-13 23:21:47.892] /p4.v1.P4Runtime/Write
+[2021-04-09 19:51:42.658] /p4.v1.P4Runtime/Write
 ---
 device_id: 8
 election_id {
@@ -185,7 +185,7 @@ updates {
 }
 ---
 
-[2020-10-13 23:21:47.911] /p4.v1.P4Runtime/Write
+[2021-04-09 19:51:42.670] /p4.v1.P4Runtime/Write
 ---
 device_id: 8
 election_id {
@@ -221,7 +221,7 @@ updates {
 }
 ---
 
-[2020-10-13 23:21:47.914] /p4.v1.P4Runtime/Write
+[2021-04-09 19:51:42.673] /p4.v1.P4Runtime/Write
 ---
 device_id: 8
 election_id {
@@ -257,7 +257,7 @@ updates {
 }
 ---
 
-[2020-10-13 23:21:47.918] /p4.v1.P4Runtime/Write
+[2021-04-09 19:51:42.676] /p4.v1.P4Runtime/Write
 ---
 device_id: 8
 election_id {
@@ -293,7 +293,7 @@ updates {
 }
 ---
 
-[2020-10-13 23:21:47.923] /p4.v1.P4Runtime/Write
+[2021-04-09 19:51:42.681] /p4.v1.P4Runtime/Write
 ---
 device_id: 8
 election_id {
@@ -329,7 +329,7 @@ updates {
 }
 ---
 
-[2020-10-13 23:21:47.932] /p4.v1.P4Runtime/Write
+[2021-04-09 19:51:42.684] /p4.v1.P4Runtime/Write
 ---
 device_id: 8
 election_id {
@@ -365,7 +365,7 @@ updates {
 }
 ---
 
-[2020-10-13 23:21:47.952] /p4.v1.P4Runtime/Write
+[2021-04-09 19:51:42.688] /p4.v1.P4Runtime/Write
 ---
 device_id: 8
 election_id {
@@ -401,7 +401,7 @@ updates {
 }
 ---
 
-[2020-10-13 23:21:47.956] /p4.v1.P4Runtime/Write
+[2021-04-09 19:51:42.696] /p4.v1.P4Runtime/Write
 ---
 device_id: 8
 election_id {
@@ -437,7 +437,7 @@ updates {
 }
 ---
 
-[2020-10-13 23:21:47.964] /p4.v1.P4Runtime/Write
+[2021-04-09 19:51:42.700] /p4.v1.P4Runtime/Write
 ---
 device_id: 8
 election_id {

@@ -34,7 +34,7 @@ bind_layers(Ether, IP, type=0x800)
 
 q=1
 job=0
-packets=17
+packets=1
 table_classic=0
 table_one_hop=0
 recieved_ip_classic=list()
