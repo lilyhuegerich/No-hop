@@ -60,9 +60,9 @@ Steps to run a basic time and hop test comparing the baslines to the No-hop rewr
 	Other wise when running the next time make will not work since the links still exist from the prior run.
 
 
-
-
-
+Below shows the running example with the amount of packets sent in test\_time.py set to 1. 
+![](figures/ex_testtimelong.gif)
+Here it can be seen that the baseline packets are routed often over other hosts while No-hop arrives at the correct hosts imedietly.
 
 ### Important files
 
