@@ -20,7 +20,7 @@ Make\_topology.py generate the controller data to program the [simple\_switch\_g
  Has the neccessary code to run an implementation of No-hop that also runs the classic chord and 1-hop for comparision. Included as well are a couple of test programs to compare the two.
 
 ### Running Example
-Steps to run a basic time and hop test comparing the baslines to the No-hop rewrite implementation.
+Steps to run a basic time and hop test comparing the baselines to the No-hop rewrite implementation.
 
 1. In your shell at No-hop/compare\_classic\_v\_dataplane run:
 	
