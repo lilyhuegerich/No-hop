@@ -13,7 +13,7 @@ No-hop-finger-table is losely based on [CHORD DHT](http://cs.uccs.edu/~cs622/pap
 
 
 ### Dependancies
-No-hop was implemented in the [P4tutorial virtual machine](https://github.com/p4lang/tutorials), No-hop also benefits from the use of the P4tutorail utilities programs.
+No-hop was implemented in the [P4tutorial virtual machine](https://github.com/p4lang/tutorials), No-hop also benefits from the use of the P4tutorial utilities programs.
 ### Controller
 Make\_topology.py generate the controller data to program the [simple\_switch\_grpc](https://github.com/p4lang/behavioral-model/tree/master/targets/simple_switch_grpc), aswell make\_topology.py generates the json needed for [mininet](http://mininet.org/). If one does not want the json generated or other factors changed the Data\_Plane\_DHT\_Settings.py file contains some options.
 ### Compare\_classic\_v\_data\_plane
