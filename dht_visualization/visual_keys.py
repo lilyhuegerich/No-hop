@@ -2,7 +2,9 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import random as random
 
-
+import json
+import sys
+import os
 
 def generate_random_keys(amount=8, max_id=32):
     host_ids=list()
@@ -101,20 +103,57 @@ def scale_weights(host_weight, switch_weight, factor=75):
         switch_weight[i]= h*factor
     return host_weight, switch_weight
 
-def keys():
+
+def define_ports(connections, switches, host_ids):
+
+    used_ports_switch=[[]  for _ in range(len(switches))]
+    used_ports_host=[[] for _ in range(len(host_ids))]
+    connection_ports=[[0,0]  for _ in range(len(connections))]
+
+    for i, switch in enumerate(switches):
+        free_port=1
+        for c, connection in enumerate(connections):
+            if connection[0]==switch:
+                used_ports_switch[i].append(free_port)
+                connection_ports[c][0]=free_port
+                free_port+=1
+            elif connection[1]==switch:
+                used_ports_switch[i].append(free_port)
+                connection_ports[c][1]=free_port
+                free_port+=1
+    for i, host in enumerate(host_ids):
+        free_port=1
+        for c, connection in enumerate(connections):
+            if connection[0]==host:
+                used_ports_host[i].append(free_port)
+                connection_ports[c][0]=free_port
+                free_port+=1
+            elif connection[1]==host:
+                used_ports_host[i].append(free_port)
+                connection_ports[c][1]=free_port
+                free_port+=1
+
+    return used_ports_host, used_ports_switch, connection_ports
+
+def keys(gif=False):
     max_id=32
     g=nx.Graph()
     fig = plt.figure()
 
     host_ids=generate_random_keys()
 
+
+    switches= ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
     connections=[("a","b"),("a","c"),("a","d"),("a","e"),("b","f"), ("b","g"), ("c","f"), ("c","g"), ("d","h"), ("d","i"), ("e","h"), ("e","i"), ("f",host_ids[0]),("f",host_ids[1]),("g",host_ids[2]),("g",host_ids[3]),("h",host_ids[4]), ("h",host_ids[5]),("i",host_ids[6]), ("i",host_ids[7])]
+    used_ports_host,used_ports_switch, connection_ports= define_ports(connections, switches, host_ids)
+
+
     for i in connections:
         g.add_edge(i[0], i[1], weight=1)
 
 
     pos=nx.fruchterman_reingold_layout(g)
-    switches= ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
+
     switch_weight=[0] * len(switches)
     host_weight=[0] * len (host_ids)
     switch_ids=[[]  for _ in range(len(switches))]
@@ -139,12 +178,18 @@ def keys():
     nx.draw_networkx_nodes(g, pos, nodelist=switches,  node_size=switch_weight, node_color="skyblue")
     #nx.draw_networkx_labels(g, pos, font_size=10)
     nx.draw_networkx_labels(g, pos, labels, font_size=8)
-    for i in to_print:
-        plt.title(i[0])
-        nx.draw_networkx_edges(g, pos, edge_color="grey", width=2 )
-        nx.draw_networkx_edges(g, pos, edgelist=i[1], edge_color="blue", width=2 )
-        plt.draw()
-        plt.pause(3)
+    if (gif):
+        for i in to_print:
+            plt.title(i[0])
+            nx.draw_networkx_edges(g, pos, edge_color="grey", width=2 )
+            nx.draw_networkx_edges(g, pos, edgelist=i[1], edge_color="blue", width=2 )
+            plt.draw()
+            plt.pause(3)
+
+    nx.draw_networkx_edges(g, pos, edge_color="grey", width=2 )
+    plt.draw()
+    #fill and write jsons
+    #create folder and add pickled objects as well as final jsons
 
     plt.savefig("network.pdf")
     return g, host_ids
