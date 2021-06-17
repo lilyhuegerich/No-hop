@@ -135,6 +135,99 @@ def define_ports(connections, switches, host_ids):
 
     return used_ports_host, used_ports_switch, connection_ports
 
+def find_switch_id(to_find, switch_ids, switches):
+    for s, switch in enumerate(switches):
+        if to_find==switch:
+            return switch_ids[s]
+    else:
+        raise ValueError("could not find id range for given switch: "+str(to_find))
+
+def find_spot(entry, list):
+    for s, spot in enumerate(list):
+        if entry==spot:
+            return s
+    else:
+        raise ValueError("could not find entry: "+ str(entry)+ " in list: "+ str(list))
+
+def host_range(id, host_ids):
+    host_ids.sort()
+    for i, host in enumerate(host_ids):
+        if host==id:
+            if i==0:
+                return [(host_ids[-1], host)]
+            else:
+                return [(host_ids[i-1], host)]
+    else:
+        raise ValueError ("no host with ID "+ str(id))
+
+def make_single_no_hop_table_entry(table, switch, to, port, switch_ids, switches, host_ids, group_id=1, ranges=0):
+    if ranges==0:
+        try:
+            ranges= find_switch_id(to, switch_ids, switches)
+        except ValueError:
+            ranges= host_range(to, host_ids)
+    for r in ranges:
+        table_entry = dict({"table":"no_hop_lookup",
+        "match":{
+            "hdr.dht.group_id": group_id,
+            "hdr.dht.id": (r[0], r[1])
+            },
+        "priority": 1,
+        "action_name":"ThisIngress.no_hop_forward",
+        "action_params":{"port": port}
+        })
+        table.append(table_entry)
+    return table
+
+def fill_rest_entries(table, switch_indx, switch_name, b_name, connection_ports, connections, switch_ids, switches, host_ids ):
+    for c, connection in enumerate(connections):
+        if not((connection[0]==switch_name) or (connection[1]==switch_name)):
+            continue
+        elif ((connection[0]==switch_name) and (not connection[1]==b_name)):
+            table=make_single_no_hop_table_entry(table= table, switch=switch_name, to=connection[1], port=connection_ports[c][1], switch_ids=switch_ids, switches=switches, host_ids=host_ids)
+        elif ((connection[1]==switch_name) and (not connection[0]==b_name)):
+            table=make_single_no_hop_table_entry(table= table, switch=switch_name, to=connection[0], port=connection_ports[c][0], switch_ids=switch_ids, switches=switches, host_ids=host_ids)
+    return table
+
+def make_no_hop_tables(paths, switches, switch_ids, host_ids, connections, connection_ports):
+    switch_no_hop_tables=[[]  for _ in range(len(switches))]
+    return_entries=[[]  for _ in range(len(switches))]
+    for path in paths:
+        for p in range(len(path)-1):
+            for c, connection in enumerate(connections):
+                if connection[0]==path[p] and connection[1]==path[p+1]:
+                    try:
+                        a= find_spot(path[p+1], switches)
+                    except ValueError:  # a is a host
+                        continue
+                    switch_no_hop_tables[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p+1], to=path[p], port=connection_ports[c][1], switch_ids=switch_ids, switches=switches, host_ids=host_ids)
+                    switch_no_hop_tables[a]= fill_rest_entries(table=switch_no_hop_tables[a], switch_indx=a, switch_name=path[p+ 1], b_name= path[p], connection_ports=connection_ports, connections=connections, switch_ids=switch_ids, switches=switches , host_ids=host_ids)
+
+                    try:
+                        b= find_spot(path[p], switches)
+                    except ValueError: #b is a host
+                        continue
+                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][0], switch_ids=switch_ids, switches=switches, ranges=[(0,32)], host_ids=host_ids)
+                if connection[1]==path[p] and connection[0]==path[p+1]:
+                    try:
+                        a= find_spot(path[p], switches)
+                    except ValueError:
+                        continue
+                    switch_no_hop_tables[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p], to=path[p+1], port=connection_ports[c][0], switch_ids=switch_ids, switches=switches, host_ids=host_ids)
+                    switch_no_hop_tables[a]= fill_rest_entries(table=switch_no_hop_tables[a], switch_indx=a, switch_name=path[p], b_name= path[p+1], connection_ports=connection_ports, connections=connections, switch_ids=switch_ids, switches=switches , host_ids=host_ids)
+
+                    try:
+                        b= find_spot(path[p], switches)
+                    except ValueError:
+                        continue
+                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][0], switch_ids=switch_ids, switches=switches, ranges=[(0,32)], host_ids=host_ids)
+
+    for r, r_entry in enumerate(return_entries):
+        if not (len(r_entry)<1):
+            switch_no_hop_tables[r].append(r_entry[0])
+        else:
+            print(switches[r], "has no return entry")
+    return switch_no_hop_tables
 def keys(gif=False):
     max_id=32
     g=nx.Graph()
@@ -158,12 +251,13 @@ def keys(gif=False):
     host_weight=[0] * len (host_ids)
     switch_ids=[[]  for _ in range(len(switches))]
     to_print=list()
+    paths=list()
     for i, h_id  in enumerate(host_ids):
 
         weight, title, switch_range= find_weight_and_title(host_ids, i , h_id)
 
         path= nx.dijkstra_path(g, h_id, "a")
-
+        paths.append(path)
         g, edges, switch_weight, host_weight, switch_ids= update_traversal_weights(g, path, weight, switch_weight, host_weight, switches, host_ids, switch_ids, switch_range)
 
         to_print.append((title, edges))
@@ -188,9 +282,12 @@ def keys(gif=False):
 
     nx.draw_networkx_edges(g, pos, edge_color="grey", width=2 )
     plt.draw()
-    #fill and write jsons
-    #create folder and add pickled objects as well as final jsons
 
+    switch_no_hop_tables= make_no_hop_tables(paths, switches, switch_ids, host_ids, connections, connection_ports)
+    #fill and write jsons
+
+    #create folder and add pickled objects as well as final jsons
+    print (paths)
     plt.savefig("network.pdf")
     return g, host_ids
 
