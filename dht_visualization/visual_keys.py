@@ -1,10 +1,13 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import random as random
-
+import shutil
 import json
 import sys
 import os
+
+rewrite_build_folders=0 #: 1 overwrite existing folder if exists, 0 make new folder
+new_folder_prefix="No_hop_Aggregate_"
 
 def generate_random_keys(amount=8, max_id=32):
     host_ids=list()
@@ -225,8 +228,8 @@ def make_no_hop_tables(paths, switches, switch_ids, host_ids, connections, conne
     for r, r_entry in enumerate(return_entries):
         if not (len(r_entry)<1):
             switch_no_hop_tables[r].append(r_entry[0])
-        else:
-            print(switches[r], "has no return entry")
+        '''else:
+            print(switches[r], "has no return entry")'''
     return switch_no_hop_tables
 def keys(gif=False):
     max_id=32
@@ -285,13 +288,34 @@ def keys(gif=False):
 
     switch_no_hop_tables= make_no_hop_tables(paths, switches, switch_ids, host_ids, connections, connection_ports)
     #fill and write jsons
+    make_new_folder()
 
     #create folder and add pickled objects as well as final jsons
     print (paths)
     plt.savefig("network.pdf")
     return g, host_ids
 
+def make_new_folder(folder_name=0):
+    path= os.getcwd()
+    if  rewrite_build_folders:
+        try:
+            os.mkdir(path+"/"+new_folder_prefix+str(0))
+        except FileExistsError:
+            shutil.rmtree(path+"/"+new_folder_prefix+str(0))
+            os.mkdir(path+"/"+new_folder_prefix+str(0))
+        return new_folder_prefix+str(0)
+    if not type(folder_name)==str:
+        folder=0
+        while (True):
+            folder_name=new_folder_prefix+str(folder)
 
+            if not os.path.isdir(folder_name):
+                break
+            else:
+                folder+=1
+
+    os.mkdir(path+"/"+folder_name)
+    return folder_name
 
 
 def find_responsible(host_ids, id):
