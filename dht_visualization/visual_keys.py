@@ -5,9 +5,11 @@ import shutil
 import json
 import sys
 import os
+import json
 
-rewrite_build_folders=0 #: 1 overwrite existing folder if exists, 0 make new folder
+rewrite_build_folders=1 #: 1 overwrite existing folder if exists, 0 make new folder
 new_folder_prefix="No_hop_Aggregate_"
+compiled_p4_program_path="../../compare_dht_abstraction.p4"
 
 def generate_random_keys(amount=8, max_id=32):
     host_ids=list()
@@ -19,15 +21,15 @@ def generate_random_keys(amount=8, max_id=32):
         host_ids.sort()
     return host_ids
 
-def add_switch_range(index, switch_ids, switch_range):
+def add_switch_range(index, switchost_ids, switch_range):
     if type(switch_range)==list:
         for i in switch_range:
-            switch_ids[index].append(i)
+            switchost_ids[index].append(i)
     else:
-        switch_ids[index].append(switch_range)
-    return switch_ids
+        switchost_ids[index].append(switch_range)
+    return switchost_ids
 
-def update_traversal_weights(g, path, weight, switch_weight, host_weight, switches, host_ids, switch_ids, switch_range):
+def update_traversal_weights(g, path, weight, switch_weight, host_weight, switches, host_ids, switchost_ids, switch_range):
     edges=list()
     for i in range(len(path)-1):
         edges.append((path[i], path[i+1]))
@@ -36,13 +38,13 @@ def update_traversal_weights(g, path, weight, switch_weight, host_weight, switch
         for p in path:
             if node==p:
                 switch_weight[i]+=weight
-                switch_ids= add_switch_range(i, switch_ids, switch_range)
+                switchost_ids= add_switch_range(i, switchost_ids, switch_range)
     for i, node in enumerate(host_ids):
         for p in path:
             if node==p:
                 host_weight[i]+=weight
 
-    return g, edges, switch_weight, host_weight, switch_ids
+    return g, edges, switch_weight, host_weight, switchost_ids
 
 def find_weight_and_title(host_ids, i, h_id):
     switch_range=list()
@@ -60,10 +62,10 @@ def find_weight_and_title(host_ids, i, h_id):
 
     return weight, title, switch_range
 
-def clean_ranges(switch_ids, switches):
+def clean_ranges(switchost_ids, switches):
 
-    new_switch_ids=list()
-    for indx, switch in enumerate(switch_ids):
+    new_switchost_ids=list()
+    for indx, switch in enumerate(switchost_ids):
         #print (switch)
         tmp=list()
         for s in switch:
@@ -85,13 +87,13 @@ def clean_ranges(switch_ids, switches):
             new_range.append((start, tmp[-1]))
         #print(indx, new_range)
 
-        new_switch_ids.append(new_range)
+        new_switchost_ids.append(new_range)
     labels={}
     for i in range(len(switches)):
-        if  (len(new_switch_ids[i])==1):
-            labels[switches[i]]=new_switch_ids[i][0]
+        if  (len(new_switchost_ids[i])==1):
+            labels[switches[i]]=new_switchost_ids[i][0]
         else:
-            labels[switches[i]]=new_switch_ids[i]
+            labels[switches[i]]=new_switchost_ids[i]
 
     return labels
 
@@ -138,10 +140,10 @@ def define_ports(connections, switches, host_ids):
 
     return used_ports_host, used_ports_switch, connection_ports
 
-def find_switch_id(to_find, switch_ids, switches):
+def find_switch_id(to_find, switchost_ids, switches):
     for s, switch in enumerate(switches):
         if to_find==switch:
-            return switch_ids[s]
+            return switchost_ids[s]
     else:
         raise ValueError("could not find id range for given switch: "+str(to_find))
 
@@ -163,10 +165,10 @@ def host_range(id, host_ids):
     else:
         raise ValueError ("no host with ID "+ str(id))
 
-def make_single_no_hop_table_entry(table, switch, to, port, switch_ids, switches, host_ids, group_id=1, ranges=0):
+def make_single_no_hop_table_entry(table, switch, to, port, switchost_ids, switches, host_ids, group_id=1, ranges=0):
     if ranges==0:
         try:
-            ranges= find_switch_id(to, switch_ids, switches)
+            ranges= find_switch_id(to, switchost_ids, switches)
         except ValueError:
             ranges= host_range(to, host_ids)
     for r in ranges:
@@ -182,17 +184,17 @@ def make_single_no_hop_table_entry(table, switch, to, port, switch_ids, switches
         table.append(table_entry)
     return table
 
-def fill_rest_entries(table, switch_indx, switch_name, b_name, connection_ports, connections, switch_ids, switches, host_ids ):
+def fill_rest_entries(table, switch_indx, switch_name, b_name, connection_ports, connections, switchost_ids, switches, host_ids ):
     for c, connection in enumerate(connections):
         if not((connection[0]==switch_name) or (connection[1]==switch_name)):
             continue
         elif ((connection[0]==switch_name) and (not connection[1]==b_name)):
-            table=make_single_no_hop_table_entry(table= table, switch=switch_name, to=connection[1], port=connection_ports[c][1], switch_ids=switch_ids, switches=switches, host_ids=host_ids)
+            table=make_single_no_hop_table_entry(table= table, switch=switch_name, to=connection[1], port=connection_ports[c][1], switchost_ids=switchost_ids, switches=switches, host_ids=host_ids)
         elif ((connection[1]==switch_name) and (not connection[0]==b_name)):
-            table=make_single_no_hop_table_entry(table= table, switch=switch_name, to=connection[0], port=connection_ports[c][0], switch_ids=switch_ids, switches=switches, host_ids=host_ids)
+            table=make_single_no_hop_table_entry(table= table, switch=switch_name, to=connection[0], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, host_ids=host_ids)
     return table
 
-def make_no_hop_tables(paths, switches, switch_ids, host_ids, connections, connection_ports):
+def make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, connection_ports):
     switch_no_hop_tables=[[]  for _ in range(len(switches))]
     return_entries=[[]  for _ in range(len(switches))]
     for path in paths:
@@ -203,27 +205,27 @@ def make_no_hop_tables(paths, switches, switch_ids, host_ids, connections, conne
                         a= find_spot(path[p+1], switches)
                     except ValueError:  # a is a host
                         continue
-                    switch_no_hop_tables[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p+1], to=path[p], port=connection_ports[c][1], switch_ids=switch_ids, switches=switches, host_ids=host_ids)
-                    switch_no_hop_tables[a]= fill_rest_entries(table=switch_no_hop_tables[a], switch_indx=a, switch_name=path[p+ 1], b_name= path[p], connection_ports=connection_ports, connections=connections, switch_ids=switch_ids, switches=switches , host_ids=host_ids)
+                    switch_no_hop_tables[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p+1], to=path[p], port=connection_ports[c][1], switchost_ids=switchost_ids, switches=switches, host_ids=host_ids)
+                    switch_no_hop_tables[a]= fill_rest_entries(table=switch_no_hop_tables[a], switch_indx=a, switch_name=path[p+ 1], b_name= path[p], connection_ports=connection_ports, connections=connections, switchost_ids=switchost_ids, switches=switches , host_ids=host_ids)
 
                     try:
                         b= find_spot(path[p], switches)
                     except ValueError: #b is a host
                         continue
-                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][0], switch_ids=switch_ids, switches=switches, ranges=[(0,32)], host_ids=host_ids)
+                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, ranges=[(0,32)], host_ids=host_ids)
                 if connection[1]==path[p] and connection[0]==path[p+1]:
                     try:
                         a= find_spot(path[p], switches)
                     except ValueError:
                         continue
-                    switch_no_hop_tables[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p], to=path[p+1], port=connection_ports[c][0], switch_ids=switch_ids, switches=switches, host_ids=host_ids)
-                    switch_no_hop_tables[a]= fill_rest_entries(table=switch_no_hop_tables[a], switch_indx=a, switch_name=path[p], b_name= path[p+1], connection_ports=connection_ports, connections=connections, switch_ids=switch_ids, switches=switches , host_ids=host_ids)
+                    switch_no_hop_tables[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p], to=path[p+1], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, host_ids=host_ids)
+                    switch_no_hop_tables[a]= fill_rest_entries(table=switch_no_hop_tables[a], switch_indx=a, switch_name=path[p], b_name= path[p+1], connection_ports=connection_ports, connections=connections, switchost_ids=switchost_ids, switches=switches , host_ids=host_ids)
 
                     try:
                         b= find_spot(path[p], switches)
                     except ValueError:
                         continue
-                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][0], switch_ids=switch_ids, switches=switches, ranges=[(0,32)], host_ids=host_ids)
+                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, ranges=[(0,32)], host_ids=host_ids)
 
     for r, r_entry in enumerate(return_entries):
         if not (len(r_entry)<1):
@@ -231,6 +233,78 @@ def make_no_hop_tables(paths, switches, switch_ids, host_ids, connections, conne
         '''else:
             print(switches[r], "has no return entry")'''
     return switch_no_hop_tables
+
+def make_host_entry(ip_count):
+    entry=dict()
+    entry["ip"]="10.0."+str(ip_count)+"."+str(ip_count)+"/24"
+    entry["mac"]="08:00:00:00:0"+str(ip_count)+":"+str(ip_count)+str(ip_count)
+    entry["commands"]=["route add default gw 10.0."+str(ip_count)+"."+str(ip_count)+"0  dev eth0",
+    "arp -i eth0 -s 10.0."+str(ip_count)+"."+str(ip_count)+"0 08:00:00:00:0"+str(ip_count)+":00"
+    ]
+    return entry
+def make_host_data(host_ids):
+    ip_count=1
+    hosts=dict()
+    hosts["client"]=make_host_entry(ip_count)
+    ip_count+=1
+    for i in host_ids:
+        hosts[i]=make_host_entry(ip_count)
+        ip_count+=1
+
+    return hosts
+
+def make_lpm_entry(switch,s, next_c, connections, connection_ports, switches, host):
+    for c, connection in enumerate(connections):
+        if switch==connection[0] and next_c==connection[1]:
+            port=connection_ports[c][0]
+            break
+
+        if switch==connection[1] and next_c==connection[0]:
+            port=connection_ports[c][1]
+            break
+    try:
+        next_c_spot=find_spot(next_c, switches)
+    except ValueError:
+        entry={
+            "action_name": "ThisIngress.ipv4_forward",
+            "action_params": {
+                "dstAddr": host["mac"],
+                "port": port
+            },
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    host["ip"][0:-3],
+                    32
+                ]
+            },
+            "table": "ThisIngress.ipv4_lpm"
+        }
+        return entry
+
+    entry={
+        "action_name": "ThisIngress.ipv4_forward",
+        "action_params": {
+            "dstAddr": "08:00:00:00:01:"+str(next_c_spot),
+            "port": port
+        },
+        "match": {
+            "hdr.ipv4.dstAddr": [
+                str(host["ip"])[0:-3],
+                32
+            ]
+        },
+        "table": "ThisIngress.ipv4_lpm"
+    }
+    return entry
+
+
+def make_ip_lpm_table(g, connections, connection_ports, switches, hosts, host_ids):
+    switch_lpm_tables=[[]  for _ in range(len(switches))]
+    for s, switch in enumerate(switches):
+        for h in host_ids:
+            path= nx.dijkstra_path(g, switch, h)
+            switch_lpm_tables[s].append(make_lpm_entry(switch,s, path[1], connections, connection_ports, switches, hosts[h]))
+    return switch_lpm_tables
 def keys(gif=False):
     max_id=32
     g=nx.Graph()
@@ -240,7 +314,7 @@ def keys(gif=False):
 
 
     switches= ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
-    connections=[("a","b"),("a","c"),("a","d"),("a","e"),("b","f"), ("b","g"), ("c","f"), ("c","g"), ("d","h"), ("d","i"), ("e","h"), ("e","i"), ("f",host_ids[0]),("f",host_ids[1]),("g",host_ids[2]),("g",host_ids[3]),("h",host_ids[4]), ("h",host_ids[5]),("i",host_ids[6]), ("i",host_ids[7])]
+    connections=[("client", "a"),("a","b"),("a","c"),("a","d"),("a","e"),("b","f"), ("b","g"), ("c","f"), ("c","g"), ("d","h"), ("d","i"), ("e","h"), ("e","i"), ("f",host_ids[0]),("f",host_ids[1]),("g",host_ids[2]),("g",host_ids[3]),("h",host_ids[4]), ("h",host_ids[5]),("i",host_ids[6]), ("i",host_ids[7])]
     used_ports_host,used_ports_switch, connection_ports= define_ports(connections, switches, host_ids)
 
 
@@ -252,7 +326,7 @@ def keys(gif=False):
 
     switch_weight=[0] * len(switches)
     host_weight=[0] * len (host_ids)
-    switch_ids=[[]  for _ in range(len(switches))]
+    switchost_ids=[[]  for _ in range(len(switches))]
     to_print=list()
     paths=list()
     for i, h_id  in enumerate(host_ids):
@@ -261,19 +335,19 @@ def keys(gif=False):
 
         path= nx.dijkstra_path(g, h_id, "a")
         paths.append(path)
-        g, edges, switch_weight, host_weight, switch_ids= update_traversal_weights(g, path, weight, switch_weight, host_weight, switches, host_ids, switch_ids, switch_range)
+        g, edges, switch_weight, host_weight, switchost_ids= update_traversal_weights(g, path, weight, switch_weight, host_weight, switches, host_ids, switchost_ids, switch_range)
 
         to_print.append((title, edges))
 
     host_weight, switch_weight= scale_weights(host_weight, switch_weight, factor=75)
 
-    labels=clean_ranges(switch_ids, switches)
+    labels=clean_ranges(switchost_ids, switches)
     for i in host_ids:
         labels[i]=i
-
+    labels["client"]="Client"
     nx.draw_networkx_nodes(g, pos, nodelist=host_ids, node_size= host_weight,  node_color="grey")
     nx.draw_networkx_nodes(g, pos, nodelist=switches,  node_size=switch_weight, node_color="skyblue")
-    #nx.draw_networkx_labels(g, pos, font_size=10)
+    nx.draw_networkx_nodes(g, pos, nodelist=["client"], node_size=switch_weight[0], node_color="grey")
     nx.draw_networkx_labels(g, pos, labels, font_size=8)
     if (gif):
         for i in to_print:
@@ -286,14 +360,60 @@ def keys(gif=False):
     nx.draw_networkx_edges(g, pos, edge_color="grey", width=2 )
     plt.draw()
 
-    switch_no_hop_tables= make_no_hop_tables(paths, switches, switch_ids, host_ids, connections, connection_ports)
+    switch_no_hop_tables= make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, connection_ports)
+    hosts= make_host_data(host_ids)
+    switch_lpm_tables=make_ip_lpm_table(g, connections, connection_ports, switches, hosts, host_ids)
     #fill and write jsons
-    make_new_folder()
-
+    folder_name=make_new_folder()
+    write_build_files(folder_name, switches, hosts, switch_no_hop_tables, switch_lpm_tables, connections, connection_ports)
     #create folder and add pickled objects as well as final jsons
-    print (paths)
-    plt.savefig("network.pdf")
+    plt.savefig(folder_name+"/network.pdf")
     return g, host_ids
+
+def formalize_connections(connection, connection_ports):
+    links=list()
+    for c, connection in enumerate(connection):
+        links.append([str(connection[0])+"-p"+str(connection_ports[c][0]), str(connection[1])+"-p"+str(connection_ports[c][1])])
+    return links
+def formalize_switch(switch, s, folder_name):
+    entry= {
+        "mac": "08:00:00:00:01:"+str(s),
+        "runtime_json": "../compare_classic_v_dataplane/build/"+switch+"P4runtime.json"
+    }
+    return entry
+def formalize_switches(switches, folder_name):
+    switches_formal=dict()
+    for s, switch in enumerate(switches):
+        switches_formal[switch]=formalize_switch(switch, s, folder_name)
+    return switches_formal
+
+def write_topology_file(folder_name, hosts, switches, connections, connection_ports):
+    links=formalize_connections(connections, connection_ports)
+    switches_formal= formalize_switches(switches,folder_name)
+    topo_dict=dict(hosts=hosts, switches= switches_formal, links= links)
+    with open(folder_name+"/topology.json", "w+") as f:
+        json.dump(topo_dict, f, sort_keys=False, indent=4)
+
+def write_build_files(folder_name, switches, hosts, switch_no_hop_tables, switch_lpm_tables, connections, connection_ports):
+    for switch in switches:
+        write_switch_json(switch_no_hop_tables+switch_lpm_tables, switch, folder_name)
+    write_topology_file(folder_name, hosts, switches, connections, connection_ports)
+
+def write_switch_json(table, switch, folder_name):
+    topo_dict=dict({
+                    "target":"bmv2",
+                    "bmv2_json": compiled_p4_program_path+".json",
+                    "p4info": compiled_p4_program_path+".p4.p4info.txt",
+                    "table_entries": table})
+
+    try:
+        os.mkdir(folder_name+"/build/")
+    except FileExistsError:
+        pass
+    #print topo_dict
+    with open(folder_name+"/build/"+switch+"P4runtime.json", "w+") as f:
+        json.dump(topo_dict, f, sort_keys=True, indent=4)
+
 
 def make_new_folder(folder_name=0):
     path= os.getcwd()
@@ -303,19 +423,18 @@ def make_new_folder(folder_name=0):
         except FileExistsError:
             shutil.rmtree(path+"/"+new_folder_prefix+str(0))
             os.mkdir(path+"/"+new_folder_prefix+str(0))
-        return new_folder_prefix+str(0)
+        return path+"/"+new_folder_prefix+str(0)
     if not type(folder_name)==str:
         folder=0
         while (True):
             folder_name=new_folder_prefix+str(folder)
-
             if not os.path.isdir(folder_name):
                 break
             else:
                 folder+=1
 
     os.mkdir(path+"/"+folder_name)
-    return folder_name
+    return path+"/"+folder_name
 
 
 def find_responsible(host_ids, id):
