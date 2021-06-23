@@ -1,6 +1,6 @@
 {
-    "bmv2_json": "../compare_dht_abstraction.p4.json",
-    "p4info": "../compare_dht_abstraction.p4.p4.p4info.txt",
+    "bmv2_json": "../compare_dht_abstraction.json",
+    "p4info": "../compare_dht_abstraction.p4.p4info.txt",
     "table_entries": [
         [],
         [
@@ -12,7 +12,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -28,7 +28,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -42,8 +42,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -57,7 +57,37 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
+                        5,
+                        7
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        7,
+                        10
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
                         12
                     ]
                 },
@@ -73,21 +103,6 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         12,
-                        15
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
                         17
                     ]
                 },
@@ -103,7 +118,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -117,23 +132,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -147,7 +147,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -163,7 +163,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -177,8 +177,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -192,8 +192,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
-                        12
+                        5,
+                        7
                     ]
                 },
                 "priority": 1,
@@ -207,8 +207,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        12,
-                        15
+                        7,
+                        10
                     ]
                 },
                 "priority": 1,
@@ -222,7 +222,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -238,7 +238,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -252,8 +252,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -267,7 +267,37 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
+                        5,
+                        7
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        7,
+                        10
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
                         12
                     ]
                 },
@@ -283,21 +313,6 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         12,
-                        15
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
                         17
                     ]
                 },
@@ -313,7 +328,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -327,23 +342,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -357,7 +357,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -373,7 +373,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -387,8 +387,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -402,8 +402,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
-                        12
+                        5,
+                        7
                     ]
                 },
                 "priority": 1,
@@ -417,8 +417,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        12,
-                        15
+                        7,
+                        10
                     ]
                 },
                 "priority": 1,
@@ -449,7 +449,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -465,7 +465,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -479,8 +479,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -494,7 +494,37 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
+                        5,
+                        7
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        7,
+                        10
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
                         12
                     ]
                 },
@@ -510,21 +540,6 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         12,
-                        15
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
                         17
                     ]
                 },
@@ -540,7 +555,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -554,23 +569,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -584,7 +584,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -600,7 +600,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -614,8 +614,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -629,8 +629,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
-                        12
+                        5,
+                        7
                     ]
                 },
                 "priority": 1,
@@ -644,8 +644,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        12,
-                        15
+                        7,
+                        10
                     ]
                 },
                 "priority": 1,
@@ -659,7 +659,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -675,7 +675,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -689,8 +689,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -704,7 +704,37 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
+                        5,
+                        7
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        7,
+                        10
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
                         12
                     ]
                 },
@@ -720,21 +750,6 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         12,
-                        15
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
                         17
                     ]
                 },
@@ -750,7 +765,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -764,23 +779,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -794,7 +794,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -810,7 +810,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -824,8 +824,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -839,8 +839,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
-                        12
+                        5,
+                        7
                     ]
                 },
                 "priority": 1,
@@ -854,8 +854,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        12,
-                        15
+                        7,
+                        10
                     ]
                 },
                 "priority": 1,
@@ -886,7 +886,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -902,7 +902,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -916,8 +916,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -931,7 +931,37 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
+                        5,
+                        7
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 4
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        7,
+                        10
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 4
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
                         12
                     ]
                 },
@@ -947,21 +977,6 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         12,
-                        15
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 4
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
                         17
                     ]
                 },
@@ -977,7 +992,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -991,23 +1006,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 4
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -1021,7 +1021,22 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        15,
+                        10,
+                        12
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 1
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        12,
                         17
                     ]
                 },
@@ -1037,7 +1052,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -1051,23 +1066,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 1
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -1081,7 +1081,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -1097,7 +1097,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -1111,8 +1111,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -1126,7 +1126,37 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
+                        5,
+                        7
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 4
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        7,
+                        10
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 4
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
                         12
                     ]
                 },
@@ -1142,21 +1172,6 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         12,
-                        15
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 4
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
                         17
                     ]
                 },
@@ -1172,7 +1187,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -1186,23 +1201,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 4
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -1216,7 +1216,22 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        15,
+                        10,
+                        12
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 1
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        12,
                         17
                     ]
                 },
@@ -1232,7 +1247,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -1246,23 +1261,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 1
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -1293,7 +1293,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -1309,7 +1309,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -1323,8 +1323,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -1338,7 +1338,37 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
+                        5,
+                        7
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 5
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        7,
+                        10
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 5
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
                         12
                     ]
                 },
@@ -1354,21 +1384,6 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         12,
-                        15
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 5
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
                         17
                     ]
                 },
@@ -1384,7 +1399,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -1398,23 +1413,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 5
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -1428,7 +1428,22 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        15,
+                        10,
+                        12
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        12,
                         17
                     ]
                 },
@@ -1444,7 +1459,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -1458,23 +1473,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -1488,7 +1488,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -1504,7 +1504,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -1518,8 +1518,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -1533,7 +1533,37 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
+                        5,
+                        7
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 5
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        7,
+                        10
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 5
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
                         12
                     ]
                 },
@@ -1549,21 +1579,6 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         12,
-                        15
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 5
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
                         17
                     ]
                 },
@@ -1579,7 +1594,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -1593,23 +1608,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 5
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -1623,7 +1623,22 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        15,
+                        10,
+                        12
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        12,
                         17
                     ]
                 },
@@ -1639,7 +1654,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -1653,23 +1668,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -1700,7 +1700,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -1716,7 +1716,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -1730,8 +1730,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
-                        12
+                        5,
+                        7
                     ]
                 },
                 "priority": 1,
@@ -1745,8 +1745,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -1760,8 +1760,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        12,
-                        15
+                        7,
+                        10
                     ]
                 },
                 "priority": 1,
@@ -1775,8 +1775,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
-                        1
+                        29,
+                        3
                     ]
                 },
                 "priority": 1,
@@ -1790,8 +1790,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -1805,8 +1805,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -1820,8 +1820,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        12,
-                        15
+                        7,
+                        10
                     ]
                 },
                 "priority": 1,
@@ -1835,7 +1835,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
+                        29,
                         32
                     ]
                 },
@@ -1851,7 +1851,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         0,
-                        1
+                        3
                     ]
                 },
                 "priority": 1,
@@ -1865,8 +1865,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        8,
-                        12
+                        5,
+                        7
                     ]
                 },
                 "priority": 1,
@@ -1880,8 +1880,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        31,
-                        1
+                        29,
+                        3
                     ]
                 },
                 "priority": 1,
@@ -1895,432 +1895,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        1,
-                        8
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        0,
-                        32
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            }
-        ],
-        [
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        31,
-                        32
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        0,
-                        1
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        8,
-                        12
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        1,
-                        8
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        12,
-                        15
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 1
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        8,
-                        12
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 1
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        12,
-                        15
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        1,
-                        8
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        12,
-                        15
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        31,
-                        32
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        0,
-                        1
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        8,
-                        12
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 1
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        8,
-                        12
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 1
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        12,
-                        15
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        0,
-                        32
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            }
-        ],
-        [
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
-                        17
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        17,
-                        21
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 1
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
-                        17
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 1
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        17,
-                        21
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        17,
-                        21
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
-                        17
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 2
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 1
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
-                        17
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 1
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        17,
-                        21
+                        3,
+                        5
                     ]
                 },
                 "priority": 1,
@@ -2351,8 +1927,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        15,
-                        17
+                        29,
+                        32
                     ]
                 },
                 "priority": 1,
@@ -2366,8 +1942,417 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
+                        0,
+                        3
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        5,
+                        7
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        3,
+                        5
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        7,
+                        10
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 1
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        5,
+                        7
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 1
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        7,
+                        10
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        3,
+                        5
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        7,
+                        10
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        29,
+                        32
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        0,
+                        3
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        5,
+                        7
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 1
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        5,
+                        7
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 1
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        7,
+                        10
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        0,
+                        32
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            }
+        ],
+        [
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
+                        12
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        17,
+                        25
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        12,
+                        17
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        25,
+                        29
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 1
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
+                        12
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 1
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        12,
+                        17
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        12,
+                        17
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        25,
+                        29
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
+                        12
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        17,
+                        25
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 1
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
+                        12
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 1
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        12,
+                        17
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 2
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        0,
+                        32
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            }
+        ],
+        [
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
+                        12
                     ]
                 },
                 "priority": 1,
@@ -2382,7 +2367,7 @@
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
                         17,
-                        21
+                        25
                     ]
                 },
                 "priority": 1,
@@ -2396,82 +2381,7 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        27,
-                        31
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 1
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        21,
-                        27
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 1
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        17,
-                        21
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        27,
-                        31
-                    ]
-                },
-                "priority": 1,
-                "table": "no_hop_lookup"
-            },
-            {
-                "action_name": "ThisIngress.no_hop_forward",
-                "action_params": {
-                    "port": 3
-                },
-                "match": {
-                    "hdr.dht.group_id": 1,
-                    "hdr.dht.id": [
-                        15,
+                        12,
                         17
                     ]
                 },
@@ -2486,8 +2396,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
@@ -2501,8 +2411,8 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        21,
-                        27
+                        17,
+                        25
                     ]
                 },
                 "priority": 1,
@@ -2516,8 +2426,98 @@
                 "match": {
                     "hdr.dht.group_id": 1,
                     "hdr.dht.id": [
-                        27,
-                        31
+                        25,
+                        29
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        12,
+                        17
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        25,
+                        29
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        10,
+                        12
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 3
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        17,
+                        25
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 1
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        17,
+                        25
+                    ]
+                },
+                "priority": 1,
+                "table": "no_hop_lookup"
+            },
+            {
+                "action_name": "ThisIngress.no_hop_forward",
+                "action_params": {
+                    "port": 1
+                },
+                "match": {
+                    "hdr.dht.group_id": 1,
+                    "hdr.dht.id": [
+                        25,
+                        29
                     ]
                 },
                 "priority": 1,
