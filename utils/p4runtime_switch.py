@@ -39,7 +39,7 @@ class P4RuntimeSwitch(P4Switch):
                  enable_debugger = False,
                  log_file = None,
                  **kwargs):
-        Switch.__init__(self, name, **kwargs)
+        Switch.__init__(self, name, dpid='0000000000000201', **kwargs)
         assert (sw_path)
         self.sw_path = sw_path
         # make sure that the provided sw_path is valid
@@ -134,4 +134,3 @@ class P4RuntimeSwitch(P4Switch):
             error("P4 switch {} did not start correctly.\n".format(self.name))
             exit(1)
         info("P4 switch {} has been started.\n".format(self.name))
-
