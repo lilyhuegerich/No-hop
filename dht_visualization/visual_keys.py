@@ -392,7 +392,12 @@ def formalize_connections(connections, connection_ports, switches, host_ids):
     links=list()
     connections=formalize_connection_names(connections, switches, host_ids)
     for c, connection in enumerate(connections):
-        links.append([str(connection[0])+"-p"+str(connection_ports[c][0]), str(connection[1])+"-p"+str(connection_ports[c][1])])
+        if connection[0][0]=="h":
+            links.append([str(connection[0]), str(connection[1])+"-p"+str(connection_ports[c][1])])
+        elif connection[1][0]=="h":
+            links.append([str(connection[0])+"-p"+str(connection_ports[c][0]), str(connection[1])])
+        else:
+            links.append([str(connection[0])+"-p"+str(connection_ports[c][0]), str(connection[1])+"-p"+str(connection_ports[c][1])])
     return links
 def formalize_switch(switch, s, folder_name):
     entry= {
