@@ -284,12 +284,12 @@ def make_lpm_entry(switch,s, next_c, connections, connection_ports, switches, ho
     entry={
         "action_name": "ThisIngress.ipv4_forward",
         "action_params": {
-            "dstAddr": "08:00:00:00:01:"+str(next_c_spot),
+            "dstAddr": "08:00:00:00:01:"+str(next_c_spot)+str(next_c_spot),
             "port": port
         },
         "match": {
             "hdr.ipv4.dstAddr": [
-                str(host["ip"])[0:-2],
+                str(host["ip"])[0:-3],
                 32
             ]
         },

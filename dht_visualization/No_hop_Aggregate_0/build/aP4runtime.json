@@ -5,12 +5,12 @@
         {
             "action_name": "ThisIngress.ipv4_forward",
             "action_params": {
-                "dstAddr": "08:00:00:00:01:1",
+                "dstAddr": "08:00:00:00:01:11",
                 "port": 2
             },
             "match": {
                 "hdr.ipv4.dstAddr": [
-                    "10.0.2.2/",
+                    "10.0.2.2",
                     32
                 ]
             },
@@ -19,12 +19,12 @@
         {
             "action_name": "ThisIngress.ipv4_forward",
             "action_params": {
-                "dstAddr": "08:00:00:00:01:1",
+                "dstAddr": "08:00:00:00:01:11",
                 "port": 2
             },
             "match": {
                 "hdr.ipv4.dstAddr": [
-                    "10.0.3.3/",
+                    "10.0.3.3",
                     32
                 ]
             },
@@ -33,12 +33,12 @@
         {
             "action_name": "ThisIngress.ipv4_forward",
             "action_params": {
-                "dstAddr": "08:00:00:00:01:1",
+                "dstAddr": "08:00:00:00:01:11",
                 "port": 2
             },
             "match": {
                 "hdr.ipv4.dstAddr": [
-                    "10.0.4.4/",
+                    "10.0.4.4",
                     32
                 ]
             },
@@ -47,12 +47,12 @@
         {
             "action_name": "ThisIngress.ipv4_forward",
             "action_params": {
-                "dstAddr": "08:00:00:00:01:1",
+                "dstAddr": "08:00:00:00:01:11",
                 "port": 2
             },
             "match": {
                 "hdr.ipv4.dstAddr": [
-                    "10.0.5.5/",
+                    "10.0.5.5",
                     32
                 ]
             },
@@ -61,12 +61,12 @@
         {
             "action_name": "ThisIngress.ipv4_forward",
             "action_params": {
-                "dstAddr": "08:00:00:00:01:3",
+                "dstAddr": "08:00:00:00:01:33",
                 "port": 4
             },
             "match": {
                 "hdr.ipv4.dstAddr": [
-                    "10.0.6.6/",
+                    "10.0.6.6",
                     32
                 ]
             },
@@ -75,12 +75,12 @@
         {
             "action_name": "ThisIngress.ipv4_forward",
             "action_params": {
-                "dstAddr": "08:00:00:00:01:3",
+                "dstAddr": "08:00:00:00:01:33",
                 "port": 4
             },
             "match": {
                 "hdr.ipv4.dstAddr": [
-                    "10.0.7.7/",
+                    "10.0.7.7",
                     32
                 ]
             },
@@ -89,12 +89,12 @@
         {
             "action_name": "ThisIngress.ipv4_forward",
             "action_params": {
-                "dstAddr": "08:00:00:00:01:3",
+                "dstAddr": "08:00:00:00:01:33",
                 "port": 4
             },
             "match": {
                 "hdr.ipv4.dstAddr": [
-                    "10.0.8.8/",
+                    "10.0.8.8",
                     32
                 ]
             },
@@ -103,12 +103,12 @@
         {
             "action_name": "ThisIngress.ipv4_forward",
             "action_params": {
-                "dstAddr": "08:00:00:00:01:3",
+                "dstAddr": "08:00:00:00:01:33",
                 "port": 4
             },
             "match": {
                 "hdr.ipv4.dstAddr": [
-                    "10.0.9.9/",
+                    "10.0.9.9",
                     32
                 ]
             },
