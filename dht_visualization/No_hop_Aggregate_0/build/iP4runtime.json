@@ -10,8 +10,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    20,
-                    23
+                    18,
+                    24
                 ]
             },
             "priority": 1,
@@ -25,8 +25,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    23,
-                    27
+                    24,
+                    31
                 ]
             },
             "priority": 1,
