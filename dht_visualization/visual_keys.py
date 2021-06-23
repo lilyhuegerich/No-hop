@@ -159,7 +159,7 @@ def host_range(id, host_ids):
     for i, host in enumerate(host_ids):
         if host==id:
             if i==0:
-                return [(host_ids[-1], 0), (0, host)]
+                return [(host_ids[-1], 32), (0, host)]
             else:
                 return [(host_ids[i-1], host)]
     else:
