@@ -245,10 +245,10 @@ def make_host_entry(ip_count):
 def make_host_data(host_ids):
     ip_count=1
     hosts=dict()
-    hosts["client"]=make_host_entry(ip_count)
+    hosts["h_client"]=make_host_entry(ip_count)
     ip_count+=1
     for i in host_ids:
-        hosts[i]=make_host_entry(ip_count)
+        hosts["h_"+str(i)]=make_host_entry(ip_count)
         ip_count+=1
 
     return hosts
@@ -303,7 +303,7 @@ def make_ip_lpm_table(g, connections, connection_ports, switches, hosts, host_id
     for s, switch in enumerate(switches):
         for h in host_ids:
             path= nx.dijkstra_path(g, switch, h)
-            switch_lpm_tables[s].append(make_lpm_entry(switch,s, path[1], connections, connection_ports, switches, hosts[h]))
+            switch_lpm_tables[s].append(make_lpm_entry(switch,s, path[1], connections, connection_ports, switches, hosts["h_"+str(h)]))
     return switch_lpm_tables
 def keys(gif=False):
     max_id=32
@@ -365,14 +365,33 @@ def keys(gif=False):
     switch_lpm_tables=make_ip_lpm_table(g, connections, connection_ports, switches, hosts, host_ids)
     #fill and write jsons
     folder_name=make_new_folder()
-    write_build_files(folder_name, switches, hosts, switch_no_hop_tables, switch_lpm_tables, connections, connection_ports)
+    write_build_files(folder_name, switches, hosts, switch_no_hop_tables, switch_lpm_tables, connections, connection_ports, host_ids)
     #create folder and add pickled objects as well as final jsons
     plt.savefig(folder_name+"/network.pdf")
     return g, host_ids
 
-def formalize_connections(connection, connection_ports):
+def formalize_connection_names(connections, switches, host_ids):
+    new_connections=[[0,0] for _ in range(len(connections))]
+    for c, connection in enumerate(connections):
+        if connection[0] in switches:
+            new_connections[c][0]="s_"+str(connection[0])
+        elif connection[0] in host_ids:
+            new_connections[c][0]="h_"+str(connection[0])
+        else:
+            new_connections[c][0]="h_client"
+        if connection[1] in switches:
+            new_connections[c][1]="s_"+str(connection[1])
+        elif connection[1] in host_ids:
+            new_connections[c][1]="h_"+str(connection[1])
+        else:
+            new_connections[c][1]="h_client"
+
+    return new_connections
+
+def formalize_connections(connections, connection_ports, switches, host_ids):
     links=list()
-    for c, connection in enumerate(connection):
+    connections=formalize_connection_names(connections, switches, host_ids)
+    for c, connection in enumerate(connections):
         links.append([str(connection[0])+"-p"+str(connection_ports[c][0]), str(connection[1])+"-p"+str(connection_ports[c][1])])
     return links
 def formalize_switch(switch, s, folder_name):
@@ -384,20 +403,20 @@ def formalize_switch(switch, s, folder_name):
 def formalize_switches(switches, folder_name):
     switches_formal=dict()
     for s, switch in enumerate(switches):
-        switches_formal[switch]=formalize_switch(switch, s, folder_name)
+        switches_formal["s_"+switch]=formalize_switch(switch, s, folder_name)
     return switches_formal
 
-def write_topology_file(folder_name, hosts, switches, connections, connection_ports):
-    links=formalize_connections(connections, connection_ports)
+def write_topology_file(folder_name, hosts, switches, connections, connection_ports, host_ids):
+    links=formalize_connections(connections, connection_ports, switches, host_ids)
     switches_formal= formalize_switches(switches,folder_name)
     topo_dict=dict(hosts=hosts, switches= switches_formal, links= links)
     with open(folder_name+"/topology.json", "w+") as f:
         json.dump(topo_dict, f, sort_keys=False, indent=4)
 
-def write_build_files(folder_name, switches, hosts, switch_no_hop_tables, switch_lpm_tables, connections, connection_ports):
+def write_build_files(folder_name, switches, hosts, switch_no_hop_tables, switch_lpm_tables, connections, connection_ports, host_ids):
     for switch in switches:
         write_switch_json(switch_no_hop_tables+switch_lpm_tables, switch, folder_name)
-    write_topology_file(folder_name, hosts, switches, connections, connection_ports)
+    write_topology_file(folder_name, hosts, switches, connections, connection_ports, host_ids)
 
     with open(folder_name+"/Makefile", "w+") as f:
 
