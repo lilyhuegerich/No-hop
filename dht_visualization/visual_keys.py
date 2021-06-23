@@ -172,7 +172,7 @@ def make_single_no_hop_table_entry(table, switch, to, port, switchost_ids, switc
         except ValueError:
             ranges= host_range(to, host_ids)
     for r in ranges:
-        table_entry = dict({"table":"no_hop_lookup",
+        table_entry = dict({"table":"ThisIngress.no_hop_lookup",
         "match":{
             "hdr.dht.group_id": group_id,
             "hdr.dht.id": (r[0], r[1])
