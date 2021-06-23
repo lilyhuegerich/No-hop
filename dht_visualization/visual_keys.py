@@ -91,11 +91,11 @@ def clean_ranges(switchost_ids, switches):
     labels={}
     for i in range(len(switches)):
         if  (len(new_switchost_ids[i])==1):
-            labels[switches[i]]=new_switchost_ids[i][0]
+            labels[switches[i]]=str(switches[i])+" : "+str(new_switchost_ids[i][0])
         else:
-            labels[switches[i]]=new_switchost_ids[i]
+            labels[switches[i]]=str(switches[i])+" : "+str(new_switchost_ids[i])
 
-    return labels
+    return labels, new_switchost_ids
 
 
 
@@ -171,6 +171,7 @@ def make_single_no_hop_table_entry(table, switch, to, port, switchost_ids, switc
             ranges= find_switch_id(to, switchost_ids, switches)
         except ValueError:
             ranges= host_range(to, host_ids)
+    print ("from switch: "+ str(switch)+" to: "+ str(to)+ " with ranges "+ str(ranges) + " on port: "+str(port))
     for r in ranges:
         table_entry = dict({"table":"ThisIngress.no_hop_lookup",
         "match":{
@@ -181,7 +182,8 @@ def make_single_no_hop_table_entry(table, switch, to, port, switchost_ids, switc
         "action_name":"ThisIngress.no_hop_forward",
         "action_params":{"port": port}
         })
-        table.append(table_entry)
+        if table_entry not in table:
+            table.append(table_entry)
     return table
 
 def fill_rest_entries(table, switch_indx, switch_name, b_name, connection_ports, connections, switchost_ids, switches, host_ids ):
@@ -197,7 +199,9 @@ def fill_rest_entries(table, switch_indx, switch_name, b_name, connection_ports,
 def make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, connection_ports):
     switch_no_hop_tables=[[]  for _ in range(len(switches))]
     return_entries=[[]  for _ in range(len(switches))]
+    print (connection_ports)
     for path in paths:
+        print (path)
         for p in range(len(path)-1):
             for c, connection in enumerate(connections):
                 if connection[0]==path[p] and connection[1]==path[p+1]:
@@ -205,33 +209,36 @@ def make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, co
                         a= find_spot(path[p+1], switches)
                     except ValueError:  # a is a host
                         continue
+
                     switch_no_hop_tables[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p+1], to=path[p], port=connection_ports[c][1], switchost_ids=switchost_ids, switches=switches, host_ids=host_ids)
-                    switch_no_hop_tables[a]= fill_rest_entries(table=switch_no_hop_tables[a], switch_indx=a, switch_name=path[p+ 1], b_name= path[p], connection_ports=connection_ports, connections=connections, switchost_ids=switchost_ids, switches=switches , host_ids=host_ids)
+                    #switch_no_hop_tables[a]= fill_rest_entries(table=switch_no_hop_tables[a], switch_indx=a, switch_name=path[p+ 1], b_name= path[p], connection_ports=connection_ports, connections=connections, switchost_ids=switchost_ids, switches=switches , host_ids=host_ids)
 
                     try:
                         b= find_spot(path[p], switches)
                     except ValueError: #b is a host
-                        continue
+                        break
                     return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, ranges=[(0,32)], host_ids=host_ids)
+                    break
                 if connection[1]==path[p] and connection[0]==path[p+1]:
+
                     try:
-                        a= find_spot(path[p], switches)
+                        a= find_spot(path[p+1], switches)
                     except ValueError:
                         continue
-                    switch_no_hop_tables[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p], to=path[p+1], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, host_ids=host_ids)
-                    switch_no_hop_tables[a]= fill_rest_entries(table=switch_no_hop_tables[a], switch_indx=a, switch_name=path[p], b_name= path[p+1], connection_ports=connection_ports, connections=connections, switchost_ids=switchost_ids, switches=switches , host_ids=host_ids)
+                    switch_no_hop_tables[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p+1], to=path[p], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, host_ids=host_ids)
+                    #switch_no_hop_tables[a]= fill_rest_entries(table=switch_no_hop_tables[a], switch_indx=a, switch_name=path[p], b_name= path[p+1], connection_ports=connection_ports, connections=connections, switchost_ids=switchost_ids, switches=switches , host_ids=host_ids)
 
                     try:
                         b= find_spot(path[p], switches)
                     except ValueError:
-                        continue
-                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, ranges=[(0,32)], host_ids=host_ids)
-
+                        break
+                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][1], switchost_ids=switchost_ids, switches=switches, ranges=[(0,32)], host_ids=host_ids)
+                    break
     for r, r_entry in enumerate(return_entries):
         if not (len(r_entry)<1):
             switch_no_hop_tables[r].append(r_entry[0])
-        '''else:
-            print(switches[r], "has no return entry")'''
+    
+
     return switch_no_hop_tables
 
 def make_host_entry(ip_count):
@@ -341,7 +348,7 @@ def keys(gif=False):
 
     host_weight, switch_weight= scale_weights(host_weight, switch_weight, factor=75)
 
-    labels=clean_ranges(switchost_ids, switches)
+    labels, switchost_ids=clean_ranges(switchost_ids, switches)
     for i in host_ids:
         labels[i]=i
     labels["client"]="Client"

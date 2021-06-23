@@ -3,6 +3,126 @@
     "p4info": "../compare_dht_abstraction.p4.p4info.txt",
     "table_entries": [
         {
+            "action_name": "ThisIngress.no_hop_forward",
+            "action_params": {
+                "port": 2
+            },
+            "match": {
+                "hdr.dht.group_id": 1,
+                "hdr.dht.id": [
+                    8,
+                    13
+                ]
+            },
+            "priority": 1,
+            "table": "ThisIngress.no_hop_lookup"
+        },
+        {
+            "action_name": "ThisIngress.no_hop_forward",
+            "action_params": {
+                "port": 2
+            },
+            "match": {
+                "hdr.dht.group_id": 1,
+                "hdr.dht.id": [
+                    27,
+                    32
+                ]
+            },
+            "priority": 1,
+            "table": "ThisIngress.no_hop_lookup"
+        },
+        {
+            "action_name": "ThisIngress.no_hop_forward",
+            "action_params": {
+                "port": 3
+            },
+            "match": {
+                "hdr.dht.group_id": 1,
+                "hdr.dht.id": [
+                    0,
+                    8
+                ]
+            },
+            "priority": 1,
+            "table": "ThisIngress.no_hop_lookup"
+        },
+        {
+            "action_name": "ThisIngress.no_hop_forward",
+            "action_params": {
+                "port": 3
+            },
+            "match": {
+                "hdr.dht.group_id": 1,
+                "hdr.dht.id": [
+                    13,
+                    15
+                ]
+            },
+            "priority": 1,
+            "table": "ThisIngress.no_hop_lookup"
+        },
+        {
+            "action_name": "ThisIngress.no_hop_forward",
+            "action_params": {
+                "port": 4
+            },
+            "match": {
+                "hdr.dht.group_id": 1,
+                "hdr.dht.id": [
+                    15,
+                    18
+                ]
+            },
+            "priority": 1,
+            "table": "ThisIngress.no_hop_lookup"
+        },
+        {
+            "action_name": "ThisIngress.no_hop_forward",
+            "action_params": {
+                "port": 4
+            },
+            "match": {
+                "hdr.dht.group_id": 1,
+                "hdr.dht.id": [
+                    20,
+                    23
+                ]
+            },
+            "priority": 1,
+            "table": "ThisIngress.no_hop_lookup"
+        },
+        {
+            "action_name": "ThisIngress.no_hop_forward",
+            "action_params": {
+                "port": 5
+            },
+            "match": {
+                "hdr.dht.group_id": 1,
+                "hdr.dht.id": [
+                    18,
+                    20
+                ]
+            },
+            "priority": 1,
+            "table": "ThisIngress.no_hop_lookup"
+        },
+        {
+            "action_name": "ThisIngress.no_hop_forward",
+            "action_params": {
+                "port": 5
+            },
+            "match": {
+                "hdr.dht.group_id": 1,
+                "hdr.dht.id": [
+                    23,
+                    27
+                ]
+            },
+            "priority": 1,
+            "table": "ThisIngress.no_hop_lookup"
+        },
+        {
             "action_name": "ThisIngress.ipv4_forward",
             "action_params": {
                 "dstAddr": "08:00:00:00:01:11",
