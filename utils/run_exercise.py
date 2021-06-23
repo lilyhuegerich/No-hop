@@ -370,7 +370,7 @@ class ExerciseRunner:
         command2=" t.run"
         for i in hosts:
             print i
-            if "_c" in i.name:
+            if "client" in i.name:
                 job="client"
                 client=i
             else:
