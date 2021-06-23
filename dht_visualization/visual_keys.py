@@ -378,7 +378,7 @@ def formalize_connections(connection, connection_ports):
 def formalize_switch(switch, s, folder_name):
     entry= {
         "mac": "08:00:00:00:01:"+str(s),
-        "runtime_json": "../compare_classic_v_dataplane/build/"+switch+"P4runtime.json"
+        "runtime_json": "./build/"+switch+"P4runtime.json"
     }
     return entry
 def formalize_switches(switches, folder_name):
@@ -398,6 +398,13 @@ def write_build_files(folder_name, switches, hosts, switch_no_hop_tables, switch
     for switch in switches:
         write_switch_json(switch_no_hop_tables+switch_lpm_tables, switch, folder_name)
     write_topology_file(folder_name, hosts, switches, connections, connection_ports)
+
+    with open(folder_name+"/Makefile", "w+") as f:
+
+        lines=["BMV2_SWITCH_EXE = simple_switch_grpc \n",
+        "TOPO = ./topology.json \n",
+        "include ../../utils/Makefile \n" ]
+        f.writelines(lines)
 
 def write_switch_json(table, switch, folder_name):
     topo_dict=dict({
