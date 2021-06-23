@@ -10,8 +10,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    4,
-                    6
+                    5,
+                    11
                 ]
             },
             "priority": 1,
@@ -25,7 +25,7 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    28,
+                    29,
                     32
                 ]
             },
@@ -41,7 +41,7 @@
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
                     0,
-                    4
+                    5
                 ]
             },
             "priority": 1,
@@ -55,7 +55,7 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    6,
+                    11,
                     13
                 ]
             },
@@ -71,7 +71,7 @@
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
                     13,
-                    18
+                    16
                 ]
             },
             "priority": 1,
@@ -85,7 +85,22 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    20,
+                    24,
+                    27
+                ]
+            },
+            "priority": 1,
+            "table": "ThisIngress.no_hop_lookup"
+        },
+        {
+            "action_name": "ThisIngress.no_hop_forward",
+            "action_params": {
+                "port": 5
+            },
+            "match": {
+                "hdr.dht.group_id": 1,
+                "hdr.dht.id": [
+                    16,
                     24
                 ]
             },
@@ -100,23 +115,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    18,
-                    20
-                ]
-            },
-            "priority": 1,
-            "table": "ThisIngress.no_hop_lookup"
-        },
-        {
-            "action_name": "ThisIngress.no_hop_forward",
-            "action_params": {
-                "port": 5
-            },
-            "match": {
-                "hdr.dht.group_id": 1,
-                "hdr.dht.id": [
-                    24,
-                    28
+                    27,
+                    29
                 ]
             },
             "priority": 1,

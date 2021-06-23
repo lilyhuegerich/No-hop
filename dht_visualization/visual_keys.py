@@ -89,11 +89,15 @@ def clean_ranges(switchost_ids, switches):
 
         new_switchost_ids.append(new_range)
     labels={}
+
     for i in range(len(switches)):
         if  (len(new_switchost_ids[i])==1):
-            labels[switches[i]]=str(switches[i])+" : "+str(new_switchost_ids[i][0])
+            labels[switches[i]]=str(switches[i])+" \n "+str(new_switchost_ids[i][0])
         else:
-            labels[switches[i]]=str(switches[i])+" : "+str(new_switchost_ids[i])
+            tmp=str(switches[i])+" \n "
+            for j in new_switchost_ids[i]:
+                tmp+=str(j)+"\n"
+            labels[switches[i]]=tmp
 
     return labels, new_switchost_ids
 
@@ -315,7 +319,7 @@ def make_ip_lpm_table(g, connections, connection_ports, switches, hosts, host_id
 def keys(gif=False):
     max_id=32
     g=nx.Graph()
-    fig = plt.figure()
+    fig = plt.figure(figsize=(20, 20))
 
     host_ids=generate_random_keys()
 
@@ -346,16 +350,18 @@ def keys(gif=False):
 
         to_print.append((title, edges))
 
-    host_weight, switch_weight= scale_weights(host_weight, switch_weight, factor=75)
+    host_weight, switch_weight= scale_weights(host_weight, switch_weight, factor=2000)
 
     labels, switchost_ids=clean_ranges(switchost_ids, switches)
     for i in host_ids:
         labels[i]=i
-    labels["client"]="Client"
+    labels["client"]=""
+    pos={"client": (9,6), host_ids[0]:(2,2), host_ids[1]: (4,2), host_ids[2]: (6,2), host_ids[3]: (8,2), host_ids[4]: (10,2), host_ids[5]:(12,2), host_ids[6]:(14,2), host_ids[7]: (16,2), "a":(9,5), "b": (3,4), "c": (7,4), "d": (11,4), "e": (15,4), "f":(3,3), "g":(7,3), "h":(11,3), "i":(15,3)}
     nx.draw_networkx_nodes(g, pos, nodelist=host_ids, node_size= host_weight,  node_color="grey")
+    nx.draw_networkx_nodes(g, pos, nodelist=["client"], node_size=switch_weight[0], node_color="white")
     nx.draw_networkx_nodes(g, pos, nodelist=switches,  node_size=switch_weight, node_color="skyblue")
-    nx.draw_networkx_nodes(g, pos, nodelist=["client"], node_size=switch_weight[0], node_color="grey")
-    nx.draw_networkx_labels(g, pos, labels, font_size=8)
+
+    nx.draw_networkx_labels(g, pos, labels, font_size=30)
     if (gif):
         for i in to_print:
             plt.title(i[0])
@@ -364,7 +370,7 @@ def keys(gif=False):
             plt.draw()
             plt.pause(3)
 
-    nx.draw_networkx_edges(g, pos, edge_color="grey", width=2 )
+    nx.draw_networkx_edges(g, pos, edgelist=connections[1:], edge_color="grey", width=2 )
     plt.draw()
 
     switch_no_hop_tables= make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, connection_ports)
@@ -374,6 +380,12 @@ def keys(gif=False):
     folder_name=make_new_folder()
     write_build_files(folder_name, switches, hosts, switch_no_hop_tables, switch_lpm_tables, connections, connection_ports, host_ids)
     #create folder and add pickled objects as well as final jsons
+
+    axis = plt.gca()
+    plt.axis('off')
+    #axis.set_xlim([1*x for x in axis.get_xlim()])
+    #axis.set_ylim([1.1*y for y in axis.get_ylim()])
+    plt.tight_layout()
     plt.savefig(folder_name+"/network.pdf")
     return g, host_ids
 
