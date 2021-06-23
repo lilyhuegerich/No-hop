@@ -10,7 +10,7 @@ import json
 rewrite_build_folders=1 #: 1 overwrite existing folder if exists, 0 make new folder
 new_folder_prefix="No_hop_Aggregate_"
 compiled_p4_program_path="../compare_dht_abstraction"
-
+max_id=32
 def generate_random_keys(amount=8, max_id=32):
     host_ids=list()
     for i in range(8):
@@ -29,7 +29,7 @@ def add_switch_range(index, switchost_ids, switch_range):
         switchost_ids[index].append(switch_range)
     return switchost_ids
 
-def update_traversal_weights(g, path, weight, switch_weight, host_weight, switches, host_ids, switchost_ids, switch_range):
+def update_traversal_weights(g, path, weight, switch_weight, host_weight, switches, host_ids, switchost_ids, switch_range, connection_weight, connections):
     edges=list()
     for i in range(len(path)-1):
         edges.append((path[i], path[i+1]))
@@ -43,16 +43,20 @@ def update_traversal_weights(g, path, weight, switch_weight, host_weight, switch
         for p in path:
             if node==p:
                 host_weight[i]+=weight
+    for c, connection in enumerate(connections):
+        for p in range(len(path)-1):
+            if (connection[0]==path[p] and connection[1]==path[p+1]) or (connection[1]==path[p] and connection[0]==path[p+1]):
+                connection_weight[c]+=weight
 
-    return g, edges, switch_weight, host_weight, switchost_ids
+    return g, edges, switch_weight, host_weight, switchost_ids, connection_weight
 
 def find_weight_and_title(host_ids, i, h_id):
     switch_range=list()
     weight=0
     if i==0:
-        title=("ID's ("+ str(host_ids[-1]) + ", 32) and (0,  " + str( h_id) +")")
-        weight=32- host_ids[-1] + h_id
-        switch_range.append((host_ids[-1], 32))
+        title=("ID's ("+ str(host_ids[-1]) + ", "+str(max_id)+") and (0,  " + str( h_id) +")")
+        weight=max_id- host_ids[-1] + h_id
+        switch_range.append((host_ids[-1], max_id))
         switch_range.append((0, h_id))
     else:
         title=("ID's from: "+ str(host_ids[i-1])+ " to: " + str(h_id))
@@ -163,7 +167,7 @@ def host_range(id, host_ids):
     for i, host in enumerate(host_ids):
         if host==id:
             if i==0:
-                return [(host_ids[-1], 32), (0, host)]
+                return [(host_ids[-1], max_id), (0, host)]
             else:
                 return [(host_ids[i-1], host)]
     else:
@@ -221,7 +225,7 @@ def make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, co
                         b= find_spot(path[p], switches)
                     except ValueError: #b is a host
                         break
-                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, ranges=[(0,32)], host_ids=host_ids)
+                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, ranges=[(0,max_id)], host_ids=host_ids)
                     break
                 if connection[1]==path[p] and connection[0]==path[p+1]:
 
@@ -236,7 +240,7 @@ def make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, co
                         b= find_spot(path[p], switches)
                     except ValueError:
                         break
-                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][1], switchost_ids=switchost_ids, switches=switches, ranges=[(0,32)], host_ids=host_ids)
+                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][1], switchost_ids=switchost_ids, switches=switches, ranges=[(0,max_id)], host_ids=host_ids)
                     break
     for r, r_entry in enumerate(return_entries):
         if not (len(r_entry)<1):
@@ -317,7 +321,7 @@ def make_ip_lpm_table(g, connections, connection_ports, switches, hosts, host_id
             switch_lpm_tables[s].append(make_lpm_entry(switch,s, path[1], connections, connection_ports, switches, hosts["h_"+str(h)]))
     return switch_lpm_tables
 def keys(gif=False):
-    max_id=32
+
     g=nx.Graph()
     fig = plt.figure(figsize=(20, 20))
 
@@ -334,19 +338,20 @@ def keys(gif=False):
 
 
     pos=nx.fruchterman_reingold_layout(g)
-
+    connection_weight=[0]* len(connections)
     switch_weight=[0] * len(switches)
     host_weight=[0] * len (host_ids)
     switchost_ids=[[]  for _ in range(len(switches))]
     to_print=list()
     paths=list()
+    tor_switches=["f", "g", "h", "i"]
     for i, h_id  in enumerate(host_ids):
 
         weight, title, switch_range= find_weight_and_title(host_ids, i , h_id)
 
         path= nx.dijkstra_path(g, h_id, "a")
         paths.append(path)
-        g, edges, switch_weight, host_weight, switchost_ids= update_traversal_weights(g, path, weight, switch_weight, host_weight, switches, host_ids, switchost_ids, switch_range)
+        g, edges, switch_weight, host_weight, switchost_ids, connection_weight= update_traversal_weights(g, path, weight, switch_weight, host_weight, switches, host_ids, switchost_ids, switch_range, connection_weight, connections)
 
         to_print.append((title, edges))
 
@@ -370,7 +375,9 @@ def keys(gif=False):
             plt.draw()
             plt.pause(3)
 
-    nx.draw_networkx_edges(g, pos, edgelist=connections[1:], edge_color="grey", width=2 )
+    for c, connection in enumerate(connections):
+        nx.draw_networkx_edges(g, pos, edgelist=[connection], edge_color="grey", width=connection_weight[c])
+    #nx.draw_networkx_edges(g, pos, edgelist=connections[1:], edge_color="grey", width=connection_weight )
     plt.draw()
 
     switch_no_hop_tables= make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, connection_ports)
@@ -441,7 +448,8 @@ def write_build_files(folder_name, switches, hosts, switch_no_hop_tables, switch
     for s, switch in enumerate(switches):
         write_switch_json(switch_no_hop_tables[s]+switch_lpm_tables[s], switch, folder_name)
     write_topology_file(folder_name, hosts, switches, connections, connection_ports, host_ids)
-
+    for s, switch in enumerate(switches):
+        print (switch, len(switch_no_hop_tables[s]))
     with open(folder_name+"/Makefile", "w+") as f:
 
         lines=["BMV2_SWITCH_EXE = simple_switch_grpc \n",
