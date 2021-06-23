@@ -241,7 +241,7 @@ control ThisIngress(inout headers hdr,
             }
             ingressDHTCounter.count((bit<32>) hdr.dht.id);
             hdr.dht.counter=hdr.dht.counter+1;
-            finger_table_lookup.apply();
+            no_hop_lookup.apply();
 	    }
 
 
