@@ -48,9 +48,11 @@ class P4RuntimeSwitch(P4Switch):
         if json_path is not None:
             # make sure that the provided JSON file exists
             if not os.path.isfile(json_path):
-                error("Invalid JSON file: {}\n".format(json_path))
-                exit(1)
-            self.json_path = json_path
+                self.json_path = None
+                """error("Invalid JSON file: {}\n".format(json_path))
+                exit(1)"""
+            else:
+                self.json_path = json_path
         else:
             self.json_path = None
 
