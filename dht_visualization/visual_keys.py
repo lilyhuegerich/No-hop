@@ -419,8 +419,8 @@ def write_topology_file(folder_name, hosts, switches, connections, connection_po
         json.dump(topo_dict, f, sort_keys=False, indent=4)
 
 def write_build_files(folder_name, switches, hosts, switch_no_hop_tables, switch_lpm_tables, connections, connection_ports, host_ids):
-    for switch in switches:
-        write_switch_json(switch_no_hop_tables+switch_lpm_tables, switch, folder_name)
+    for s, switch in enumerate(switches):
+        write_switch_json(switch_no_hop_tables[s]+switch_lpm_tables[s], switch, folder_name)
     write_topology_file(folder_name, hosts, switches, connections, connection_ports, host_ids)
 
     with open(folder_name+"/Makefile", "w+") as f:
