@@ -11,7 +11,7 @@
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
                     0,
-                    5
+                    9
                 ]
             },
             "priority": 1,
@@ -40,8 +40,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    5,
-                    9
+                    9,
+                    14
                 ]
             },
             "priority": 1,
@@ -169,6 +169,20 @@
             "match": {
                 "hdr.ipv4.dstAddr": [
                     "10.0.9.9",
+                    32
+                ]
+            },
+            "table": "ThisIngress.ipv4_lpm"
+        },
+        {
+            "action_name": "ThisIngress.ipv4_forward",
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:00",
+                "port": 1
+            },
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.1.1",
                     32
                 ]
             },

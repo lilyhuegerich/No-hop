@@ -159,7 +159,7 @@ def host_range(id, host_ids):
     for i, host in enumerate(host_ids):
         if host==id:
             if i==0:
-                return [(host_ids[-1], host)]
+                return [(host_ids[-1], 0), (0, host)]
             else:
                 return [(host_ids[i-1], host)]
     else:
@@ -237,7 +237,7 @@ def make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, co
     for r, r_entry in enumerate(return_entries):
         if not (len(r_entry)<1):
             switch_no_hop_tables[r].append(r_entry[0])
-    
+
 
     return switch_no_hop_tables
 
@@ -308,7 +308,7 @@ def make_lpm_entry(switch,s, next_c, connections, connection_ports, switches, ho
 def make_ip_lpm_table(g, connections, connection_ports, switches, hosts, host_ids):
     switch_lpm_tables=[[]  for _ in range(len(switches))]
     for s, switch in enumerate(switches):
-        for h in host_ids:
+        for h in host_ids+ ["client"]:
             path= nx.dijkstra_path(g, switch, h)
             switch_lpm_tables[s].append(make_lpm_entry(switch,s, path[1], connections, connection_ports, switches, hosts["h_"+str(h)]))
     return switch_lpm_tables
