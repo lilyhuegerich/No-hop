@@ -289,7 +289,7 @@ def make_lpm_entry(switch,s, next_c, connections, connection_ports, switches, ho
         },
         "match": {
             "hdr.ipv4.dstAddr": [
-                str(host["ip"])[0:-3],
+                str(host["ip"])[0:-2],
                 32
             ]
         },
