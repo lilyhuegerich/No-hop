@@ -9,7 +9,7 @@ import json
 
 rewrite_build_folders=1 #: 1 overwrite existing folder if exists, 0 make new folder
 new_folder_prefix="No_hop_Aggregate_"
-compiled_p4_program_path="../../compare_dht_abstraction.p4"
+compiled_p4_program_path="../compare_dht_abstraction.p4"
 
 def generate_random_keys(amount=8, max_id=32):
     host_ids=list()
