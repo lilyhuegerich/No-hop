@@ -50,9 +50,53 @@ def update_traversal_weights(g, path, weight, switch_weight, host_weight, switch
 
     return g, edges, switch_weight, host_weight, switchost_ids, connection_weight
 
-def find_weight_and_title(host_ids, i, h_id):
+def find_reachables(connections, switches, hosts, g):
+    traveresed=[]
+    for i in connections:
+        if ("client" in i[0]):
+            start=i[1]
+            break
+        elif ("client" in i[1]):
+            start= i[0]
+            break
+    weights=[]
+    traveresed.append(start)
+    weights.append((start, hosts))
+    next_s=list(nx.neighbors(g, start))
+
+
+    #nx.dijkstra_path(g, h_id, "a")
+    while(len(traveresed)< len(switches)):
+        print(len(traveresed),  len(switches), next_s)
+        for s in next_s:
+            if s in traveresed or (not s in switches):
+                continue
+            weight=[]
+            for h in hosts:
+                path=nx.dijkstra_path(g, h, s )
+                for t in traveresed:
+                    if t in path:
+                        break
+                else:
+                    weight.append(h)
+            weights.append((s, weight))
+        tmp_next=next_s
+        next_s=[]
+        for s in tmp_next:
+            traveresed.append(s)
+            for n in list(nx.neighbors(g, s)):
+                if n in switches:
+                    next_s.append(n)
+
+
+        traveresed = list(dict.fromkeys(traveresed))
+
+    return weights
+
+def find_weight_and_title(host_ids, i, h_id, test=False):
     switch_range=list()
     weight=0
+
     if i==0:
         title=("ID's ("+ str(host_ids[-1]) + ", "+str(max_id)+") and (0,  " + str( h_id) +")")
         weight=max_id- host_ids[-1] + h_id
@@ -173,14 +217,47 @@ def host_range(id, host_ids):
     else:
         raise ValueError ("no host with ID "+ str(id))
 
-def make_single_no_hop_table_entry(table, switch, to, port, switchost_ids, switches, host_ids, group_id=1, ranges=0):
+def make_single_no_hop_table_entry(table, switch, to, port, switchost_ids, switches, host_ids, group_id=1, ranges=0, defined_ids=0):
     if ranges==0:
         try:
             ranges= find_switch_id(to, switchost_ids, switches)
         except ValueError:
             ranges= host_range(to, host_ids)
+
+    if not defined_ids==0:
+        defined_ids=list(dict.fromkeys(defined_ids))
+        defined_ids.sort()
+
+        new_ranges=[]
+        to_combine=[[] for _ in range(len(ranges))]
+        k=0
+        ranges.sort(key=lambda x:x[0])
+        to_combine[0].append(0)
+        for r in range(len(ranges)-1):
+            for i in range(ranges[r][1], ranges[r+1][0]):
+                if i not in defined_ids:
+                    k+=1
+                    to_combine[k].append(r+1)
+                    break
+            else:
+                print("range found to combine")
+                to_combine[k].append(r+1)
+        for i in to_combine:
+            if len(i)==0:
+                break
+            if len(i)==1:
+                new_ranges.append(ranges[i[0]])
+            else:
+                new_ranges.append((ranges[i[0]][0], ranges[i[-1]][1]))
+        ranges=new_ranges
+
+
+
     print ("from switch: "+ str(switch)+" to: "+ str(to)+ " with ranges "+ str(ranges) + " on port: "+str(port))
     for r in ranges:
+        if not defined_ids ==0:
+            for i in range(r[0], r[1]+1):
+                defined_ids.append(i)
         table_entry = dict({"table":"ThisIngress.no_hop_lookup",
         "match":{
             "hdr.dht.group_id": group_id,
@@ -192,7 +269,7 @@ def make_single_no_hop_table_entry(table, switch, to, port, switchost_ids, switc
         })
         if table_entry not in table:
             table.append(table_entry)
-    return table
+    return table, defined_ids
 
 def fill_rest_entries(table, switch_indx, switch_name, b_name, connection_ports, connections, switchost_ids, switches, host_ids ):
     for c, connection in enumerate(connections):
@@ -206,6 +283,7 @@ def fill_rest_entries(table, switch_indx, switch_name, b_name, connection_ports,
 
 def make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, connection_ports):
     switch_no_hop_tables=[[]  for _ in range(len(switches))]
+    defined_ids=[[]  for _ in range(len(switches))]
     return_entries=[[]  for _ in range(len(switches))]
     print (connection_ports)
     for path in paths:
@@ -218,14 +296,14 @@ def make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, co
                     except ValueError:  # a is a host
                         continue
 
-                    switch_no_hop_tables[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p+1], to=path[p], port=connection_ports[c][1], switchost_ids=switchost_ids, switches=switches, host_ids=host_ids)
+                    switch_no_hop_tables[a], defined_ids[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p+1], to=path[p], port=connection_ports[c][1], switchost_ids=switchost_ids, switches=switches, host_ids=host_ids, defined_ids= defined_ids[a])
                     #switch_no_hop_tables[a]= fill_rest_entries(table=switch_no_hop_tables[a], switch_indx=a, switch_name=path[p+ 1], b_name= path[p], connection_ports=connection_ports, connections=connections, switchost_ids=switchost_ids, switches=switches , host_ids=host_ids)
 
                     try:
                         b= find_spot(path[p], switches)
                     except ValueError: #b is a host
                         break
-                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, ranges=[(0,max_id)], host_ids=host_ids)
+                    return_entries[b], _= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, ranges=[(0,max_id)], host_ids=host_ids)
                     break
                 if connection[1]==path[p] and connection[0]==path[p+1]:
 
@@ -233,14 +311,14 @@ def make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, co
                         a= find_spot(path[p+1], switches)
                     except ValueError:
                         continue
-                    switch_no_hop_tables[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p+1], to=path[p], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, host_ids=host_ids)
+                    switch_no_hop_tables[a], defined_ids[a]= make_single_no_hop_table_entry(table= switch_no_hop_tables[a], switch=path[p+1], to=path[p], port=connection_ports[c][0], switchost_ids=switchost_ids, switches=switches, host_ids=host_ids, defined_ids=defined_ids[a])
                     #switch_no_hop_tables[a]= fill_rest_entries(table=switch_no_hop_tables[a], switch_indx=a, switch_name=path[p], b_name= path[p+1], connection_ports=connection_ports, connections=connections, switchost_ids=switchost_ids, switches=switches , host_ids=host_ids)
 
                     try:
                         b= find_spot(path[p], switches)
                     except ValueError:
                         break
-                    return_entries[b]= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][1], switchost_ids=switchost_ids, switches=switches, ranges=[(0,max_id)], host_ids=host_ids)
+                    return_entries[b], _= make_single_no_hop_table_entry(table= return_entries[b], switch=path[p], to=path[p+1], port=connection_ports[c][1], switchost_ids=switchost_ids, switches=switches, ranges=[(0,max_id)], host_ids=host_ids)
                     break
     for r, r_entry in enumerate(return_entries):
         if not (len(r_entry)<1):
@@ -374,7 +452,7 @@ def keys(gif=False):
             nx.draw_networkx_edges(g, pos, edgelist=i[1], edge_color="blue", width=2 )
             plt.draw()
             plt.pause(3)
-
+    connection_weight= scale_connection_weights(connection_weight)
     for c, connection in enumerate(connections):
         nx.draw_networkx_edges(g, pos, edgelist=[connection], edge_color="grey", width=connection_weight[c])
     #nx.draw_networkx_edges(g, pos, edgelist=connections[1:], edge_color="grey", width=connection_weight )
@@ -395,6 +473,13 @@ def keys(gif=False):
     plt.tight_layout()
     plt.savefig(folder_name+"/network.pdf")
     return g, host_ids
+
+def scale_connection_weights(connection_weight, factor=5):
+    new_connection_weight=[0] * len (connection_weight)
+    for c, connection in enumerate(connection_weight):
+        new_connection_weight[c]=factor*connection
+    return new_connection_weight
+
 
 def formalize_connection_names(connections, switches, host_ids):
     new_connections=[[0,0] for _ in range(len(connections))]
@@ -518,8 +603,86 @@ def find_paths(G, host_ids, id):
 
     return nx.dijkstra_path(G, respondible, "a")
 
+def test_keys(gif=False):
+
+    g=nx.Graph()
+    fig = plt.figure(figsize=(20, 20))
+
+    host_ids=generate_random_keys()
 
 
+    switches= ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
+    connections=[("client", "a"),("a","b"),("a","c"),("a","d"),("a","e"),("b","f"), ("b","g"), ("c","f"), ("c","g"), ("d","h"), ("d","i"), ("e","h"), ("e","i"), ("f",host_ids[0]),("f",host_ids[1]),("g",host_ids[2]),("g",host_ids[3]),("h",host_ids[4]), ("h",host_ids[5]),("i",host_ids[6]), ("i",host_ids[7])]
+    used_ports_host,used_ports_switch, connection_ports= define_ports(connections, switches, host_ids)
 
-G,host_ids=keys()
+
+    for i in connections:
+        g.add_edge(i[0], i[1], weight=1)
+
+
+    pos=nx.fruchterman_reingold_layout(g)
+    connection_weight=[0]* len(connections)
+    switch_weight=[0] * len(switches)
+    host_weight=[0] * len (host_ids)
+    switchost_ids=[[]  for _ in range(len(switches))]
+    to_print=list()
+    paths=list()
+    tor_switches=["f", "g", "h", "i"]
+    reachable_list= find_reachables(connections, switches, host_ids, g)
+    for i, h_id  in enumerate(host_ids):
+
+        weight, title, switch_range= find_weight_and_title(host_ids, i , h_id)
+
+        path= nx.dijkstra_path(g, h_id, "a")
+        paths.append(path)
+        g, edges, switch_weight, host_weight, switchost_ids, connection_weight= update_traversal_weights(g, path, weight, switch_weight, host_weight, switches, host_ids, switchost_ids, switch_range, connection_weight, connections)
+
+        to_print.append((title, edges))
+
+    host_weight, switch_weight= scale_weights(host_weight, switch_weight, factor=2000)
+
+    labels, switchost_ids=clean_ranges(switchost_ids, switches)
+
+    for reach in reachable_list:
+        labels[reach[0]]=reach[1]
+    for i in host_ids:
+        labels[i]=i
+    labels["client"]=""
+    pos={"client": (9,6), host_ids[0]:(2,2), host_ids[1]: (4,2), host_ids[2]: (6,2), host_ids[3]: (8,2), host_ids[4]: (10,2), host_ids[5]:(12,2), host_ids[6]:(14,2), host_ids[7]: (16,2), "a":(9,5), "b": (3,4), "c": (7,4), "d": (11,4), "e": (15,4), "f":(3,3), "g":(7,3), "h":(11,3), "i":(15,3)}
+    nx.draw_networkx_nodes(g, pos, nodelist=host_ids, node_size= host_weight,  node_color="grey")
+    nx.draw_networkx_nodes(g, pos, nodelist=["client"], node_size=switch_weight[0], node_color="white")
+    nx.draw_networkx_nodes(g, pos, nodelist=switches,  node_size=switch_weight, node_color="skyblue")
+
+    nx.draw_networkx_labels(g, pos, labels, font_size=30)
+    if (gif):
+        for i in to_print:
+            plt.title(i[0])
+            nx.draw_networkx_edges(g, pos, edge_color="grey", width=2 )
+            nx.draw_networkx_edges(g, pos, edgelist=i[1], edge_color="blue", width=2 )
+            plt.draw()
+            plt.pause(3)
+    connection_weight= scale_connection_weights(connection_weight)
+    for c, connection in enumerate(connections):
+        nx.draw_networkx_edges(g, pos, edgelist=[connection], edge_color="grey", width=connection_weight[c])
+    #nx.draw_networkx_edges(g, pos, edgelist=connections[1:], edge_color="grey", width=connection_weight )
+    plt.draw()
+
+    switch_no_hop_tables= make_no_hop_tables(paths, switches, switchost_ids, host_ids, connections, connection_ports)
+    hosts= make_host_data(host_ids)
+    switch_lpm_tables=make_ip_lpm_table(g, connections, connection_ports, switches, hosts, host_ids)
+    #fill and write jsons
+    folder_name=make_new_folder()
+    write_build_files(folder_name, switches, hosts, switch_no_hop_tables, switch_lpm_tables, connections, connection_ports, host_ids)
+    #create folder and add pickled objects as well as final jsons
+
+    axis = plt.gca()
+    plt.axis('off')
+    #axis.set_xlim([1*x for x in axis.get_xlim()])
+    #axis.set_ylim([1.1*y for y in axis.get_ylim()])
+    plt.tight_layout()
+    plt.savefig(folder_name+"/network.pdf")
+    return g, host_ids
+
+
+G,host_ids=test_keys()
 #find_paths(G, host_ids, 27 )
