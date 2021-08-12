@@ -61,24 +61,27 @@ def find_reachables(connections, switches, hosts, g):
             break
     weights=[]
     traveresed.append(start)
-    weights.append((start, hosts))
+    weights.append((start,[(0,32)]))
     next_s=list(nx.neighbors(g, start))
 
 
     #nx.dijkstra_path(g, h_id, "a")
     while(len(traveresed)< len(switches)):
-        print(len(traveresed),  len(switches), next_s)
+
         for s in next_s:
             if s in traveresed or (not s in switches):
                 continue
             weight=[]
-            for h in hosts:
+            for h_s, h in enumerate(hosts):
                 path=nx.dijkstra_path(g, h, s )
                 for t in traveresed:
                     if t in path:
                         break
                 else:
-                    weight.append(h)
+                    if h_s==0:
+                        weight.append((hosts[-1], h))
+                    else:
+                        weight.append((hosts[h_s-1], h))
             weights.append((s, weight))
         tmp_next=next_s
         next_s=[]
@@ -91,8 +94,8 @@ def find_reachables(connections, switches, hosts, g):
 
         traveresed = list(dict.fromkeys(traveresed))
 
-    return weights
-
+    labels, weights=clean_ranges(weights,switches)
+    return labels, weights
 def find_weight_and_title(host_ids, i, h_id, test=False):
     switch_range=list()
     weight=0
@@ -112,20 +115,26 @@ def find_weight_and_title(host_ids, i, h_id, test=False):
 
 def clean_ranges(switchost_ids, switches):
 
-    new_switchost_ids=list()
+    new_switchost_ids=[[] for i in switches]
     for indx, switch in enumerate(switchost_ids):
-        #print (switch)
-        tmp=list()
-        for s in switch:
+        print (switch)
 
-            for i in range(s[0], s[1]+1):
-                tmp.append(i)
+        tmp=list()
+        for s in switch[1]:
+            if (s[0]> s[1]):
+                for i in range(s[0], 33):
+                    tmp.append(i)
+                for i in range(0, s[1]):
+                    tmp.append(i)
+            else:
+                for i in range(s[0], s[1]+1):
+                    tmp.append(i)
 
         tmp=list(dict.fromkeys(tmp))
-        tmp.sort()
         start=tmp[0]
         new_range=list()
         #print (tmp)
+
         for i in range(len(tmp)-1):
             if not (tmp[i+1]== tmp[i]+1):
                 if not start==tmp[i]:
@@ -135,7 +144,7 @@ def clean_ranges(switchost_ids, switches):
             new_range.append((start, tmp[-1]))
         #print(indx, new_range)
 
-        new_switchost_ids.append(new_range)
+        new_switchost_ids[switches.index(switch[0])]=(new_range)
     labels={}
 
     for i in range(len(switches)):
@@ -628,7 +637,7 @@ def test_keys(gif=False):
     to_print=list()
     paths=list()
     tor_switches=["f", "g", "h", "i"]
-    reachable_list= find_reachables(connections, switches, host_ids, g)
+    labels, reachable_list= find_reachables(connections, switches, host_ids, g)
     for i, h_id  in enumerate(host_ids):
 
         weight, title, switch_range= find_weight_and_title(host_ids, i , h_id)
@@ -641,10 +650,9 @@ def test_keys(gif=False):
 
     host_weight, switch_weight= scale_weights(host_weight, switch_weight, factor=2000)
 
-    labels, switchost_ids=clean_ranges(switchost_ids, switches)
 
-    for reach in reachable_list:
-        labels[reach[0]]=reach[1]
+
+
     for i in host_ids:
         labels[i]=i
     labels["client"]=""
