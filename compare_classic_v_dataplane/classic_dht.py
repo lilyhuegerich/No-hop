@@ -84,7 +84,7 @@ class table():
             Range=2** (Data_Plane_DHT_settings.RING_SIZE)
 
             for i in topo["hosts"]:
-                if not "_c" in i:
+                if not "client" in i: #_c for rewrite
                     hosts=hosts+1
             spot=0
             singal_range= int (Range/(hosts))
