@@ -48,3 +48,23 @@ def make_no_hop_tables(paths, network.switches, switcnetwork.host_ids, network.h
 
 
     return switch_no_hop_tables
+
+def formalize_switch(switch, s):
+    """
+    Create single entry for a switch in topology.json
+    """
+    entry= {
+        "mac": "08:00:00:00:01:"+str(s),
+        "runtime_json": "./build/"+switch+"P4runtime.json"
+    }
+    return entry
+
+def formalize_switches(switches):
+    """
+    Create all entries for the switches in the topology.json
+    """"
+
+    switches_formal=dict()
+    for s, switch in enumerate(switches):
+        switches_formal["s_"+switch]=formalize_switch(switch, s)
+    return switches_formal

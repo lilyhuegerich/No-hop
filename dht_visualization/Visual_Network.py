@@ -5,7 +5,6 @@ import shutil
 import json
 import sys
 import os
-import json
 import Write_Jsons
 
 rewrite_build_folders=1 #: 1 overwrite existing folder if exists, 0 make new folder
@@ -119,6 +118,104 @@ class network:
 
         os.mkdir(path+"/"+folder_name)
         return path+"/"+folder_name
+
+    def find_reachables(self):
+        """
+        Finds the reachable ranges for switches if only traversing the tree downwards
+        returns labels, weights. labels a printable version, weights the cleaned ranges.
+        """"
+
+        traveresed=[]
+        for i in self.connections:
+            if ("client" in i[0]):
+                start=i[1]
+                break
+            elif ("client" in i[1]):
+                start= i[0]
+                break
+        weights=[]
+        traveresed.append(start)
+        weights.append((start,[(0,32)]))
+        next_s=list(nx.neighbors(self.g, start))
+
+        while(len(traveresed)< len(self.switches)):
+
+            for s in next_s:
+                if s in traveresed or (not s in self.switches):
+                    continue
+                weight=[]
+                for h_s, h in enumerate(self.host_ids):
+                    path=nx.dijkstra_path(self.g, h, s )
+                    for t in traveresed:
+                        if t in path:
+                            break
+                    else:
+                        if h_s==0:
+                            weight.append((self.host_ids[-1], h))
+                        else:
+                            weight.append((self.host_ids[h_s-1], h))
+                weights.append((s, weight))
+            tmp_next=next_s
+            next_s=[]
+            for s in tmp_next:
+                traveresed.append(s)
+                for n in list(nx.neighbors(self.g, s)):
+                    if n in self.switches:
+                        next_s.append(n)
+
+            traveresed = list(dict.fromkeys(traveresed))
+
+        return self.clean_ranges(weights)
+
+    def clean_ranges(self, ranges):
+        """
+        Takes switch many lists of ranges and cleans each list of ranges to be represented in the minimal amount of ranges.
+        returns labels, weights. labels a printable version, weights the cleaned ranges.
+        """
+
+        new_switchost_ids=[[] for i in self.switches]
+        for indx, switch in enumerate(switchost_ids):
+            print (switch)
+
+            tmp=list()
+            for s in switch[1]:
+                if (s[0]> s[1]):
+                    for i in range(s[0], 33):
+                        tmp.append(i)
+                    for i in range(0, s[1]):
+                        tmp.append(i)
+                else:
+                    for i in range(s[0], s[1]+1):
+                        tmp.append(i)
+
+            tmp=list(dict.fromkeys(tmp))
+            start=tmp[0]
+            new_range=list()
+
+
+            for i in range(len(tmp)-1):
+                if not (tmp[i+1]== tmp[i]+1):
+                    if not start==tmp[i]:
+                        new_range.append((start, tmp[i]))
+                    start=tmp[i+1]
+            if not start==tmp[-1]:
+                new_range.append((start, tmp[-1]))
+
+
+            new_switchost_ids[self.switches.index(switch[0])]=(new_range)
+        labels={}
+
+        for i in range(len(self.switches)):
+            if  (len(new_switchost_ids[i])==1):
+                labels[self.switches[i]]=str(self.switches[i])+" \n "+str(new_switchost_ids[i][0])
+            else:
+                tmp=str(self.switches[i])+" \n "
+                for j in new_switchost_ids[i]:
+                    tmp+=str(j)+"\n"
+                labels[self.switches[i]]=tmp
+
+        return labels, new_switchost_ids
+
 
 test=network()
 test.draw_network()
