@@ -2,18 +2,18 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import random as random
 import shutil
-import json
 import sys
 import os
 import Write_Jsons
 
 rewrite_build_folders=1 #: 1 overwrite existing folder if exists, 0 make new folder
-new_folder_prefix="No_hop_Aggregate_"
-compiled_p4_program_path="../compare_dht_abstraction"
-max_id=32
+
+
 
 class network:
     def __init__(self, max_id=32):
+        self.new_folder_prefix="No_hop_Aggregate_"
+        self.compiled_p4_program_path="../compare_dht_abstraction"
 
         self.switches= ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
         self.g=nx.Graph()
@@ -22,6 +22,8 @@ class network:
         self.connections=[("client", "a"),("a","b"),("a","c"),("a","d"),("a","e"),("b","f"), ("b","g"), ("c","f"), ("c","g"), ("d","h"), ("d","i"), ("e","h"), ("e","i"), ("f",self.host_ids[0]),("f",self.host_ids[1]),("g",self.host_ids[2]),("g",self.host_ids[3]),("h",self.host_ids[4]), ("h",self.host_ids[5]),("i",self.host_ids[6]), ("i",self.host_ids[7])]
         self.used_ports_host,self.used_ports_switch, self.connection_ports= self.define_ports()
         self.folder=self.make_new_folder()
+        self.labels, self.reachable=self.find_reachables()
+
 
         for i in self.connections:
             self.g.add_edge(i[0], i[1], weight=1)
@@ -42,33 +44,35 @@ class network:
 
     def define_ports(self):
         """
-        Assign each connection network ports and set corresponding port as taken in corresponding port lists
+        Assign each connection network ports and set corresponding port as taken in corresponding port lists/dicts
         """
 
-        used_ports_switch=[[]  for _ in range(len(self.switches))]
-        used_ports_host=[[] for _ in range(len(self.host_ids))]
+        used_ports_switch={}
+        used_ports_host={}
         connection_ports=[[0,0]  for _ in range(len(self.connections))]
 
         for i, switch in enumerate(self.switches):
             free_port=1
+            used_ports_switch[switch]=[]
             for c, connection in enumerate(self.connections):
                 if connection[0]==switch:
-                    used_ports_switch[i].append(free_port)
+                    used_ports_switch[switch].append(free_port)
                     connection_ports[c][0]=free_port
                     free_port+=1
                 elif connection[1]==switch:
-                    used_ports_switch[i].append(free_port)
+                    used_ports_switch[switch].append(free_port)
                     connection_ports[c][1]=free_port
                     free_port+=1
         for i, host in enumerate(self.host_ids):
             free_port=1
+            used_ports_host[host]=[]
             for c, connection in enumerate(self.connections):
                 if connection[0]==host:
-                    used_ports_host[i].append(free_port)
+                    used_ports_host[host].append(free_port)
                     connection_ports[c][0]=free_port
                     free_port+=1
                 elif connection[1]==host:
-                    used_ports_host[i].append(free_port)
+                    used_ports_host[host].append(free_port)
                     connection_ports[c][1]=free_port
                     free_port+=1
 
@@ -133,9 +137,10 @@ class network:
             elif ("client" in i[1]):
                 start= i[0]
                 break
-        weights=[]
+        weights={}
         traveresed.append(start)
-        weights.append((start,[(0,32)]))
+        weights[start]=[(0,32)]
+        #weights.append((start,[(0,32)]))
         next_s=list(nx.neighbors(self.g, start))
 
         while(len(traveresed)< len(self.switches)):
@@ -154,7 +159,8 @@ class network:
                             weight.append((self.host_ids[-1], h))
                         else:
                             weight.append((self.host_ids[h_s-1], h))
-                weights.append((s, weight))
+                #weights.append((s, weight))
+                weights[s]=weight
             tmp_next=next_s
             next_s=[]
             for s in tmp_next:
@@ -169,18 +175,17 @@ class network:
 
     def clean_ranges(self, ranges):
         """
-        Takes switch many lists of ranges and cleans each list of ranges to be represented in the minimal amount of ranges.
-        returns labels, weights. labels a printable version, weights the cleaned ranges.
+        Takes switch many dict of ranges and cleans each list of ranges to be represented in the minimal amount of ranges.
+        returns labels(dict), weights(dict). labels a printable version, weights the cleaned ranges.
         """
-
-        new_switchost_ids=[[] for i in self.switches]
-        for indx, switch in enumerate(switchost_ids):
+        new_ranges={}
+        for switch in ranges:
             print (switch)
 
             tmp=list()
-            for s in switch[1]:
+            for s in ranges[switch]:
                 if (s[0]> s[1]):
-                    for i in range(s[0], 33):
+                    for i in range(s[0], self.max_id+1):
                         tmp.append(i)
                     for i in range(0, s[1]):
                         tmp.append(i)
@@ -196,25 +201,41 @@ class network:
             for i in range(len(tmp)-1):
                 if not (tmp[i+1]== tmp[i]+1):
                     if not start==tmp[i]:
+
                         new_range.append((start, tmp[i]))
                     start=tmp[i+1]
             if not start==tmp[-1]:
                 new_range.append((start, tmp[-1]))
 
 
-            new_switchost_ids[self.switches.index(switch[0])]=(new_range)
+            new_ranges[switch]=(new_range)
         labels={}
 
-        for i in range(len(self.switches)):
-            if  (len(new_switchost_ids[i])==1):
-                labels[self.switches[i]]=str(self.switches[i])+" \n "+str(new_switchost_ids[i][0])
+        for i, switch in enumerate(self.switches):
+            if  (len(new_ranges[switch])==1):
+                labels[switch]=str(switch)+" \n "+str(new_ranges[switch][0])
             else:
-                tmp=str(self.switches[i])+" \n "
-                for j in new_switchost_ids[i]:
+                tmp=str(switch)+" \n "
+                for j in new_ranges[switch]:
                     tmp+=str(j)+"\n"
-                labels[self.switches[i]]=tmp
+                labels[switch]=tmp
 
-        return labels, new_switchost_ids
+        return labels, new_ranges
+
+    def host_range(self, id):
+        """
+        Find the range id host is respondible for.
+        """
+
+        self.host_ids.sort()
+        for i, host in enumerate(self.host_ids):
+            if host==id:
+                if i==0:
+                    return [(self.host_ids[-1], self.max_id), (0, host)]
+                else:
+                    return [(self.host_ids[i-1], host)]
+        else:
+            raise ValueError ("no host with ID "+ str(id))
 
 
 test=network()
