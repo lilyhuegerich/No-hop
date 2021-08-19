@@ -8,7 +8,8 @@ import Write_Jsons
 
 rewrite_build_folders=1 #: 1 overwrite existing folder if exists, 0 make new folder
 
-
+node_scalar=500
+edge_width=15
 
 class network:
     def __init__(self, max_id=32):
@@ -20,13 +21,16 @@ class network:
         self.max_id=max_id
         self.host_ids=self.generate_random_keys()
         self.connections=[("client", "a"),("a","b"),("a","c"),("a","d"),("a","e"),("b","f"), ("b","g"), ("c","f"), ("c","g"), ("d","h"), ("d","i"), ("e","h"), ("e","i"), ("f",self.host_ids[0]),("f",self.host_ids[1]),("g",self.host_ids[2]),("g",self.host_ids[3]),("h",self.host_ids[4]), ("h",self.host_ids[5]),("i",self.host_ids[6]), ("i",self.host_ids[7])]
+        for i in self.connections:
+            self.g.add_edge(i[0], i[1], weight=1)
+
+
         self.used_ports_host,self.used_ports_switch, self.connection_ports= self.define_ports()
         self.folder=self.make_new_folder()
         self.labels, self.reachable=self.find_reachables()
 
 
-        for i in self.connections:
-            self.g.add_edge(i[0], i[1], weight=1)
+
 
     def generate_random_keys(self,amount=8):
         """
@@ -85,12 +89,14 @@ class network:
         fig = plt.figure(figsize=(20, 20))
 
         pos={"client": (9,6), self.host_ids[0]:(2,2), self.host_ids[1]: (4,2), self.host_ids[2]: (6,2), self.host_ids[3]: (8,2), self.host_ids[4]: (10,2), self.host_ids[5]:(12,2), self.host_ids[6]:(14,2), self.host_ids[7]: (16,2), "a":(9,5), "b": (3,4), "c": (7,4), "d": (11,4), "e": (15,4), "f":(3,3), "g":(7,3), "h":(11,3), "i":(15,3)}
-        nx.draw_networkx_nodes(self.g, pos, nodelist=self.host_ids,  node_color="grey") #node_size= host_weight,
-        nx.draw_networkx_nodes(self.g, pos, nodelist=["client"], node_color="white") #node_size=switch_weight[0], )
-        nx.draw_networkx_nodes(self.g, pos, nodelist=self.switches,  node_color="skyblue") #node_size=switch_weight,)
+        for h in self.host_ids:
+            nx.draw_networkx_nodes(self.g, pos, nodelist=[h],  node_color="grey", node_size= Write_Jsons.range_size(self.host_range(h))*node_scalar)
+        nx.draw_networkx_nodes(self.g, pos, nodelist=["client"], node_color="grey" ,node_size=(self.max_id+1)*node_scalar )
+        for s in self.switches:
+            nx.draw_networkx_nodes(self.g, pos, nodelist=s,  node_color="skyblue", node_size=Write_Jsons.range_size(self.reachable[s])*node_scalar)
 
         for c, connection in enumerate(self.connections):
-            nx.draw_networkx_edges(self.g, pos, edgelist=[connection], edge_color="grey")#, width=connection_weight[c])
+            nx.draw_networkx_edges(self.g, pos, edgelist=[connection], edge_color="grey" ,width=edge_width)
         plt.draw()
         nx.draw_networkx_labels(self.g, pos,  font_size=30)#labels,
         axis = plt.gca()
@@ -106,16 +112,16 @@ class network:
         path= os.getcwd()
         if  rewrite_build_folders:
             try:
-                os.mkdir(path+"/"+new_folder_prefix+str(0))
+                os.mkdir(path+"/"+self.new_folder_prefix+str(0))
             except FileExistsError:
-                shutil.rmtree(path+"/"+new_folder_prefix+str(0))
-                os.mkdir(path+"/"+new_folder_prefix+str(0))
-            return path+"/"+new_folder_prefix+str(0)
+                shutil.rmtree(path+"/"+self.new_folder_prefix+str(0))
+                os.mkdir(path+"/"+self.new_folder_prefix+str(0))
+            return path+"/"+self.new_folder_prefix+str(0)
         if not type(folder_name)==str:
             folder=0
             while (True):
-                folder_name=new_folder_prefix+str(folder)
-                if not os.path.isdir(folder_name):
+                folder_name=self.new_folder_prefix+str(folder)
+                if not os.path.isdir(self.folder_name):
                     break
                 else:
                     folder+=1
@@ -127,8 +133,7 @@ class network:
         """
         Finds the reachable ranges for switches if only traversing the tree downwards
         returns labels, weights. labels a printable version, weights the cleaned ranges.
-        """"
-
+        """
         traveresed=[]
         for i in self.connections:
             if ("client" in i[0]):
@@ -137,6 +142,7 @@ class network:
             elif ("client" in i[1]):
                 start= i[0]
                 break
+
         weights={}
         traveresed.append(start)
         weights[start]=[(0,32)]
@@ -180,7 +186,7 @@ class network:
         """
         new_ranges={}
         for switch in ranges:
-            print (switch)
+
 
             tmp=list()
             for s in ranges[switch]:
@@ -239,4 +245,6 @@ class network:
 
 
 test=network()
+
+Write_Jsons.write_build_files(test)
 test.draw_network()

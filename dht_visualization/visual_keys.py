@@ -562,7 +562,7 @@ def write_switch_json(table, switch, folder_name):
         os.mkdir(folder_name+"/build/")
     except FileExistsError:
         pass
-    #print topo_dict
+
     with open(folder_name+"/build/"+switch+"P4runtime.json", "w+") as f:
         json.dump(topo_dict, f, sort_keys=True, indent=4)
 

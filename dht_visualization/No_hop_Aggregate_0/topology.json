@@ -1,0 +1,136 @@
+{
+    "hosts": [
+        2,
+        4,
+        6,
+        8,
+        12,
+        23,
+        27,
+        30
+    ],
+    "switches": {
+        "s_a": {
+            "mac": "08:00:00:00:01:0",
+            "runtime_json": "./build/aP4runtime.json"
+        },
+        "s_b": {
+            "mac": "08:00:00:00:01:1",
+            "runtime_json": "./build/bP4runtime.json"
+        },
+        "s_c": {
+            "mac": "08:00:00:00:01:2",
+            "runtime_json": "./build/cP4runtime.json"
+        },
+        "s_d": {
+            "mac": "08:00:00:00:01:3",
+            "runtime_json": "./build/dP4runtime.json"
+        },
+        "s_e": {
+            "mac": "08:00:00:00:01:4",
+            "runtime_json": "./build/eP4runtime.json"
+        },
+        "s_f": {
+            "mac": "08:00:00:00:01:5",
+            "runtime_json": "./build/fP4runtime.json"
+        },
+        "s_g": {
+            "mac": "08:00:00:00:01:6",
+            "runtime_json": "./build/gP4runtime.json"
+        },
+        "s_h": {
+            "mac": "08:00:00:00:01:7",
+            "runtime_json": "./build/hP4runtime.json"
+        },
+        "s_i": {
+            "mac": "08:00:00:00:01:8",
+            "runtime_json": "./build/iP4runtime.json"
+        }
+    },
+    "links": [
+        [
+            "h_client",
+            "s_a-p1"
+        ],
+        [
+            "s_a-p2",
+            "s_b-p1"
+        ],
+        [
+            "s_a-p3",
+            "s_c-p1"
+        ],
+        [
+            "s_a-p4",
+            "s_d-p1"
+        ],
+        [
+            "s_a-p5",
+            "s_e-p1"
+        ],
+        [
+            "s_b-p2",
+            "s_f-p1"
+        ],
+        [
+            "s_b-p3",
+            "s_g-p1"
+        ],
+        [
+            "s_c-p2",
+            "s_f-p2"
+        ],
+        [
+            "s_c-p3",
+            "s_g-p2"
+        ],
+        [
+            "s_d-p2",
+            "s_h-p1"
+        ],
+        [
+            "s_d-p3",
+            "s_i-p1"
+        ],
+        [
+            "s_e-p2",
+            "s_h-p2"
+        ],
+        [
+            "s_e-p3",
+            "s_i-p2"
+        ],
+        [
+            "s_f-p3",
+            "h_2"
+        ],
+        [
+            "s_f-p4",
+            "h_4"
+        ],
+        [
+            "s_g-p3",
+            "h_6"
+        ],
+        [
+            "s_g-p4",
+            "h_8"
+        ],
+        [
+            "s_h-p3",
+            "h_12"
+        ],
+        [
+            "s_h-p4",
+            "h_23"
+        ],
+        [
+            "s_i-p3",
+            "h_27"
+        ],
+        [
+            "s_i-p4",
+            "h_30"
+        ]
+    ]
+}
