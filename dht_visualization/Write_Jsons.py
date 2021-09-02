@@ -39,7 +39,7 @@ def make_no_hop_table(network , switch):
             continue
         else:
             for j in connected:
-                if not (j==i or j=="client"):
+                if not (j==i or j=="client" or j in no_hop_table):
                     if network.reachable[i]==network.reachable[j]:
                         if (len(network.reachable[i])==2):
                             """
@@ -47,6 +47,7 @@ def make_no_hop_table(network , switch):
                             """
                             no_hop_table[i]=make_single_no_hop_table_entry(port=connected[i], range=(network.reachable[i][0][0], network.reachable[i][0][1]))
                             no_hop_table[j]=make_single_no_hop_table_entry(port=connected[j], range=(network.reachable[i][1][0], network.reachable[i][1][1]))
+
 
                         elif (len(network.reachable[i])==1):
                             """
@@ -62,6 +63,9 @@ def make_no_hop_table(network , switch):
                             no_hop_table[j]=make_single_no_hop_table_entry(port=connected[j], range=(network.reachable[i][0][0] +split_point, network.reachable[i][0][1]))
                         else:
                             raise ValueError ("Either more than two ranges were found for reachable or there was a mistake while computing reachables")
+                        break
+            else:
+                no_hop_table[i]=make_single_no_hop_table_entry(port=connected[i], range=(network.reachable[i][0][0], network.reachable[i][0][1]))
 
     no_hop_table=list(no_hop_table.values())
     if not up_tree==0:
@@ -172,7 +176,8 @@ def write_topology_file(network):
     """
     links=formalize_connections(network)
     switches_formal= formalize_switches(network.switches)
-    topo_dict=dict(hosts=network.host_ids, switches= switches_formal, links= links)
+    hosts=  make_host_data(network.host_ids)
+    topo_dict=dict(hosts=hosts, switches= switches_formal, links= links)
     with open(network.folder+"/topology.json", "w+") as f:
         json.dump(topo_dict, f, sort_keys=False, indent=4)
 
@@ -187,7 +192,6 @@ def write_build_files(network):
     for s, switch in enumerate(network.switches):
         print (switch, len(switch_no_hop_tables[switch]))
     with open(network.folder+"/Makefile", "w+") as f:
-
         lines=["BMV2_SWITCH_EXE = simple_switch_grpc \n",
         "TOPO = ./topology.json \n",
         "include ../../utils/Makefile \n" ]

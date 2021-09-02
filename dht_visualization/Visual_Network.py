@@ -145,7 +145,7 @@ class network:
 
         weights={}
         traveresed.append(start)
-        weights[start]=[(0,32)]
+        weights[start]=[(0, self.max_id)]
         #weights.append((start,[(0,32)]))
         next_s=list(nx.neighbors(self.g, start))
 
