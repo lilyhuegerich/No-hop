@@ -36,6 +36,7 @@ class P4Host(Host):
         self.cmd("sysctl -w net.ipv6.conf.default.disable_ipv6=1")
         self.cmd("sysctl -w net.ipv6.conf.lo.disable_ipv6=1")
 
+        # This line was added to the script      self.cmd()#TODO
         return r
 
     def describe(self, sw_addr=None, sw_mac=None):

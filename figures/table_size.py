@@ -16,7 +16,7 @@ def rewritetable(hosts, size, ip=False):
      else:
         return v
 def fttable(hosts, size):
-    return (size* ((2*size) + 9)) # fingertable with size entries of size, (size +16) plus an 16 bit return port
+    return (5 * (2*size) )# fingertable with size entries of size, (size +16) plus an 16 bit return port
 def rewrite_total(hosts, size, ip=False, switchper=10):
     s=int(hosts/switchper)
     if s*switchper<hosts:
@@ -70,12 +70,12 @@ ax3=ax[1][0]
 ax4=ax[1][1]
 #ax1.set_yscale('log')
 #ax2.set_yscale('log')
-ax1.plot(x, r, c="gray", label="rewrite")
+ax1.plot(x, r, c="k", label="rewrite")
 ax1.plot(x, f, c="b", label="fingertable")
-ax1.plot(x, rip, c="k", label="rewrite with IP table", linestyle=":" )
-ax2.plot(x, ftots, c="b", label="fingertable total")
-ax2.plot(x, rtots, c="gray", label="rewrite total" )
-ax2.plot(x, rtotsip, c="k", label="rewrite total with IP table", linestyle=":" )
+#ax1.plot(x, rip, c="k", label="rewrite with IP table", linestyle=":" )
+ax2.plot(x, ftots, c="b", label="forward total")
+ax2.plot(x, rtots, c="k", label="rewrite total" )
+#ax2.plot(x, rtotsip, c="k", label="rewrite total with IP table", linestyle=":" )
 #ax1.legend()
 #ax2.legend()
 
@@ -98,23 +98,23 @@ for i in range (0, howmany2):
     ftots.append(fttotal(i, size))
     rtots.append(rewrite_total(i, size))
 
-    rip.append(rewritetable(i, size, ip=True))
-    rtotsip.append(rewrite_total(i, size, ip=True))
+    #rip.append(rewritetable(i, size, ip=True))
+    #rtotsip.append(rewrite_total(i, size, ip=True))
 x=np.arange(0, howmany2, 1)
 
-#ax3.set_yscale('log')
-#ax4.set_yscale('log')
-ax3.plot(x, r, c="gray", label="Rewrite" )
+ax3.set_yscale('log')
+ax4.set_yscale('log')
+ax3.plot(x, r, c="k", label="Rewrite" )
 
-ax3.plot(x, rip, c="k", label="Rewrite with IP table", linestyle=":" )
-ax3.plot(x, f, c="b", label="Fingertable")
+#ax3.plot(x, rip, c="k", label="Rewrite with IP table", linestyle=":" )
+ax3.plot(x, f, c="b", label="Forward")
 ax1.set_title("Single Switch Table")
 ax2.set_title("All Switch Tables")
 
 
-ax4.plot(x, ftots, c="b", label="fingertable total")
-ax4.plot(x, rtots, c="gray", label="rewrite total")
-ax4.plot(x, rtotsip, c="k", label="rewrite total with IP table", linestyle=":" )
+ax4.plot(x, ftots, c="b", label="Forward total")
+ax4.plot(x, rtots, c="k", label="Rewrite total")
+#ax4.plot(x, rtotsip, c="k", label="rewrite total with IP table", linestyle=":" )
 
 
 ax3.legend(bbox_to_anchor=(0., -.75, 2.2, .102), loc="lower center",

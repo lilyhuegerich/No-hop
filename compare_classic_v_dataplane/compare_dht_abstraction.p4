@@ -170,9 +170,6 @@ control ThisIngress(inout headers hdr,
       }
 
 
-    action vertical_lookup(){
-        /* vertical lookup functionality is implemented in vertical lookup in and out tables, this function later triggers these tables, ententionally empty */
-    }
 
 
     /* first_contact():
@@ -239,9 +236,14 @@ control ThisIngress(inout headers hdr,
             if (hdr.dht.message_type==0){
                 first_contact();
             }
+            if (hdr.dht.message_type==3 || hdr.message_type==4){
+                send_to_controller();
+            }
+            else{
             ingressDHTCounter.count((bit<32>) hdr.dht.id);
             hdr.dht.counter=hdr.dht.counter+1;
             no_hop_lookup.apply();
+        }
 	    }
 
 

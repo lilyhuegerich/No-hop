@@ -42,19 +42,19 @@ class No_hop_client:
     """
     No hop client for sending recieving and running stabilize proccesses
     """
-    def __init__(self, client= False, verbose=True, keep_log_files=True, stabilze_timout=100):
+    def __init__(self, client= False, verbose=True, keep_log_files=True, stabilze_timeout=100):
         self.client=client
         self.ID=None
         self.verbose=verbose
         self.Recieved={"No_hop":list()}
         self.last_stabilize= None
-        self.stabilze_timout=stabilze_timout
+        self.stabilze_timeout=stabilze_timeout
         self.waiting=0
         self.On=True
 
-        self.recieve_process= Process(target= self.start())
-        self.send_proccess=Proccess(target= self.send())
-        self.stabilize_process=Proccess(target= self.stabilize())
+        self.recieve_process= Process(target= self.start()) # Starts to listen for packets
+        self.send_proccess=Proccess(target= self.send()) # Prepares to send user input
+        self.stabilize_process=Proccess(target= self.stabilize()) # Begins stabilization proccess
 
     def stabilize(self):
         """
@@ -64,7 +64,7 @@ class No_hop_client:
             if self.ID==None:
                 continue
             now=time.time()
-            if ((now-self.last_stabilize)<self.stabilze_timout):
+            if ((now-self.last_stabilize)<self.stabilze_timeout):
                 if self.waiting==1:
                     send_No_hop(ID=self.ID+1, message="S" ,message_type=2):
                 else:
@@ -72,6 +72,9 @@ class No_hop_client:
                     self.waiting=1
         return
     def send(self):
+        """
+        Waits for user input to send to another host or client
+        """
         while (self.On):
             input = raw_input("Send packet: Type, ID, Message")
             sys.stdout.flush()
@@ -84,12 +87,18 @@ class No_hop_client:
                     print ("sent packet with details id:", to_send[1], " type:", to_send[0], "message:", to_send[2])
         return
     def handle_join(self, ID):
+        """
+        Sets ID to the ID that was inclosed in the Join message
+        """
         self.ID=ID
         if self.verbose:
             print("Recieved Join with ID=", ID)
         return
 
     def handle_fail(self, message):
+        """
+        Response to a known failure, writes logs and sends shutdown message
+        """
         if self.verbose:
             print("Recieved Fail message, shutting down")
         self.write_logs()
@@ -97,6 +106,9 @@ class No_hop_client:
         return
 
     def write_logs(self):
+        """
+        if keep_log_files=True: writes recieved packets to log file
+        """
         if self.keep_log_files:
             if self.ID=None and self.client==False:
                 print("No ID or client status, cannot make log files.")
@@ -109,6 +121,9 @@ class No_hop_client:
         return
 
     def handle_message(self, pkt):
+        """
+        Handling of type LOOK_UP message, either normal message, ack or stabilize
+        """
         now=time.time()
         mes=str(pkt[IP].payload)
         ID=pkt[No_hop].ID
@@ -121,6 +136,9 @@ class No_hop_client:
         return
 
     def start(self,):
+        """
+        recieves and handles incoming packets for joining, failing , and stabilize
+        """
         while self.On:
             try:
                 sniff(iface=iface, prn=handle_packet)
@@ -136,6 +154,10 @@ class No_hop_client:
         return
 
 def handle_packet(pkt):
+    """
+    Recieves and calls apropirate interuptions for No-hop packets
+    Is called from sniff.
+    """
     sys.stdout.flush()
     ttl=str(pkt[IP].ttl)
     if ICMP in pkt:
@@ -150,9 +172,6 @@ def handle_packet(pkt):
                 if pkt[No_hop].message_type==1:
                     raise Message(pkt)
     return
-
-
-
 
 def send_No_hop(ip="10.0.1.1", ID, message="DHT message for testing" ,message_type=1):
     """
