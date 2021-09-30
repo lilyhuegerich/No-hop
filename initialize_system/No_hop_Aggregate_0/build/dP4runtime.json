@@ -1,6 +1,6 @@
 {
-    "bmv2_json": "../../P4_code/compare_dht_abstraction.json",
-    "p4info": "../../P4_code/compare_dht_abstraction.p4.p4info.txt",
+    "bmv2_json": "../../P4_code/compare_dht_forward.json",
+    "p4info": "../../P4_code/compare_dht_forward.p4.p4info.txt",
     "table_entries": [
         {
             "action_name": "ThisIngress.no_hop_forward",
@@ -10,8 +10,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    15,
-                    21
+                    10,
+                    15
                 ]
             },
             "priority": 1,
@@ -25,8 +25,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    21,
-                    27
+                    15,
+                    30
                 ]
             },
             "priority": 1,
