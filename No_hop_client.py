@@ -206,5 +206,5 @@ def send_No_hop(ip="10.0.1.1", ID=0, message="DHT message for testing" ,message_
 
 if __name__ == "__main__":
 
-    host= No_hop_host()
+    host= No_hop_host(client=True)
     host.run()
