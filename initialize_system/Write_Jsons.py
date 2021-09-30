@@ -90,7 +90,7 @@ def make_single_no_hop_table_entry ( port, range, group_id=1):
         table_entry = dict({"table":"ThisIngress.no_hop_lookup",
         "match":{
             "hdr.dht.group_id": group_id,
-            "hdr.dht.id": (range[0], range[1])
+            "hdr.dht.id": (int(range[0]), int(range[1]))
             },
         "priority": 1,
         "action_name":"ThisIngress.no_hop_forward",
