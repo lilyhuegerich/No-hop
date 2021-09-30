@@ -85,6 +85,7 @@ class No_hop_host:
         """
         Waits for user input to send to another host or client
         """
+        print ("No hop Client")
         try:
             while (self.On):
                 sys.stdout.flush()
