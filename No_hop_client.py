@@ -115,7 +115,7 @@ class No_hop_host:
             print("Recieved Join with ID=", ID)
         return
 
-    def handle_fail(self, message):
+    def handle_fail(self):
         """
         Response to a known failure, writes logs and sends shutdown message
         """
