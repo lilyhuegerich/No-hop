@@ -54,6 +54,7 @@ class No_hop_host:
         self.stabilze_timeout=stabilze_timeout
         self.waiting=0
         self.On=True
+        self.keep_log_files=keep_log_files
 
     def run(self):
         print ("Starting No-hop")
