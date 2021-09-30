@@ -202,7 +202,7 @@ def send_No_hop(ip="10.0.1.1", ID=0, message="DHT message for testing" ,message_
     """
     ip=ip.split("/")[0]
     addr = socket.gethostbyname(ip)
-    pkt = (Ether(dst='00:04:00:00:00:00', type=0x800) / IP(dst=addr, ttl=50, proto=2) / No_hop(message_type=message_type, ID=int(ID), gid=1 , counter=0) / message)
+    pkt = (Ether(dst='00:04:00:00:00:00', type=0x800) / IP(dst=addr, ttl=50, proto=2) / No_hop(message_type=int(message_type), ID=int(ID), gid=1 , counter=0) / message)
     sendp(pkt, iface="eth0")
     return
 
