@@ -61,9 +61,9 @@ class No_hop_host:
         if self.client:
             self.send()
         else:
-            self.recieve_process= Process(target= self.start()) # Starts to listen for packets
+            self.recieve_process= Process(target= self.start(), args=()) # Starts to listen for packets
             self.send()# Prepares to send user input
-            self.stabilize_process=Proccess(target= self.stabilize()) # Begins stabilization proccess
+            self.stabilize_process=Proccess(target= self.stabilize(), args=()) # Begins stabilization proccess
             self.recieve_process.start()
             self.stabilize_process.start()
 
