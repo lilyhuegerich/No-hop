@@ -57,12 +57,18 @@ class No_hop_host:
         if client:
             self.send()
         else:
-            self.recieve_process= Process(target= self.start()) # Starts to listen for packets
-            self.send_proccess=Proccess(target= self.send()) # Prepares to send user input
-            self.stabilize_process=Proccess(target= self.stabilize()) # Begins stabilization proccess
-            self.recieve_process.start()
-            self.send_proccess.start()
-            self.stabilize_process.start()
+            try:
+                self.recieve_process= Process(target= self.start()) # Starts to listen for packets
+                self.send()# Prepares to send user input
+                self.stabilize_process=Proccess(target= self.stabilize()) # Begins stabilization proccess
+                self.recieve_process.start()
+                self.stabilize_process.start()
+            except KeyboardInterrupt:
+                self.handle_fail()
+                self.recieve_process.join()
+                self.stabilize_process.join()
+
+
     def stabilize(self):
         """
         Stabilize proccess periodically checks succesor
@@ -159,8 +165,6 @@ class No_hop_host:
                 self.handle_fail(interrupt)
             except Message as interrupt:
                 self.handle_message(interrupt)
-        self.recieve_process.join()
-        self.stabilize_process.join()
         return
 
 def handle_packet(pkt):
