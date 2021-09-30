@@ -11,7 +11,7 @@ ifndef TOPO
 TOPO = topology.json
 endif
 
-source = $(wildcard *.p4)
+source = $(../P4_code/wildcard *.p4)
 compiled_json := $(source:.p4=.json)
 
 ifndef DEFAULT_PROG
