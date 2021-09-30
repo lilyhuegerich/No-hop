@@ -53,6 +53,7 @@ class No_hop_host:
         self.stabilze_timeout=stabilze_timeout
         self.waiting=0
         self.On=True
+        print ("Starting No-hop")
 
         if client:
             self.send()
