@@ -36,7 +36,7 @@ import threading
 sys.path.append(
     os.path.join(os.path.dirname(os.path.abspath(__file__)),
                  '../compare_classic_v_dataplane/'))
-import dht_functionality_test
+
 
 def configureP4Switch(**switch_args):
     """ Helper class that is called by mininet to initialize
