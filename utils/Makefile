@@ -11,11 +11,11 @@ ifndef TOPO
 TOPO = topology.json
 endif
 
-source = $(../P4_code/wildcard *.p4)
+source = $(../../P4_code/wildcard *.p4)
 compiled_json := $(source:.p4=.json)
 
 ifndef DEFAULT_PROG
-DEFAULT_PROG = $(../P4_code/wildcard *.p4)
+DEFAULT_PROG = $(../../P4_code/wildcard *.p4)
 endif
 DEFAULT_JSON = $(BUILD_DIR)/$(DEFAULT_PROG:.p4=.json)
 
