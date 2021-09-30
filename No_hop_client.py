@@ -38,13 +38,13 @@ class Message(No_hop_interrupt):
     """
     pass
 
-class No_hop_client:
+class No_hop_host:
     """
     No hop client for sending recieving and running stabilize proccesses
     """
-    def __init__(self, client= False, verbose=True, keep_log_files=True, stabilze_timeout=100):
+    def __init__(self, client= False, verbose=True, keep_log_files=True, stabilze_timeout=100, ID=None):
         self.client=client
-        self.ID=None
+        self.ID=ID
         self.verbose=verbose
         self.Recieved={"No_hop":list()}
         self.last_stabilize= None
@@ -52,9 +52,12 @@ class No_hop_client:
         self.waiting=0
         self.On=True
 
-        self.recieve_process= Process(target= self.start()) # Starts to listen for packets
-        self.send_proccess=Proccess(target= self.send()) # Prepares to send user input
-        self.stabilize_process=Proccess(target= self.stabilize()) # Begins stabilization proccess
+        if client:
+            self.send()
+        else:
+            self.recieve_process= Process(target= self.start()) # Starts to listen for packets
+            self.send_proccess=Proccess(target= self.send()) # Prepares to send user input
+            self.stabilize_process=Proccess(target= self.stabilize()) # Begins stabilization proccess
 
     def stabilize(self):
         """
@@ -66,7 +69,7 @@ class No_hop_client:
             now=time.time()
             if ((now-self.last_stabilize)<self.stabilze_timeout):
                 if self.waiting==1:
-                    send_No_hop(ID=self.ID+1, message="S" ,message_type=2):
+                    send_No_hop(ID=self.ID+1, message="S" ,message_type=2): #Failed node
                 else:
                     send_No_hop(ID=self.ID+1, message="S" ,message_type=1):
                     self.waiting=1
@@ -182,3 +185,7 @@ def send_No_hop(ip="10.0.1.1", ID, message="DHT message for testing" ,message_ty
     pkt = (Ether(dst='00:04:00:00:00:00', type=0x800) / IP(dst=addr, ttl=50, proto=2) / No_hop(message_type=message_type, ID=int(ID), gid=1 , counter=0) / message)
     sendp(pkt, iface="eth0")
     return
+
+if __name__ == "__main__":
+
+    host= No_hop_host()
