@@ -64,6 +64,7 @@ class No_hop_host:
                 self.recieve_process.start()
                 self.stabilize_process.start()
             except KeyboardInterrupt:
+                print ("Ending No_hop.")
                 self.handle_fail()
                 self.recieve_process.join()
                 self.stabilize_process.join()
