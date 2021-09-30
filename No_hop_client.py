@@ -7,6 +7,7 @@ import json
 import time
 from multiprocessing import Process
 
+
 class No_hop(Packet):
     name = "No_hop"
     fields_desc = [BitEnumField(name="message_type", default=2, size=2, enum={0:"FIRST_CONTACT",1:"LOOK_UP", 2:"FAILURE", 3:"JOIN" }),
@@ -142,6 +143,7 @@ class No_hop_host:
         """
         recieves and handles incoming packets for joining, failing , and stabilize
         """
+        iface = 'eth0'
         while self.On:
             try:
                 sniff(iface=iface, prn=handle_packet)
