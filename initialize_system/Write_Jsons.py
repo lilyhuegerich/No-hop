@@ -70,7 +70,16 @@ def make_no_hop_table(network , switch):
     no_hop_table=list(no_hop_table.values())
     if not up_tree==0:
         no_hop_table.append(up_tree)
-    return no_hop_table
+    clean_no_hop_table=list()
+
+    #if entries in sublists put them in list without sublist
+    for i in no_hop_table:
+        if type(i)==list:
+            for j in i:
+                clean_no_hop_table.append(j)
+        else:
+            clean_no_hop_table.append(i)
+    return clean_no_hop_table
 
 def range_size(range_list):
     """
