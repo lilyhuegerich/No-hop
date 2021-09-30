@@ -98,9 +98,10 @@ def make_single_no_hop_table_entry ( port, range, group_id=1):
         })
         return table_entry
     else:
+        table_entry=[]
         for r in range:
-            make_single_no_hop_table_entry(port, r)
-
+            table_entry.append(make_single_no_hop_table_entry(port, r))
+        return table_entry
 
 def switch_connections(network, switch):
     """
