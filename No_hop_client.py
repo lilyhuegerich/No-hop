@@ -104,8 +104,9 @@ class No_hop_host:
         except KeyboardInterrupt:
             print ("Ending No_hop.")
             self.handle_fail()
-            self.recieve_process.join()
-            self.stabilize_process.join()
+            if not self.client:
+                self.recieve_process.join()
+                self.stabilize_process.join()
         return
     def handle_join(self, ID):
         """
