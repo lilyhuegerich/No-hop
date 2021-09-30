@@ -82,7 +82,7 @@ class No_hop_host:
             input = raw_input("Send packet: Type, ID, Message")
             sys.stdout.flush()
             to_send=input.split(",")
-            if (not len(to_send)==3:
+            if (not len(to_send)==3):
                 print ("not in correct form. Type, ID, Message")
             else:
                 send_No_hop(ip="10.0.1.1", ID=int(to_send[1]), message=to_send[2] ,message_type=to_send[0])
@@ -113,7 +113,7 @@ class No_hop_host:
         if keep_log_files=True: writes recieved packets to log file
         """
         if self.keep_log_files:
-            if self.ID=None and self.client==False:
+            if (self.ID==None and self.client==False):
                 print("No ID or client status, cannot make log files.")
             if not self.ID==None:
                 f= open("./packet_log_host_"+str(self.ID)+".txt", "w+")
@@ -130,10 +130,10 @@ class No_hop_host:
         now=time.time()
         mes=str(pkt[IP].payload)
         ID=pkt[No_hop].ID
-        self.Recieved["No_hop"].append({"time": now, "ID", ID, "message", mes})
+        self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
         if "S" in mes:
             self.waiting=0
-            send_No_hop(ID=ID, message="ack" ,message_type=1):
+            send_No_hop(ID=ID, message="ack" ,message_type=1)
         if "ack" in mes:
             self.last_stabilize=now
         return
@@ -176,7 +176,7 @@ def handle_packet(pkt):
                     raise Message(pkt)
     return
 
-def send_No_hop(ip="10.0.1.1", ID, message="DHT message for testing" ,message_type=1):
+def send_No_hop(ip="10.0.1.1", ID=0, message="DHT message for testing" ,message_type=1):
     """
     Send a No_hop packet
     """
