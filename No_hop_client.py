@@ -5,6 +5,7 @@ from scapy.all import bind_layers
 import os
 import json
 import time
+import socket
 import sys
 from multiprocessing import Process
 
