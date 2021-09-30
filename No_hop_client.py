@@ -83,8 +83,8 @@ class No_hop_host:
         Waits for user input to send to another host or client
         """
         while (self.On):
-            input = raw_input("Send packet: Type, ID, Message")
             sys.stdout.flush()
+            input = raw_input("Send packet: Type, ID, Message")
             to_send=input.split(",")
             if (not len(to_send)==3):
                 print ("not in correct form. Type, ID, Message")
@@ -169,6 +169,8 @@ def handle_packet(pkt):
     Is called from sniff.
     """
     sys.stdout.flush()
+    if not IP in pkt:
+        return
     ttl=str(pkt[IP].ttl)
     if ICMP in pkt:
         return
