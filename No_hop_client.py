@@ -53,9 +53,10 @@ class No_hop_host:
         self.stabilze_timeout=stabilze_timeout
         self.waiting=0
         self.On=True
-        print ("Starting No-hop")
 
-        if client:
+    def run():
+        print ("Starting No-hop")
+        if self.client:
             self.send()
         else:
             self.recieve_process= Process(target= self.start()) # Starts to listen for packets
@@ -206,3 +207,4 @@ def send_No_hop(ip="10.0.1.1", ID=0, message="DHT message for testing" ,message_
 if __name__ == "__main__":
 
     host= No_hop_host()
+    host.run()
