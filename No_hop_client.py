@@ -54,7 +54,7 @@ class No_hop_host:
         self.waiting=0
         self.On=True
 
-    def run():
+    def run(self):
         print ("Starting No-hop")
         if self.client:
             self.send()
@@ -153,7 +153,7 @@ class No_hop_host:
             self.last_stabilize=now
         return
 
-    def start(self,):
+    def start(self):
         """
         recieves and handles incoming packets for joining, failing , and stabilize
         """
