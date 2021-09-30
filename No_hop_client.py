@@ -57,17 +57,12 @@ class No_hop_host:
         if client:
             self.send()
         else:
-            try:
-                self.recieve_process= Process(target= self.start()) # Starts to listen for packets
-                self.send()# Prepares to send user input
-                self.stabilize_process=Proccess(target= self.stabilize()) # Begins stabilization proccess
-                self.recieve_process.start()
-                self.stabilize_process.start()
-            except KeyboardInterrupt:
-                print ("Ending No_hop.")
-                self.handle_fail()
-                self.recieve_process.join()
-                self.stabilize_process.join()
+            self.recieve_process= Process(target= self.start()) # Starts to listen for packets
+            self.send()# Prepares to send user input
+            self.stabilize_process=Proccess(target= self.stabilize()) # Begins stabilization proccess
+            self.recieve_process.start()
+            self.stabilize_process.start()
+
 
 
     def stabilize(self):
@@ -89,16 +84,22 @@ class No_hop_host:
         """
         Waits for user input to send to another host or client
         """
-        while (self.On):
-            sys.stdout.flush()
-            input = raw_input("Send packet: Type, ID, Message")
-            to_send=input.split(",")
-            if (not len(to_send)==3):
-                print ("not in correct form. Type, ID, Message")
-            else:
-                send_No_hop(ip="10.0.1.1", ID=int(to_send[1]), message=to_send[2] ,message_type=to_send[0])
-                if self.verbose:
-                    print ("sent packet with details id:", to_send[1], " type:", to_send[0], "message:", to_send[2])
+        try:
+            while (self.On):
+                sys.stdout.flush()
+                input = raw_input("Send packet: Type, ID, Message")
+                to_send=input.split(",")
+                if (not len(to_send)==3):
+                    print ("not in correct form. Type, ID, Message")
+                else:
+                    send_No_hop(ip="10.0.1.1", ID=int(to_send[1]), message=to_send[2] ,message_type=to_send[0])
+                    if self.verbose:
+                        print ("sent packet with details id:", to_send[1], " type:", to_send[0], "message:", to_send[2])
+        except KeyboardInterrupt:
+            print ("Ending No_hop.")
+            self.handle_fail()
+            self.recieve_process.join()
+            self.stabilize_process.join()
         return
     def handle_join(self, ID):
         """
