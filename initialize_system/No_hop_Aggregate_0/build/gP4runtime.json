@@ -1,6 +1,6 @@
 {
-    "bmv2_json": "../P4_code/compare_dht_abstraction.json",
-    "p4info": "../P4_code/compare_dht_abstraction.p4.p4info.txt",
+    "bmv2_json": "../../P4_code/compare_dht_abstraction.json",
+    "p4info": "../../P4_code/compare_dht_abstraction.p4.p4info.txt",
     "table_entries": [
         null,
         null,

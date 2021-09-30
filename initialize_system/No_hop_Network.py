@@ -14,7 +14,7 @@ edge_width=15
 class network:
     def __init__(self, max_id=32):
         self.new_folder_prefix="No_hop_Aggregate_"
-        self.compiled_p4_program_path="../P4_code/compare_dht_abstraction"
+        self.compiled_p4_program_path="../../P4_code/compare_dht_abstraction"
 
         self.switches= ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
         self.g=nx.Graph()

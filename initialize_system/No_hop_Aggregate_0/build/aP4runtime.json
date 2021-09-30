@@ -1,6 +1,6 @@
 {
-    "bmv2_json": "../P4_code/compare_dht_abstraction.json",
-    "p4info": "../P4_code/compare_dht_abstraction.p4.p4info.txt",
+    "bmv2_json": "../../P4_code/compare_dht_abstraction.json",
+    "p4info": "../../P4_code/compare_dht_abstraction.p4.p4info.txt",
     "table_entries": [
         {
             "action_name": "ThisIngress.no_hop_forward",
@@ -10,7 +10,7 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    30,
+                    27,
                     32
                 ]
             },
@@ -26,7 +26,7 @@
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
                     0,
-                    12
+                    15
                 ]
             },
             "priority": 1,
@@ -40,7 +40,7 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    12,
+                    15,
                     21.0
                 ]
             },
@@ -56,7 +56,7 @@
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
                     21.0,
-                    30
+                    27
                 ]
             },
             "priority": 1,
