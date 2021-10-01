@@ -65,6 +65,9 @@ class Message(No_hop_interrupt):
     """
     Raised when message recieved
     """
+    def __init__(self,payload, ID):
+       self.payload = payload
+       self.ID=ID
     pass
 class No_hop_stabilize:
     def __init__(self, fail_q, last_stabilze_q, join_q, keep_log_files=True, stabilze_timeout=100, ID=None):
@@ -177,14 +180,14 @@ class No_hop_host:
             f.close()
         return
 
-    def handle_message(self, pkt, ID):
+    def handle_message(self, message):
         """
         Handling of type LOOK_UP message, either normal message, ack or stabilize
         """
-        print("Recieved message: "+str(pkt))
+        print("Recieved message: "+str(message))
         now=time.time()
-        mes=pkt[IP].payload
-        ID=pkt[No_hop].ID
+        mes=message.payload
+        ID=message.ID
 
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
         if "S" in mes:
