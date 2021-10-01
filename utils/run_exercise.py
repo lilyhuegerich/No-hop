@@ -392,7 +392,7 @@ class ExerciseRunner:
 def get_args():
     cwd = os.getcwd()
     default_logs = os.path.join(cwd, 'logs')
-    #default_pcaps = os.path.join(cwd, 'pcaps')
+    default_pcaps = os.path.join(cwd, 'pcaps')
     parser = argparse.ArgumentParser()
     parser.add_argument('-q', '--quiet', help='Suppress log messages.',
                         action='store_true', required=False, default=False)
