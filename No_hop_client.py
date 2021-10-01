@@ -198,7 +198,7 @@ class No_hop_host:
             self.last_stabilize=now
         return
 
-    def start():#self, queue_recieve_fail, queue_stabilize_fail, queue_stabilize_join):
+    def start(self):#, queue_recieve_fail, queue_stabilize_fail, queue_stabilize_join):
         """
         recieves and handles incoming packets for joining, failing , and stabilize
         """
