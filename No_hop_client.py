@@ -117,7 +117,7 @@ class No_hop_host:
         self.Recieved={"No_hop":list()}
         self.On=True
         self.keep_log_files=keep_log_files
-        self.stabilize= No_hop_stabilize() #TODO make queues for stabilize and pass to stabilize object
+        #self.stabilize= No_hop_stabilize() #TODO make queues for stabilize and pass to stabilize object
 
     def run(self):
         print ("Starting No-hop")
