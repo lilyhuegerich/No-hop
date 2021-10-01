@@ -65,7 +65,8 @@ def make_no_hop_table(network , switch):
                             raise ValueError ("Either more than two ranges were found for reachable or there was a mistake while computing reachables")
                         break
             else:
-                no_hop_table[i]=make_single_no_hop_table_entry(port=connected[i], range=(network.reachable[i][0][0], network.reachable[i][0][1]))
+
+                no_hop_table[i]=make_single_no_hop_table_entry(port=connected[i], range=(network.reachable[i]))
 
     no_hop_table=list(no_hop_table.values())
     if not up_tree==0:
@@ -79,6 +80,20 @@ def make_no_hop_table(network , switch):
                 clean_no_hop_table.append(j)
         else:
             clean_no_hop_table.append(i)
+
+    #Check that all values are in the table
+    for switch_range in network.reachable[switch]:
+        for r in range(switch_range[0], switch_range[1]):
+            if switch=="a":
+                without_up_tree=clean_no_hop_table
+            else:
+                without_up_tree=clean_no_hop_table[:-1]
+            for i in without_up_tree:
+                if r in range(i["match"]["hdr.dht.id"][0], i["match"]["hdr.dht.id"][1]+1):
+                    break
+            else:
+                print (without_up_tree)
+                raise ValueError("value "+ str(r)+ " not in no-hop table for switch "+ str(switch)+ " with reachable range "+ str(network.reachable[switch]))
     return clean_no_hop_table
 
 def range_size(range_list):
