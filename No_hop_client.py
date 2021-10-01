@@ -177,7 +177,7 @@ class No_hop_host:
             f.close()
         return
 
-    def handle_message(self, pkt):
+    def handle_message(self, pkt, ID):
         """
         Handling of type LOOK_UP message, either normal message, ack or stabilize
         """
@@ -231,7 +231,7 @@ def handle_packet(pkt):
     print (pkt)
     if IP in pkt:
         if pkt[IP].proto==2:
-            raise Message(pkt)
+            raise Message(pkt[IP].payload, pkt[No_hop].ID)
 
     return
 
