@@ -399,7 +399,7 @@ def get_args():
     parser.add_argument('-t', '--topo', help='Path to topology json',
                         type=str, required=False, default='./topology.json')
     parser.add_argument('-l', '--log-dir', type=str, required=False, default=default_logs)
-    parser.add_argument('-p', '--pcap-dir', type=str, required=False)#, default=default_pcaps)
+    parser.add_argument('-p', '--pcap-dir', type=str, required=False, default=default_pcaps)
     parser.add_argument('-j', '--switch_json', type=str, required=False)
     parser.add_argument('-b', '--behavioral-exe', help='Path to behavioral executable',
                                 type=str, required=False, default='simple_switch')
