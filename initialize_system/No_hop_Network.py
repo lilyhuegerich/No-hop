@@ -12,25 +12,28 @@ node_scalar=500
 edge_width=15
 
 class network:
-    def __init__(self, max_id=32):
-        self.new_folder_prefix="No_hop_Aggregate_"
-        self.compiled_p4_program_path="../../P4_code/compare_dht_forward"
+    def __init__(self, max_id=32, nh_type="forward", rewrite_switch="a"):
+        if not nh_type in ["forward", "rewrite"]:
+            raise ValueError("Type " , nh_type, " not known, either  forward or rewrite.")
 
+        self.new_folder_prefix="No_hop_Aggregate_"
+        self.compiled_p4_program_path="../../P4_code/compare_dht_"+nh_type+".p4"
+        self.type= nh_type
         self.switches= ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
+        self.rewrite_switch=rewrite_switch
+
+        if not rewrite_switch in self.switches:
+            raise ValueError("rewrite_switch ", rewrite_switch, " not in switches ", str(self.switches))
+            
         self.g=nx.Graph()
         self.max_id=max_id
         self.host_ids=self.generate_random_keys()
         self.connections=[("client", "a"),("a","b"),("a","c"),("a","d"),("a","e"),("b","f"), ("b","g"), ("c","f"), ("c","g"), ("d","h"), ("d","i"), ("e","h"), ("e","i"), ("f",self.host_ids[0]),("f",self.host_ids[1]),("g",self.host_ids[2]),("g",self.host_ids[3]),("h",self.host_ids[4]), ("h",self.host_ids[5]),("i",self.host_ids[6]), ("i",self.host_ids[7])]
         for i in self.connections:
             self.g.add_edge(i[0], i[1], weight=1)
-
-
         self.used_ports_host,self.used_ports_switch, self.connection_ports= self.define_ports()
         self.folder=self.make_new_folder()
         self.labels, self.reachable=self.find_reachables()
-
-
-
 
     def generate_random_keys(self,amount=8):
         """

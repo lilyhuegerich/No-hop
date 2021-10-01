@@ -109,7 +109,7 @@ parser ThisParser(packet_in packet,
             2: parse_dht;
             default: accept;
         }
-      
+
 	}
 }
 
@@ -162,7 +162,7 @@ control ThisIngress(inout headers hdr,
 
     action dht_rewrite(bit<32> dht_address){
         hdr.ipv4.dstAddr=dht_address;
-        
+
     }
 
     action send_to_controller(){
@@ -208,7 +208,7 @@ control ThisIngress(inout headers hdr,
 
 
 
-    table finger_table_lookup {
+    table No_hop_table_lookup {
         key={
             hdr.dht.group_id           : exact;
             hdr.dht.id               : range;      /* can be replaced with ternary but controller has to be changed for switches without range match type */
@@ -241,7 +241,7 @@ control ThisIngress(inout headers hdr,
             }
             ingressDHTCounter.count((bit<32>) hdr.dht.id);
             hdr.dht.counter=hdr.dht.counter+1;
-            finger_table_lookup.apply();
+            No_hop_lookup.apply();
 	    }
 
 

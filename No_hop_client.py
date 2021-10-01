@@ -9,6 +9,7 @@ import socket
 import sys
 from multiprocessing import Process
 
+max_id=32
 
 class No_hop(Packet):
     name = "No_hop"
@@ -98,9 +99,9 @@ class No_hop_stabilize:
             now=time.time()
             if ((now-self.last_stabilize)<self.stabilze_timeout):
                 if self.waiting==1:
-                    send_No_hop(ID=self.ID+1, message="S" ,message_type=2) #Failed node
+                    send_No_hop(ID=(self.ID+1)%max_id, message="S" ,message_type=2) #Failed node
                 else:
-                    send_No_hop(ID=self.ID+1, message="S" ,message_type=1)
+                    send_No_hop(ID=(self.ID+1)%max_id, message="S" ,message_type=1)
                     self.waiting=1
         return
 class No_hop_host:
@@ -190,11 +191,16 @@ class No_hop_host:
         ID=message.ID
 
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
-        if "S" in mes:
-            self.waiting=0
+        if "s" in mes:
             send_No_hop(ID=ID, message="ack" ,message_type=1)
         if "ack" in mes:
+            #TODO update last stabilize in stabilize thread
             self.last_stabilize=now
+        if "join" in mes:
+            #TODO update ID in stabilize threading
+            mes=mes.split(":")
+            if type(int(mes[1]))==int:
+                self.update_ID(int(mes[1]))
         return
 
     def start(self):#, queue_recieve_fail, queue_stabilize_fail, queue_stabilize_join):
@@ -202,21 +208,20 @@ class No_hop_host:
         recieves and handles incoming packets for joining, failing , and stabilize
         """
         iface = 'eth0'
-        while self.On:
-            try:
-                sniff(iface=iface, prn=handle_packet)
-            except KeyboardInterrupt:
-                #queue_stabilize_fail.put(Fail('F'))
-                self.handle_fail()
-                return
-            except Join_interupt as interrupt:
-                #queue_stabilize_join.put(Join(interrupt))
-                self.handle_join(interrupt)
-            except Fail as interrupt:
-                #queue_stabilize_fail.put(Fail('F'))
-                self.handle_fail(interrupt)
-            except Message as interrupt:
-                self.handle_message(interrupt)
+        try:
+            while self.On:
+                try:
+                    sniff(iface=iface, prn=handle_packet)
+                except KeyboardInterrupt:
+                    self.handle_fail()
+                    return
+                except Fail as interrupt:
+                    self.handle_fail(interrupt)
+                except Message as interrupt:
+                    self.handle_message(interrupt)
+        except KeyboardInterrupt:
+            self.handle_fail()
+            return
         return
 
 def handle_packet(pkt):
@@ -231,7 +236,7 @@ def handle_packet(pkt):
     if ICMP in pkt:
         return
 
-    print (pkt)
+    #print (pkt)
     if IP in pkt:
         if pkt[IP].proto==2:
             raise Message(pkt[IP].payload, pkt[No_hop].ID)

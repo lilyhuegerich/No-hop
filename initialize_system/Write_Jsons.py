@@ -206,16 +206,48 @@ def write_topology_file(network):
     with open(network.folder+"/topology.json", "w+") as f:
         json.dump(topo_dict, f, sort_keys=False, indent=4)
 
-def write_build_files(network):
+def make_rewrite_entry(range, ip):
+    table_entry = dict({
+        "table":"ThisIngress.No_hop_table_lookup",
+        "match":{
+            "hdr.dht.group_id": 1,
+            "hdr.dht.id": (int(range[0]), int(range[1]))
+            },
+        "priority": 1,
+        "action_name":"ThisIngress.dht_rewrite",
+        "action_params":{"dht_address": ip}
+        })
+def make_rewrite_table(network, hosts):
+    rewrite_table=[]
+    for h in network.hosts:
+        for f_h in hosts:
+            if h in f_h:
+                ip= hosts[f_h]["ip"].split("/")[0]
+                break
+        else:
+            raise ValueError("Could not find ", h ," in " str(hosts))
+        for r in network.host_range(h):
+            rewrite_table.append(make_rewrite_entry(r, ip))
+    #TODO test
+    return rewrite_table
 
-    switch_no_hop_tables=make_no_hop_tables(network)
+def write_build_files(network):
     hosts= make_host_data(network.host_ids)
     switch_lpm_tables=make_ip_lpm_table(network, hosts)
-    for s, switch in enumerate(network.switches):
-        write_switch_json(switch_no_hop_tables[switch]+switch_lpm_tables[s], switch, network)
+
+    if network.type=="forward":
+        switch_no_hop_tables=make_no_hop_tables(network)
+        for s, switch in enumerate(network.switches):
+            write_switch_json(switch_no_hop_tables[switch]+switch_lpm_tables[s], switch, network)
+        for s, switch in enumerate(network.switches):
+            print (switch, len(switch_no_hop_tables[switch]))
+    else:
+        for s, switch in enumerate(network.switches):
+            if switch ==network.rewrite_switch:
+                write_switch_json(make_rewrite_table(network, hosts) + switch_lpm_tables[s], switch, network))
+            else:
+                write_switch_json(switch_lpm_tables[s], switch, network)
     write_topology_file(network)
-    for s, switch in enumerate(network.switches):
-        print (switch, len(switch_no_hop_tables[switch]))
     with open(network.folder+"/Makefile", "w+") as f:
         lines=["BMV2_SWITCH_EXE = simple_switch_grpc \n",
         "TOPO = ./topology.json \n",
@@ -253,7 +285,6 @@ def make_host_data(host_ids):
     for i in host_ids:
         hosts["h_"+str(i)]=make_host_entry(ip_count)
         ip_count+=1
-
     return hosts
 
 def make_ip_lpm_table(network, hosts):
