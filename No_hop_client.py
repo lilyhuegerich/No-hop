@@ -140,7 +140,7 @@ class No_hop_host:
                     print ("not in correct form. Type, ID, Message")
                 else:
                     #print (to_send)
-                    send_No_hop(ip="10.0.1.1", ID=int(to_send[1]), message=to_send[2] ,message_type=to_send[0], gid=1)
+                    send_No_hop(ip="10.0.1.1", ID=int(to_send[1]), message=to_send[2] ,message_type=to_send[0])
                     if self.verbose:
                         print ("sent packet with details id:", to_send[1], " type:", to_send[0], "message:", to_send[2])
         except KeyboardInterrupt:
@@ -245,13 +245,13 @@ def handle_packet(pkt):
                     raise Message(pkt)
     return
 
-def send_No_hop(ip="10.0.1.1", ID=0, message="DHT message for testing" ,message_type=1):
+def send_No_hop(ip="10.0.1.1", ID=0, message="DHT message for testing" ,message_type=1, gid=1):
     """
     Send a No_hop packet
     """
     ip=ip.split("/")[0]
     addr = socket.gethostbyname(ip)
-    pkt = (Ether(dst='00:04:00:00:00:00', type=0x800) / IP(dst=addr, ttl=50, proto=2) / No_hop(message_type=int(message_type), ID=int(ID), gid=1 , counter=0) / message)
+    pkt = (Ether(dst='00:04:00:00:00:00', type=0x800) / IP(dst=addr, ttl=50, proto=2) / No_hop(message_type=int(message_type), ID=int(ID), gid=gid, counter=0) / message)
     sendp(pkt, iface="eth0")
     return
 
