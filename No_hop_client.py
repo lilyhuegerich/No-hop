@@ -255,6 +255,13 @@ def send_No_hop(ip="10.0.1.1", ID=0, message="DHT message for testing" ,message_
     return
 
 if __name__ == "__main__":
-
-    host= No_hop_host(client=False)
+    if len(sys.argv)<2:
+        host= No_hop_host(client=False)
+    else:
+        if sys.argv[1]=="c":
+            host= No_hop_host(client=True)
+        elif  type(int(sys.argv[1]))==int:
+            host= No_hop_host(client=False, ID=int(sys.argv[1]))
+        else:
+            raise Exception("Unvalid parameters:", str(sys.argv))
     host.run()
