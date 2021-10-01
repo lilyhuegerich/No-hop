@@ -198,7 +198,7 @@ class No_hop_host:
             self.last_stabilize=now
         return
 
-    def start(self, queue_recieve_fail, queue_stabilize_fail, queue_stabilize_join):
+    def start():#self, queue_recieve_fail, queue_stabilize_fail, queue_stabilize_join):
         """
         recieves and handles incoming packets for joining, failing , and stabilize
         """
@@ -207,14 +207,14 @@ class No_hop_host:
             try:
                 sniff(iface=iface, prn=handle_packet)
             except KeyboardInterrupt:
-                queue_stabilize_fail.put(Fail('F'))
+                #queue_stabilize_fail.put(Fail('F'))
                 self.handle_fail()
                 return
             except Join as interrupt:
-                queue_stabilize_join.put(Join(interrupt))
+                #queue_stabilize_join.put(Join(interrupt))
                 self.handle_join(interrupt)
             except Fail as interrupt:
-                queue_stabilize_fail.put(Fail('F'))
+                #queue_stabilize_fail.put(Fail('F'))
                 self.handle_fail(interrupt)
             except Message as interrupt:
                 self.handle_message(interrupt)
