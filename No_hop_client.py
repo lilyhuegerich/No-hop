@@ -225,6 +225,7 @@ def handle_packet(pkt):
     Recieves and calls apropirate interuptions for No-hop packets
     Is called from sniff.
     """
+    print(pkt)
     sys.stdout.flush()
     if not IP in pkt:
         return
