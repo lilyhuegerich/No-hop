@@ -183,7 +183,7 @@ class No_hop_host:
         """
         print("Recieved message: "+str(pkt))
         now=time.time()
-        mes=str(pkt[IP].payload)
+        mes=pkt[IP].payload
         ID=pkt[No_hop].ID
 
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
