@@ -29,7 +29,7 @@ class Join:
     """
     Queued when a new Join is found
     """
-     def __init__(self, ID):
+    def __init__(self, ID):
         self.ID = ID
     def return_id():
         return multiprocessing.current_process().ID
@@ -40,7 +40,7 @@ class Fail:
     """
     def __init__(self, on):
        self.on = on
-   def on():
+    def on():
        return multiprocessing.current_process().on
 class Ack:
     """
@@ -48,7 +48,7 @@ class Ack:
     """
     def __init__(self,time):
        self.time = time
-   def on():
+    def on():
        return multiprocessing.current_process().time
 class Fail_interupt(No_hop_interrupt):
     """
