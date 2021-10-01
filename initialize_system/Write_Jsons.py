@@ -207,6 +207,9 @@ def write_topology_file(network):
         json.dump(topo_dict, f, sort_keys=False, indent=4)
 
 def make_rewrite_entry(range, ip):
+    """
+    Make single No_hop_rewrite table entry
+    """
     table_entry = dict({
         "table":"ThisIngress.No_hop_table_lookup",
         "match":{
@@ -218,6 +221,9 @@ def make_rewrite_entry(range, ip):
         "action_params":{"dht_address": ip}
         })
 def make_rewrite_table(network, hosts):
+    """
+    Generate rewrite table for no-hop_rewrite rewrite switch
+    """
     rewrite_table=[]
     for h in network.hosts:
         for f_h in hosts:
@@ -232,6 +238,9 @@ def make_rewrite_table(network, hosts):
     return rewrite_table
 
 def write_build_files(network):
+    """
+    Generate and write all build files for system
+    """
     hosts= make_host_data(network.host_ids)
     switch_lpm_tables=make_ip_lpm_table(network, hosts)
 
@@ -255,6 +264,9 @@ def write_build_files(network):
         f.writelines(lines)
 
 def write_switch_json(table, switch, network):
+    """
+    Write switch info and table to to json
+    """
     topo_dict=dict({
                     "target":"bmv2",
                     "bmv2_json": network.compiled_p4_program_path+".json",
@@ -269,6 +281,9 @@ def write_switch_json(table, switch, network):
     with open(network.folder+"/build/"+switch+"P4runtime.json", "w+") as f:
         json.dump(topo_dict, f, sort_keys=True, indent=4)
 def make_host_entry(ip_count):
+    """
+    Generrate JSON entry for host for topology.json
+    """
     entry=dict()
     entry["ip"]="10.0."+str(ip_count)+"."+str(ip_count)+"/24"
     entry["mac"]="08:00:00:00:0"+str(ip_count)+":"+str(ip_count)+str(ip_count)
@@ -278,6 +293,9 @@ def make_host_entry(ip_count):
     return entry
 
 def make_host_data(host_ids):
+    """
+    Define host information for topology.json
+    """
     ip_count=1
     hosts=dict()
     hosts["h_client"]=make_host_entry(ip_count)
@@ -288,6 +306,9 @@ def make_host_data(host_ids):
     return hosts
 
 def make_ip_lpm_table(network, hosts):
+    """
+    Generate IPv4 tables
+    """
     switch_lpm_tables=[[]  for _ in range(len(network.switches))]
     for s, switch in enumerate(network.switches):
         for h in network.host_ids+ ["client"]:
@@ -296,6 +317,9 @@ def make_ip_lpm_table(network, hosts):
     return switch_lpm_tables
 
 def make_lpm_entry(switch,s, next_c, connections, connection_ports, switches, host):
+    """
+    Make single IPv4 lpm table entry
+    """
     for c, connection in enumerate(connections):
         if switch==connection[0] and next_c==connection[1]:
             port=connection_ports[c][0]
@@ -340,6 +364,9 @@ def make_lpm_entry(switch,s, next_c, connections, connection_ports, switches, ho
     return entry
 
 def find_spot(entry, list):
+    """
+    return index of entry in list
+    """
     for s, spot in enumerate(list):
         if entry==spot:
             return s

@@ -12,6 +12,9 @@ node_scalar=500
 edge_width=15
 
 class network:
+    """
+    Class for building initial state of No_hop system
+    """
     def __init__(self, max_id=32, nh_type="forward", rewrite_switch="a"):
         if not nh_type in ["forward", "rewrite"]:
             raise ValueError("Type " , nh_type, " not known, either  forward or rewrite.")
@@ -24,7 +27,7 @@ class network:
 
         if not rewrite_switch in self.switches:
             raise ValueError("rewrite_switch ", rewrite_switch, " not in switches ", str(self.switches))
-            
+
         self.g=nx.Graph()
         self.max_id=max_id
         self.host_ids=self.generate_random_keys()
