@@ -181,10 +181,11 @@ class No_hop_host:
         """
         Handling of type LOOK_UP message, either normal message, ack or stabilize
         """
+        print("Recieved message: "+str(pkt))
         now=time.time()
         mes=str(pkt[IP].payload)
         ID=pkt[No_hop].ID
-        print("Recieved message: "+str(pkt[IP].payload))
+
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
         if "S" in mes:
             self.waiting=0
