@@ -50,23 +50,17 @@ class Ack:
        self.time = time
     def on():
        return multiprocessing.current_process().time
-class Fail_interupt(No_hop_interrupt):
-    """
-    Raised when fail recieved
-    """
-    pass
 class Join_interupt(No_hop_interrupt):
     """
-    Raised when fail recieved
+    Raised when  recieved
     """
     pass
 class Stabilize_interupt(No_hop_interrupt):
     """
-    Raised when fail recieved
+    Raised when ack recieved
     """
     pass
-#TODO make fail and join interrupts
-#TODO make last stabilize item and interrupts
+
 class Message(No_hop_interrupt):
     """
     Raised when message recieved
@@ -190,6 +184,7 @@ class No_hop_host:
         now=time.time()
         mes=str(pkt[IP].payload)
         ID=pkt[No_hop].ID
+        print("Recieved message: "+str(pkt[IP].payload))
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
         if "S" in mes:
             self.waiting=0
@@ -210,7 +205,7 @@ class No_hop_host:
                 #queue_stabilize_fail.put(Fail('F'))
                 self.handle_fail()
                 return
-            except Join as interrupt:
+            except Join_interupt as interrupt:
                 #queue_stabilize_join.put(Join(interrupt))
                 self.handle_join(interrupt)
             except Fail as interrupt:
@@ -225,24 +220,18 @@ def handle_packet(pkt):
     Recieves and calls apropirate interuptions for No-hop packets
     Is called from sniff.
     """
-    print(pkt)
     sys.stdout.flush()
     if not IP in pkt:
         return
     ttl=str(pkt[IP].ttl)
     if ICMP in pkt:
         return
-
     if (not ttl=="50"):
         print (pkt)
         if IP in pkt:
             if pkt[IP].proto==2:
-                if pkt[No_hop].message_type==3:
-                    raise Join (pkt[No_hop].ID)
-                if pkt[No_hop].message_type==2:
-                    raise Fail("Fail.")
-                if pkt[No_hop].message_type==1:
-                    raise Message(pkt)
+                raise Message(pkt)
+
     return
 
 def send_No_hop(ip="10.0.1.1", ID=0, message="DHT message for testing" ,message_type=1, gid=1):
