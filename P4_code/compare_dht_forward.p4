@@ -246,10 +246,10 @@ control ThisIngress(inout headers hdr,
         }
 	    }
 
-
+        else{
 
         ipv4_lpm.apply();
-
+    }
     }
 }
 

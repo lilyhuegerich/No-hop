@@ -140,7 +140,7 @@ class No_hop_host:
                     print ("not in correct form. Type, ID, Message")
                 else:
                     #print (to_send)
-                    send_No_hop(ip="10.0.1.1", ID=int(to_send[1]), message=to_send[2] ,message_type=to_send[0])
+                    send_No_hop(ip="10.0.1.1", ID=int(to_send[1]), message=to_send[2] ,message_type=to_send[0], gid=1)
                     if self.verbose:
                         print ("sent packet with details id:", to_send[1], " type:", to_send[0], "message:", to_send[2])
         except KeyboardInterrupt:
