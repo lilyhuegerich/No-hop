@@ -184,7 +184,7 @@ class No_hop_host:
         """
         Handling of type LOOK_UP message, either normal message, ack or stabilize
         """
-        print("Recieved message: "+str(message))
+        print("Recieved message: "+str(message.payload))
         now=time.time()
         mes=message.payload
         ID=message.ID
