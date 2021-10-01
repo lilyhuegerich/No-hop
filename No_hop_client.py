@@ -25,55 +25,77 @@ class No_hop_interrupt(Exception):
     Base class for no hop interrupts
     """
     pass
-class Join(No_hop_interrupt):
+class Join:
     """
-    Raised when a new Join is found
+    Queued when a new Join is found
+    """
+     def __init__(self, ID):
+        self.ID = ID
+    def return_id():
+        return multiprocessing.current_process().ID
+
+class Fail:
+    """
+    Queued  when host should end
+    """
+    def __init__(self, on):
+       self.on = on
+   def on():
+       return multiprocessing.current_process().on
+class Ack:
+    """
+    Queued  when host should end
+    """
+    def __init__(self,time):
+       self.time = time
+   def on():
+       return multiprocessing.current_process().time
+class Fail_interupt(No_hop_interrupt):
+    """
+    Raised when fail recieved
     """
     pass
-class Fail(No_hop_interrupt):
+class Join_interupt(No_hop_interrupt):
     """
-    Raised when host should end
+    Raised when fail recieved
     """
     pass
+class Stabilize_interupt(No_hop_interrupt):
+    """
+    Raised when fail recieved
+    """
+    pass
+#TODO make fail and join interrupts
+#TODO make last stabilize item and interrupts
 class Message(No_hop_interrupt):
     """
     Raised when message recieved
     """
     pass
-
-class No_hop_host:
-    """
-    No hop client for sending recieving and running stabilize proccesses
-    """
-    def __init__(self, client= False, verbose=True, keep_log_files=True, stabilze_timeout=100, ID=None):
-        self.client=client
-        self.ID=ID
-        self.verbose=verbose
-        self.Recieved={"No_hop":list()}
-        self.last_stabilize= None
-        self.stabilze_timeout=stabilze_timeout
-        self.waiting=0
-        self.On=True
+class No_hop_stabilize:
+    def __init__(self, fail_q, last_stabilze_q, join_q, keep_log_files=True, stabilze_timeout=100, ID=None):
         self.keep_log_files=keep_log_files
-
-    def run(self):
-        print ("Starting No-hop")
-        if self.client:
-            self.send()
-        else:
-            self.recieve_process= Process(target= self.start(), args=()) # Starts to listen for packets
-            self.send()# Prepares to send user input
-            self.stabilize_process=Proccess(target= self.stabilize(), args=()) # Begins stabilization proccess
-            self.recieve_process.start()
-            self.stabilize_process.start()
-
-
+        self.stabilze_timeout= stabilze_timeout
+        self.ID = ID
+        self.fail_q=fail_q
+        self.last_stabilze_q=last_stabilze_q
+        self=join_q=join_q
+        self.last_stabilize=time.time()
+        self.waiting=0
 
     def stabilize(self):
         """
         Stabilize proccess periodically checks succesor
         """
         while self.On:
+            #recieve for id
+            join = queue_join.get()
+            self.ID=join.return_id()
+
+            #recieve fail
+            fail= queue_fail.get()
+            self.On=fail.On()
+
             if self.ID==None:
                 continue
             now=time.time()
@@ -84,6 +106,26 @@ class No_hop_host:
                     send_No_hop(ID=self.ID+1, message="S" ,message_type=1)
                     self.waiting=1
         return
+class No_hop_host:
+    """
+    No hop client for sending recieving and running stabilize proccesses
+    """
+    def __init__(self, client= False, verbose=True, keep_log_files=True, stabilze_timeout=100, ID=None):
+        self.client=client
+        self.ID=ID
+        self.verbose=verbose
+        self.Recieved={"No_hop":list()}
+        self.On=True
+        self.keep_log_files=keep_log_files
+        self.stabilize= No_hop_stabilize() #TODO make queues for stabilize and pass to stabilize object
+
+    def run(self):
+        print ("Starting No-hop")
+        if self.client:
+            self.send()
+        else:
+            self.start()
+
     def send(self):
         """
         Waits for user input to send to another host or client
@@ -103,7 +145,6 @@ class No_hop_host:
                         print ("sent packet with details id:", to_send[1], " type:", to_send[0], "message:", to_send[2])
         except KeyboardInterrupt:
             print ("Ending No_hop.")
-            self.handle_fail()
             if not self.client:
                 self.recieve_process.join()
                 self.stabilize_process.join()
@@ -157,7 +198,7 @@ class No_hop_host:
             self.last_stabilize=now
         return
 
-    def start(self):
+    def start(self, queue_recieve_fail, queue_stabilize_fail, queue_stabilize_join):
         """
         recieves and handles incoming packets for joining, failing , and stabilize
         """
@@ -166,11 +207,14 @@ class No_hop_host:
             try:
                 sniff(iface=iface, prn=handle_packet)
             except KeyboardInterrupt:
-                self.write_logs()
+                queue_stabilize_fail.put(Fail('F'))
+                self.handle_fail()
                 return
             except Join as interrupt:
+                queue_stabilize_join.put(Join(interrupt))
                 self.handle_join(interrupt)
             except Fail as interrupt:
+                queue_stabilize_fail.put(Fail('F'))
                 self.handle_fail(interrupt)
             except Message as interrupt:
                 self.handle_message(interrupt)
@@ -187,7 +231,9 @@ def handle_packet(pkt):
     ttl=str(pkt[IP].ttl)
     if ICMP in pkt:
         return
+
     if (not ttl=="50"):
+        print (pkt)
         if IP in pkt:
             if pkt[IP].proto==2:
                 if pkt[No_hop].message_type==3:
