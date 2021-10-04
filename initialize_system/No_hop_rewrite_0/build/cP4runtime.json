@@ -1,0 +1,133 @@
+{
+    "bmv2_json": "../../P4_code/compare_dht_rewrite.p4.json",
+    "p4info": "../../P4_code/compare_dht_rewrite.p4.p4.p4info.txt",
+    "table_entries": [
+        {
+            "action_name": "ThisIngress.ipv4_forward",
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:55",
+                "port": 2
+            },
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.2.2",
+                    32
+                ]
+            },
+            "table": "ThisIngress.ipv4_lpm"
+        },
+        {
+            "action_name": "ThisIngress.ipv4_forward",
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:55",
+                "port": 2
+            },
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.3.3",
+                    32
+                ]
+            },
+            "table": "ThisIngress.ipv4_lpm"
+        },
+        {
+            "action_name": "ThisIngress.ipv4_forward",
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:66",
+                "port": 3
+            },
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.4.4",
+                    32
+                ]
+            },
+            "table": "ThisIngress.ipv4_lpm"
+        },
+        {
+            "action_name": "ThisIngress.ipv4_forward",
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:66",
+                "port": 3
+            },
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.5.5",
+                    32
+                ]
+            },
+            "table": "ThisIngress.ipv4_lpm"
+        },
+        {
+            "action_name": "ThisIngress.ipv4_forward",
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:00",
+                "port": 1
+            },
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.6.6",
+                    32
+                ]
+            },
+            "table": "ThisIngress.ipv4_lpm"
+        },
+        {
+            "action_name": "ThisIngress.ipv4_forward",
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:00",
+                "port": 1
+            },
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.7.7",
+                    32
+                ]
+            },
+            "table": "ThisIngress.ipv4_lpm"
+        },
+        {
+            "action_name": "ThisIngress.ipv4_forward",
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:00",
+                "port": 1
+            },
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.8.8",
+                    32
+                ]
+            },
+            "table": "ThisIngress.ipv4_lpm"
+        },
+        {
+            "action_name": "ThisIngress.ipv4_forward",
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:00",
+                "port": 1
+            },
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.9.9",
+                    32
+                ]
+            },
+            "table": "ThisIngress.ipv4_lpm"
+        },
+        {
+            "action_name": "ThisIngress.ipv4_forward",
+            "action_params": {
+                "dstAddr": "08:00:00:00:01:00",
+                "port": 1
+            },
+            "match": {
+                "hdr.ipv4.dstAddr": [
+                    "10.0.1.1",
+                    32
+                ]
+            },
+            "table": "ThisIngress.ipv4_lpm"
+        }
+    ],
+    "target": "bmv2"
+}

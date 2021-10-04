@@ -19,7 +19,7 @@ class network:
         if not nh_type in ["forward", "rewrite"]:
             raise ValueError("Type " , nh_type, " not known, either  forward or rewrite.")
 
-        self.new_folder_prefix="No_hop_Aggregate_"
+        self.new_folder_prefix="No_hop_"+nh_type+"_"
         self.compiled_p4_program_path="../../P4_code/compare_dht_"+nh_type+".p4"
         self.type= nh_type
         self.switches= ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
@@ -99,7 +99,10 @@ class network:
             nx.draw_networkx_nodes(self.g, pos, nodelist=[h],  node_color="grey", node_size= Write_Jsons.range_size(self.host_range(h))*node_scalar)
         nx.draw_networkx_nodes(self.g, pos, nodelist=["client"], node_color="grey" ,node_size=(self.max_id+1)*node_scalar )
         for s in self.switches:
-            nx.draw_networkx_nodes(self.g, pos, nodelist=s,  node_color="skyblue", node_size=Write_Jsons.range_size(self.reachable[s])*node_scalar)
+            if (self.type=="rewrite" and s==self.rewrite_switch):
+                    nx.draw_networkx_nodes(self.g, pos, nodelist=s,  node_color="blue", node_size=Write_Jsons.range_size(self.reachable[s])*node_scalar)
+            else:
+                nx.draw_networkx_nodes(self.g, pos, nodelist=s,  node_color="skyblue", node_size=Write_Jsons.range_size(self.reachable[s])*node_scalar)
 
         for c, connection in enumerate(self.connections):
             nx.draw_networkx_edges(self.g, pos, edgelist=[connection], edge_color="grey" ,width=edge_width)
@@ -250,6 +253,11 @@ class network:
             raise ValueError ("no host with ID "+ str(id))
 
 if __name__ == "__main__":
-    test=network()
-    Write_Jsons.write_build_files(test)
-    test.draw_network()
+
+    if len(sys.argv)>1:
+        nh_type=sys.argv[1]
+        nh_network=network(nh_type=nh_type)
+    else:
+        nh_network=network()
+    Write_Jsons.write_build_files(nh_network)
+    nh_network.draw_network()

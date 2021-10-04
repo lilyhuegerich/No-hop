@@ -7,7 +7,7 @@ import json
 import time
 import socket
 import sys
-from multiprocessing import Process
+import threading
 
 max_id=32
 
@@ -70,30 +70,42 @@ class Message(No_hop_interrupt):
        self.payload = payload
        self.ID=ID
     pass
-class No_hop_stabilize:
-    def __init__(self, fail_q, last_stabilze_q, join_q, keep_log_files=True, stabilze_timeout=100, ID=None):
+
+
+class No_hop_host:
+    """
+    No hop client for sending recieving and running stabilize proccesses
+    """
+    def __init__(self, client= False, verbose=True, keep_log_files=True, stabilze_timeout=100, ID=None, test=None):
+        self.client=client
+        self.ID=ID
+        self.verbose=verbose
+        self.Recieved={"No_hop":list()}
+        self.On=True
+        self.test=test
         self.keep_log_files=keep_log_files
-        self.stabilze_timeout= stabilze_timeout
-        self.ID = ID
-        self.fail_q=fail_q
-        self.last_stabilze_q=last_stabilze_q
-        self=join_q=join_q
-        self.last_stabilize=time.time()
-        self.waiting=0
+        #self.stabilize= No_hop_stabilize() #TODO make queues for stabilize and pass to stabilize object
+
+    def run(self):
+        """
+        Run corresponding systems for No-hop host
+        """
+        print ("Starting No-hop")
+        if self.client:
+            self.send()
+        elif (not self.test ==None):
+            self.test()
+        else:
+            thread=  threading.Thread(self.stabilize)
+            thread.start()
+            self.start()
+            thread.join()
 
     def stabilize(self):
         """
         Stabilize proccess periodically checks succesor
         """
         while self.On:
-            #recieve for id
-            join = queue_join.get()
-            self.ID=join.return_id()
-
-            #recieve fail
-            fail= queue_fail.get()
-            self.On=fail.On()
-
             if self.ID==None:
                 continue
             now=time.time()
@@ -103,26 +115,17 @@ class No_hop_stabilize:
                 else:
                     send_No_hop(ID=(self.ID+1)%max_id, message="S" ,message_type=1)
                     self.waiting=1
+        print("Ending stabilize.")
         return
-class No_hop_host:
-    """
-    No hop client for sending recieving and running stabilize proccesses
-    """
-    def __init__(self, client= False, verbose=True, keep_log_files=True, stabilze_timeout=100, ID=None):
-        self.client=client
-        self.ID=ID
-        self.verbose=verbose
-        self.Recieved={"No_hop":list()}
-        self.On=True
-        self.keep_log_files=keep_log_files
-        #self.stabilize= No_hop_stabilize() #TODO make queues for stabilize and pass to stabilize object
-
-    def run(self):
-        print ("Starting No-hop")
-        if self.client:
-            self.send()
-        else:
-            self.start()
+    def test():
+        """
+        Send test many ids of every id to test system. Each test message has a payload the time of sending.
+        """
+        for i in range(self.test):
+            for test_id in range(0, max_id):
+                test_message= "Sent: "+str(time.time())
+                send_No_hop( ID=test_id , message=test_message ,message_type=1, gid=1)
+        return
 
     def send(self):
         """
@@ -200,10 +203,10 @@ class No_hop_host:
             #TODO update ID in stabilize threading
             mes=mes.split(":")
             if type(int(mes[1]))==int:
-                self.update_ID(int(mes[1]))
+                self.ID=(int(mes[1]))
         return
 
-    def start(self):#, queue_recieve_fail, queue_stabilize_fail, queue_stabilize_join):
+    def start(self):
         """
         recieves and handles incoming packets for joining, failing , and stabilize
         """
@@ -221,6 +224,7 @@ class No_hop_host:
                     self.handle_message(interrupt)
         except KeyboardInterrupt:
             self.handle_fail()
+            self.On=0
             return
         return
 
@@ -235,7 +239,6 @@ def handle_packet(pkt):
     ttl=str(pkt[IP].ttl)
     if ICMP in pkt:
         return
-
     #print (pkt)
     if IP in pkt:
         if pkt[IP].proto==2:

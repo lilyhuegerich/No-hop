@@ -220,18 +220,19 @@ def make_rewrite_entry(range, ip):
         "action_name":"ThisIngress.dht_rewrite",
         "action_params":{"dht_address": ip}
         })
+    return table_entry
 def make_rewrite_table(network, hosts):
     """
     Generate rewrite table for no-hop_rewrite rewrite switch
     """
     rewrite_table=[]
-    for h in network.hosts:
+    for h in network.host_ids:
         for f_h in hosts:
-            if h in f_h:
+            if str(h) in f_h:
                 ip= hosts[f_h]["ip"].split("/")[0]
                 break
         else:
-            raise ValueError("Could not find ", h ," in " str(hosts))
+            raise ValueError("Could not find ", h ," in ", str(hosts))
         for r in network.host_range(h):
             rewrite_table.append(make_rewrite_entry(r, ip))
     #TODO test
@@ -253,7 +254,7 @@ def write_build_files(network):
     else:
         for s, switch in enumerate(network.switches):
             if switch ==network.rewrite_switch:
-                write_switch_json(make_rewrite_table(network, hosts) + switch_lpm_tables[s], switch, network))
+                write_switch_json(make_rewrite_table(network, hosts) + switch_lpm_tables[s], switch, network)
             else:
                 write_switch_json(switch_lpm_tables[s], switch, network)
     write_topology_file(network)
