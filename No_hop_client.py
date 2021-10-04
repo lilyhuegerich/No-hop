@@ -100,7 +100,8 @@ class No_hop_host:
         else:
             thread=  threading.Thread(target = self.stabilize)
             #thread.start()
-            self.start()
+            self.stabilize()
+            #self.start()
             #thread.join()
             self.handle_fail()
             return
@@ -224,7 +225,7 @@ class No_hop_host:
         """
         iface = 'eth0'
 
-        while self.On:
+        while self.On==1:
             try:
                 sniff(iface=iface, prn=handle_packet)
             except KeyboardInterrupt:
@@ -232,11 +233,9 @@ class No_hop_host:
                 self.handle_fail()
                 self.On=0
                 return
-            except Fail as interrupt:
-                self.handle_fail(interrupt)
             except Message as interrupt:
                 self.handle_message(interrupt)
-        
+
 def handle_packet(pkt):
     """
     Recieves and calls apropirate interuptions for No-hop packets
