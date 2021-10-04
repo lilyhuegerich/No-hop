@@ -128,7 +128,8 @@ class No_hop_host:
         except KeyboardInterrupt:
             self.On=0
             send_No_hop(ID=(self.ID)%max_id, message="Fail" ,message_type=1)
-        print("Ending stabilize.")
+            print("Ending stabilize.")
+        self.On=0
         return
     def test():
         """
