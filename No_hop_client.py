@@ -208,7 +208,7 @@ class No_hop_host:
         ID=int(message.ID)
 
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
-        if "s" in mes:
+        if "S" in mes:
             print ("Sendng ack to ", ID)
             send_No_hop(ID=(ID-1)%max_id, message="ack" ,message_type=1)
         if "ack" in mes:
