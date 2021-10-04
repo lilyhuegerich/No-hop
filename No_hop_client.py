@@ -209,9 +209,10 @@ class No_hop_host:
 
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
         if "s" in mes:
+            print ("Sendng ack to ", ID)
             send_No_hop(ID=ID, message="ack" ,message_type=1)
         if "ack" in mes:
-            self.last_stabilize=now
+            self.waiting=0
         if "join" in mes:
             mes=mes.split(":")
             if type(int(mes[1]))==int:
