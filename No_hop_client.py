@@ -159,9 +159,6 @@ class No_hop_host:
                         print ("sent packet with details id:", to_send[1], " type:", to_send[0], "message:", to_send[2])
         except KeyboardInterrupt:
             print ("Ending No_hop.")
-            if not self.client:
-                self.recieve_process.join()
-                self.stabilize_process.join()
         return
     def handle_join(self, ID):
         """
@@ -189,7 +186,7 @@ class No_hop_host:
         if self.keep_log_files:
             if (self.ID==None and self.client==False):
                 print("No ID or client status, cannot make log files.")
-            if not self.ID==None:
+            elif not self.ID==None:
                 f= open("./packet_log_host_"+str(self.ID)+".txt", "w+")
             else:
                 f= open("./packet_log_host_client.txt", "w+")
@@ -216,7 +213,7 @@ class No_hop_host:
         if "join" in mes:
             mes=mes.split(":")
             print "Setting ID to "+str((int(mes[1])))
-            self.ID=(int(mes[1]))
+            self.ID=int(mes[1])
         return
 
     def start(self):
