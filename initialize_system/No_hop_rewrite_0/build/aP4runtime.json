@@ -15,7 +15,7 @@
                 ]
             },
             "priority": 1,
-            "table": "ThisIngress.No_hop_table_lookup"
+            "table": "ThisIngress.No_hop_lookup"
         },
         {
             "action_name": "ThisIngress.dht_rewrite",
@@ -30,7 +30,7 @@
                 ]
             },
             "priority": 1,
-            "table": "ThisIngress.No_hop_table_lookup"
+            "table": "ThisIngress.No_hop_lookup"
         },
         {
             "action_name": "ThisIngress.dht_rewrite",
@@ -41,11 +41,11 @@
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
                     0,
-                    2
+                    4
                 ]
             },
             "priority": 1,
-            "table": "ThisIngress.No_hop_table_lookup"
+            "table": "ThisIngress.No_hop_lookup"
         },
         {
             "action_name": "ThisIngress.dht_rewrite",
@@ -55,12 +55,12 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    2,
-                    7
+                    4,
+                    13
                 ]
             },
             "priority": 1,
-            "table": "ThisIngress.No_hop_table_lookup"
+            "table": "ThisIngress.No_hop_lookup"
         },
         {
             "action_name": "ThisIngress.dht_rewrite",
@@ -70,12 +70,12 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    7,
-                    9
+                    13,
+                    16
                 ]
             },
             "priority": 1,
-            "table": "ThisIngress.No_hop_table_lookup"
+            "table": "ThisIngress.No_hop_lookup"
         },
         {
             "action_name": "ThisIngress.dht_rewrite",
@@ -85,12 +85,12 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    9,
-                    17
+                    16,
+                    18
                 ]
             },
             "priority": 1,
-            "table": "ThisIngress.No_hop_table_lookup"
+            "table": "ThisIngress.No_hop_lookup"
         },
         {
             "action_name": "ThisIngress.dht_rewrite",
@@ -100,12 +100,12 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    17,
-                    20
+                    18,
+                    22
                 ]
             },
             "priority": 1,
-            "table": "ThisIngress.No_hop_table_lookup"
+            "table": "ThisIngress.No_hop_lookup"
         },
         {
             "action_name": "ThisIngress.dht_rewrite",
@@ -115,12 +115,12 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    20,
-                    27
+                    22,
+                    24
                 ]
             },
             "priority": 1,
-            "table": "ThisIngress.No_hop_table_lookup"
+            "table": "ThisIngress.No_hop_lookup"
         },
         {
             "action_name": "ThisIngress.dht_rewrite",
@@ -130,12 +130,12 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    27,
+                    24,
                     30
                 ]
             },
             "priority": 1,
-            "table": "ThisIngress.No_hop_table_lookup"
+            "table": "ThisIngress.No_hop_lookup"
         },
         {
             "action_name": "ThisIngress.ipv4_forward",

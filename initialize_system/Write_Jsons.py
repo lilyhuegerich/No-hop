@@ -211,7 +211,7 @@ def make_rewrite_entry(range, ip):
     Make single No_hop_rewrite table entry
     """
     table_entry = dict({
-        "table":"ThisIngress.No_hop_table_lookup",
+        "table":"ThisIngress.No_hop_lookup",
         "match":{
             "hdr.dht.group_id": 1,
             "hdr.dht.id": (int(range[0]), int(range[1]))
