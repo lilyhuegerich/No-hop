@@ -5,7 +5,6 @@ from scapy.all import bind_layers
 import os
 import json
 import time
-import sleep
 import socket
 import sys
 import threading
@@ -27,42 +26,6 @@ class No_hop_interrupt(Exception):
     Base class for no hop interrupts
     """
     pass
-class Join:
-    """
-    Queued when a new Join is found
-    """
-    def __init__(self, ID):
-        self.ID = ID
-    def return_id():
-        return multiprocessing.current_process().ID
-
-class Fail:
-    """
-    Queued  when host should end
-    """
-    def __init__(self, on):
-       self.on = on
-    def on():
-       return multiprocessing.current_process().on
-class Ack:
-    """
-    Queued  when host should end
-    """
-    def __init__(self,time):
-       self.time = time
-    def on():
-       return multiprocessing.current_process().time
-class Join_interupt(No_hop_interrupt):
-    """
-    Raised when  recieved
-    """
-    pass
-class Stabilize_interupt(No_hop_interrupt):
-    """
-    Raised when ack recieved
-    """
-    pass
-
 class Message(No_hop_interrupt):
     """
     Raised when message recieved
@@ -71,7 +34,6 @@ class Message(No_hop_interrupt):
        self.payload = payload
        self.ID=ID
     pass
-
 
 class No_hop_host:
     """
@@ -128,7 +90,7 @@ class No_hop_host:
                         self.waiting=1
         except KeyboardInterrupt:
             self.On=0
-            sleep(1)
+            time.sleep(1)
             send_No_hop(ID=(self.ID)%max_id, message="Fail" ,message_type=1)
             print("Ending stabilize.")
         self.On=0
