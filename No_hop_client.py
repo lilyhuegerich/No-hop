@@ -193,6 +193,7 @@ class No_hop_host:
                 f= open("./packet_log_host_"+str(self.ID)+".txt", "w+")
             else:
                 f= open("./packet_log_host_client.txt", "w+")
+            print (self.Recieved)
             json.dump(self.Recieved,  f, sort_keys=True, indent=4)
             f.close()
         return
@@ -210,10 +211,8 @@ class No_hop_host:
         if "s" in mes:
             send_No_hop(ID=ID, message="ack" ,message_type=1)
         if "ack" in mes:
-            #TODO update last stabilize in stabilize thread
             self.last_stabilize=now
         if "join" in mes:
-            #TODO update ID in stabilize threading
             mes=mes.split(":")
             if type(int(mes[1]))==int:
                 self.ID=(int(mes[1]))
