@@ -82,10 +82,10 @@ class No_hop_host:
         self.verbose=verbose
         self.Recieved={"No_hop":list()}
         self.On=True
+        self.last_stabilize=time.time()
         self.test=test
         self.keep_log_files=keep_log_files
-        #self.stabilize= No_hop_stabilize() #TODO make queues for stabilize and pass to stabilize object
-
+        
     def run(self):
         """
         Run corresponding systems for No-hop host
@@ -96,7 +96,7 @@ class No_hop_host:
         elif (not self.test ==None):
             self.test()
         else:
-            thread=  threading.Thread(target =self.stabilize)
+            thread=  threading.Thread(target = self.stabilize)
             thread.start()
             self.start()
             thread.join()
@@ -223,6 +223,7 @@ class No_hop_host:
                 except Message as interrupt:
                     self.handle_message(interrupt)
         except KeyboardInterrupt:
+            print ("sending shutdown.")
             self.handle_fail()
             self.On=0
             return
