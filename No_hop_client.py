@@ -100,11 +100,8 @@ class No_hop_host:
         else:
             thread=  threading.Thread(target = self.stabilize)
             thread.start()
-            try:
-                self.start()
-            except KeyboardInterrupt:
-                print ("sending shutdown.")
-                self.On=0
+            self.start()
+
                 thread.join()
                 self.handle_fail()
                 return
@@ -225,18 +222,20 @@ class No_hop_host:
         recieves and handles incoming packets for joining, failing , and stabilize
         """
         iface = 'eth0'
-
-        while self.On:
-            try:
-                sniff(iface=iface, prn=handle_packet)
-            except KeyboardInterrupt:
-                self.handle_fail()
-                return
-            except Fail as interrupt:
-                self.handle_fail(interrupt)
-            except Message as interrupt:
-                self.handle_message(interrupt)
-
+        try:
+            while self.On:
+                try:
+                    sniff(iface=iface, prn=handle_packet)
+                except KeyboardInterrupt:
+                    self.handle_fail()
+                    return
+                except Fail as interrupt:
+                    self.handle_fail(interrupt)
+                except Message as interrupt:
+                    self.handle_message(interrupt)
+        except KeyboardInterrupt:
+            print ("sending shutdown.")
+            self.On=0
 def handle_packet(pkt):
     """
     Recieves and calls apropirate interuptions for No-hop packets
@@ -250,7 +249,7 @@ def handle_packet(pkt):
         return
     #print (pkt)
     if IP in pkt:
-        if pkt[IP].proto==2:
+        if pkt[IP].proto==2 and pkt[IP].ttl<50:
             raise Message(pkt[IP].payload, pkt[No_hop].ID)
 
     return
