@@ -83,9 +83,10 @@ class No_hop_host:
         self.Recieved={"No_hop":list()}
         self.On=True
         self.last_stabilize=time.time()
+        self.stabilze_timeout=stabilze_timeout
         self.test=test
         self.keep_log_files=keep_log_files
-        
+
     def run(self):
         """
         Run corresponding systems for No-hop host
@@ -98,8 +99,15 @@ class No_hop_host:
         else:
             thread=  threading.Thread(target = self.stabilize)
             thread.start()
-            self.start()
-            thread.join()
+            try:
+                self.start()
+            except KeyboardInterrupt:
+                thread.join()
+                print ("sending shutdown.")
+                self.handle_fail()
+                self.On=0
+                return
+
 
     def stabilize(self):
         """
@@ -211,23 +219,17 @@ class No_hop_host:
         recieves and handles incoming packets for joining, failing , and stabilize
         """
         iface = 'eth0'
-        try:
-            while self.On:
-                try:
-                    sniff(iface=iface, prn=handle_packet)
-                except KeyboardInterrupt:
-                    self.handle_fail()
-                    return
-                except Fail as interrupt:
-                    self.handle_fail(interrupt)
-                except Message as interrupt:
-                    self.handle_message(interrupt)
-        except KeyboardInterrupt:
-            print ("sending shutdown.")
-            self.handle_fail()
-            self.On=0
-            return
-        return
+
+        while self.On:
+            try:
+                sniff(iface=iface, prn=handle_packet)
+            except KeyboardInterrupt:
+                self.handle_fail()
+                return
+            except Fail as interrupt:
+                self.handle_fail(interrupt)
+            except Message as interrupt:
+                self.handle_message(interrupt)
 
 def handle_packet(pkt):
     """
