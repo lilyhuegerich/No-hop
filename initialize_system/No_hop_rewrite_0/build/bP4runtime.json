@@ -1,6 +1,6 @@
 {
-    "bmv2_json": "../../P4_code/compare_dht_rewrite.p4.json",
-    "p4info": "../../P4_code/compare_dht_rewrite.p4.p4.p4info.txt",
+    "bmv2_json": "../../P4_code/compare_dht_rewrite.json",
+    "p4info": "../../P4_code/compare_dht_rewrite.p4.p4info.txt",
     "table_entries": [
         {
             "action_name": "ThisIngress.ipv4_forward",

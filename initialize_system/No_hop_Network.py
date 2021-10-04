@@ -20,7 +20,7 @@ class network:
             raise ValueError("Type " , nh_type, " not known, either  forward or rewrite.")
 
         self.new_folder_prefix="No_hop_"+nh_type+"_"
-        self.compiled_p4_program_path="../../P4_code/compare_dht_"+nh_type+".p4"
+        self.compiled_p4_program_path="../../P4_code/compare_dht_"+nh_type
         self.type= nh_type
         self.switches= ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
         self.rewrite_switch=rewrite_switch

@@ -1,6 +1,6 @@
 {
-    "bmv2_json": "../../P4_code/compare_dht_rewrite.p4.json",
-    "p4info": "../../P4_code/compare_dht_rewrite.p4.p4.p4info.txt",
+    "bmv2_json": "../../P4_code/compare_dht_rewrite.json",
+    "p4info": "../../P4_code/compare_dht_rewrite.p4.p4info.txt",
     "table_entries": [
         {
             "action_name": "ThisIngress.dht_rewrite",
@@ -10,7 +10,7 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    29,
+                    30,
                     32
                 ]
             },
@@ -41,7 +41,7 @@
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
                     0,
-                    4
+                    2
                 ]
             },
             "priority": 1,
@@ -55,8 +55,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    4,
-                    9
+                    2,
+                    7
                 ]
             },
             "priority": 1,
@@ -70,8 +70,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    9,
-                    13
+                    7,
+                    9
                 ]
             },
             "priority": 1,
@@ -85,8 +85,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    13,
-                    18
+                    9,
+                    17
                 ]
             },
             "priority": 1,
@@ -100,8 +100,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    18,
-                    22
+                    17,
+                    20
                 ]
             },
             "priority": 1,
@@ -115,8 +115,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    22,
-                    26
+                    20,
+                    27
                 ]
             },
             "priority": 1,
@@ -130,8 +130,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    26,
-                    29
+                    27,
+                    30
                 ]
             },
             "priority": 1,
