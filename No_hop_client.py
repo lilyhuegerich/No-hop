@@ -94,19 +94,9 @@ class No_hop_host:
         """
         print ("Starting No-hop")
         if self.client:
-            try:
-                self.send()
-            except KeyboardInterrupt:
-                print ("sending shutdown.")
-                self.On=0
-                return
+            self.send()
         elif (not self.test ==None):
-            try:
-                self.test()
-            except KeyboardInterrupt:
-                print ("terminated test early.")
-                self.On=0
-                return
+            self.test()
         else:
             thread=  threading.Thread(target = self.stabilize)
             thread.start()
