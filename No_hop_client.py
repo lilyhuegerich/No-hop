@@ -117,11 +117,11 @@ class No_hop_host:
             if ((now-self.last_stabilize)>=self.stabilze_timeout):
                 self.last_stabilize=now
                 if self.waiting==1:
-                    print "Send fail: " + str((self.ID+1)%max_id))
+                    print "Send fail: " + str((self.ID+1)%max_id)
                     send_No_hop(ID=(self.ID+1)%max_id, message="S" ,message_type=2) #Failed node
                     self.waiting=0
                 else:
-                    print "Send stabilize: " +str((self.ID+1)%max_id))
+                    print "Send stabilize: " +str((self.ID+1)%max_id)
                     send_No_hop(ID=(self.ID+1)%max_id, message="S" ,message_type=1)
                     self.waiting=1
 
