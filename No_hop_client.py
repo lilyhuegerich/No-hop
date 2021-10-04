@@ -204,8 +204,8 @@ class No_hop_host:
         """
         print("Recieved message: "+str(message.payload))
         now=time.time()
-        mes=message.payload
-        ID=message.ID
+        mes=message[IP].payload
+        ID=int(message.ID)
 
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
         if "s" in mes:
