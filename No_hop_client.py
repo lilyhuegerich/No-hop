@@ -76,7 +76,7 @@ class No_hop_host:
     """
     No hop client for sending recieving and running stabilize proccesses
     """
-    def __init__(self, client= False, verbose=True, keep_log_files=True, stabilze_timeout=100, ID=None, test=None):
+    def __init__(self, client= False, verbose=True, keep_log_files=True, stabilze_timeout=10, ID=None, test=None):
         self.client=client
         self.ID=ID
         self.verbose=verbose
@@ -120,8 +120,10 @@ class No_hop_host:
             now=time.time()
             if ((now-self.last_stabilize)>=self.stabilze_timeout):
                 if self.waiting==1:
+                    print ("Send fail: ",  (self.ID+1)%max_id)
                     send_No_hop(ID=(self.ID+1)%max_id, message="S" ,message_type=2) #Failed node
                 else:
+                    print ("Send stabilize: ",  (self.ID+1)%max_id)
                     send_No_hop(ID=(self.ID+1)%max_id, message="S" ,message_type=1)
                     self.waiting=1
         print("Ending stabilize.")
