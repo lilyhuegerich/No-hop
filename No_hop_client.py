@@ -99,9 +99,9 @@ class No_hop_host:
             self.test()
         else:
             thread=  threading.Thread(target = self.stabilize)
-            thread.start()
+            #thread.start()
             self.start()
-            thread.join()
+            #thread.join()
             self.handle_fail()
             return
 
@@ -126,7 +126,7 @@ class No_hop_host:
                         send_No_hop(ID=(self.ID+1)%max_id, message="S" ,message_type=1)
                         self.waiting=1
         except KeyboardInterrupt:
-            self.On=0    
+            self.On=0
         print("Ending stabilize.")
         return
     def test():
