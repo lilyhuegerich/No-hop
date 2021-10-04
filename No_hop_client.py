@@ -96,7 +96,7 @@ class No_hop_host:
         elif (not self.test ==None):
             self.test()
         else:
-            thread=  threading.Thread(self.stabilize)
+            thread=  threading.Thread(target =self.stabilize)
             thread.start()
             self.start()
             thread.join()
