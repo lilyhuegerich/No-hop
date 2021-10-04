@@ -209,14 +209,14 @@ class No_hop_host:
 
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
         if "S" in mes:
-            print ("Sendng ack to ", ID)
+            print "Sendng ack to "+ str((ID-1)%max_id)
             send_No_hop(ID=(ID-1)%max_id, message="ack" ,message_type=1)
         if "ack" in mes:
             self.waiting=0
         if "join" in mes:
             mes=mes.split(":")
-            if type(int(mes[1]))==int:
-                self.ID=(int(mes[1]))
+            print "Setting ID to "+str((int(mes[1])))
+            self.ID=(int(mes[1]))
         return
 
     def start(self):
