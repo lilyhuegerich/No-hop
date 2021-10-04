@@ -208,7 +208,7 @@ control ThisIngress(inout headers hdr,
 
 
 
-    table No_hop_table_lookup {
+    table No_hop_lookup {
         key={
             hdr.dht.group_id           : exact;
             hdr.dht.id               : range;      /* can be replaced with ternary but controller has to be changed for switches without range match type */
