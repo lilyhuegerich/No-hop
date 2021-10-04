@@ -118,7 +118,7 @@ class No_hop_host:
             if self.ID==None:
                 continue
             now=time.time()
-            if ((now-self.last_stabilize)<self.stabilze_timeout):
+            if ((now-self.last_stabilize)>=self.stabilze_timeout):
                 if self.waiting==1:
                     send_No_hop(ID=(self.ID+1)%max_id, message="S" ,message_type=2) #Failed node
                 else:
