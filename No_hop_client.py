@@ -249,7 +249,7 @@ def handle_packet(pkt):
     #print (pkt)
     if IP in pkt:
         if pkt[IP].proto==2 and pkt[IP].ttl<50:
-            raise Message(pkt[IP].payload, pkt[No_hop].ID)
+            raise Message(pkt[No_hop].payload, pkt[No_hop].ID)
     return
 
 def send_No_hop(ip="10.0.1.1", ID=0, message="DHT message for testing" ,message_type=1, gid=1):
