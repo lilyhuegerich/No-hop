@@ -5,6 +5,7 @@ from scapy.all import bind_layers
 import os
 import json
 import time
+import sleep
 import socket
 import sys
 import threading
@@ -127,6 +128,7 @@ class No_hop_host:
                         self.waiting=1
         except KeyboardInterrupt:
             self.On=0
+            sleep(1)
             send_No_hop(ID=(self.ID)%max_id, message="Fail" ,message_type=1)
             print("Ending stabilize.")
         self.On=0
