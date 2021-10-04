@@ -101,10 +101,9 @@ class No_hop_host:
             thread=  threading.Thread(target = self.stabilize)
             thread.start()
             self.start()
-
-                thread.join()
-                self.handle_fail()
-                return
+            thread.join()
+            self.handle_fail()
+            return
 
 
     def stabilize(self):
