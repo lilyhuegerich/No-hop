@@ -82,6 +82,7 @@ class No_hop_host:
         self.verbose=verbose
         self.Recieved={"No_hop":list()}
         self.On=True
+        self.waiting=0
         self.last_stabilize=time.time()
         self.stabilze_timeout=stabilze_timeout
         self.test=test
@@ -93,17 +94,27 @@ class No_hop_host:
         """
         print ("Starting No-hop")
         if self.client:
-            self.send()
+            try:
+                self.send()
+            except KeyboardInterrupt:
+                print ("sending shutdown.")
+                self.On=0
+                return
         elif (not self.test ==None):
-            self.test()
+            try:
+                self.test()
+            except KeyboardInterrupt:
+                print ("terminated test early.")
+                self.On=0
+                return
         else:
             thread=  threading.Thread(target = self.stabilize)
             thread.start()
             try:
                 self.start()
             except KeyboardInterrupt:
-                thread.join()
                 print ("sending shutdown.")
+                thread.join()
                 self.handle_fail()
                 self.On=0
                 return
