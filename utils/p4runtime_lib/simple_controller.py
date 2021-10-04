@@ -192,6 +192,7 @@ def tableEntryToString(flow):
         match_str = '(default action)'
     else:
         match_str = '(any)'
+    print(flow)
     params = ['%s=%s' % (param_name, str(flow['action_params'][param_name])) for param_name in
               flow['action_params']]
     params = ', '.join(params)
