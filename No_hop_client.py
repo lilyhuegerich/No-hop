@@ -204,7 +204,7 @@ class No_hop_host:
         """
         print("Recieved message: "+str(message.payload))
         now=time.time()
-        mes=message[IP].payload
+        mes=message.payload
         ID=int(message.ID)
 
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
@@ -250,7 +250,6 @@ def handle_packet(pkt):
     if IP in pkt:
         if pkt[IP].proto==2 and pkt[IP].ttl<50:
             raise Message(pkt[IP].payload, pkt[No_hop].ID)
-
     return
 
 def send_No_hop(ip="10.0.1.1", ID=0, message="DHT message for testing" ,message_type=1, gid=1):
