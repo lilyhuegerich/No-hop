@@ -31,7 +31,7 @@ def controller():
                 2:2,
                 3:3
             })
-        s1.WritePRE(mc_group = mc_group_entry)
+    s1.WritePRE(mc_group = mc_group_entry)
     try:
         while (True):
             packetin = s1.PacketIn()
