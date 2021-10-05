@@ -94,7 +94,7 @@ class No_hop_host:
             print("Ending stabilize.")
         self.On=0
         return
-    def test():
+    def test(self):
         """
         Send test many ids of every id to test system. Each test message has a payload the time of sending.
         """
