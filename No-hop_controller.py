@@ -23,7 +23,7 @@ def controller():
             name='s1',
             address='127.0.0.1:50051',
             device_id=0,
-            proto_dump_file='logs/s1-p4runtime-requests.txt')
+            )
     s1.MasterArbitrationUpdate()
     while (True):
         packetin = s1.PacketIn()
