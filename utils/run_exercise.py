@@ -216,8 +216,8 @@ class ExerciseRunner:
         # stop right after the CLI is exited
         """for host_name, host_info in self.hosts.items():
             h = self.net.get(host_name)
-            h.cmd("python test.py")
-        self.net.stop()"""
+            h.cmd("python test.py")"""
+        self.net.stop()
 
 
     def parse_links(self, unparsed_links):
