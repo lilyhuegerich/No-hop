@@ -16,7 +16,7 @@ import p4runtime_lib.helper
 
 
 def controller():
-    p4info_helper = p4runtime_lib.helper.P4InfoHelper("P4_code/compare_dht_forward.p4.p4info.txt")
+    p4info_helper = p4runtime_lib.helper.P4InfoHelper("../../P4_code/compare_dht_forward.p4.p4info.txt")
     s1 = p4runtime_lib.bmv2.Bmv2SwitchConnection(
             address='127.0.0.1:50051',
             device_id=0
