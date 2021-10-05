@@ -362,9 +362,7 @@ class ExerciseRunner:
             print('corresponding txt file in %s:' % self.log_dir)
             print(' for example run:  cat %s/s1-p4runtime-requests.txt' % self.log_dir)
             print('')
-
-
-
+        CLI(self.net)
 
 def get_args():
     cwd = os.getcwd()
