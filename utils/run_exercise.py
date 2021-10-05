@@ -215,7 +215,9 @@ class ExerciseRunner:
         self.do_net_cli()
         # stop right after the CLI is exited
         self.net.stop()
-
+        for host_name, host_info in self.hosts.items():
+            h = self.net.get(host_name)
+            h.cmd("python test.py")
 
     def parse_links(self, unparsed_links):
         """ Given a list of links descriptions of the form [node1, node2, latency, bandwidth]
@@ -362,10 +364,7 @@ class ExerciseRunner:
             print('corresponding txt file in %s:' % self.log_dir)
             print(' for example run:  cat %s/s1-p4runtime-requests.txt' % self.log_dir)
             print('')
-        for host_name, host_info in self.hosts.items():
-            h = self.net.get(host_name)
 
-            h.cmd("python test.py")
 
 
 
