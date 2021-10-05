@@ -17,9 +17,8 @@ import p4runtime_lib.helper
 
 def controller():
     s1 = p4runtime_lib.bmv2.Bmv2SwitchConnection(
-            name='s1',
             address='127.0.0.1:50051',
-            device_id=0,
+            device_id=0
             )
     s1.MasterArbitrationUpdate()
     try:

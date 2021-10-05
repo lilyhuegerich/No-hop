@@ -33,7 +33,14 @@ const node_id last_valid_id=ID_SPACE-1;
 -:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-
+@controller_header("packet_out")
+header packet_out_header_t {
+    bit<16> egress_port;
+}
+@controller_header("packet_in")
+header packet_out_header_t {
+    bit<16> ingress_port;
+}
 
 
 header ethernet_t {
@@ -149,10 +156,9 @@ control ThisIngress(inout headers hdr,
         mark_to_drop(standard_metadata);
     }
 
-    /* send_to_controller():
-        send packet to controller
-        Used for tabilize proccess
-    */
+    action send_to_controller(){
+
+    }
     action ipv4_forward(bit<48>  dstAddr, bit<9> port) {
         hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
         hdr.ethernet.dstAddr = dstAddr;
