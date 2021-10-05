@@ -21,6 +21,7 @@ def controller():
             device_id=0
             )
     s1.MasterArbitrationUpdate()
+    print(s1.ReadTableEntries())
     try:
         while (True):
             packetin = s1.PacketIn()
