@@ -156,9 +156,7 @@ control ThisIngress(inout headers hdr,
         mark_to_drop(standard_metadata);
     }
 
-    action send_to_controller(){
 
-    }
     action ipv4_forward(bit<48>  dstAddr, bit<9> port) {
         hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
         hdr.ethernet.dstAddr = dstAddr;
