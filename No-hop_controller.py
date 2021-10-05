@@ -13,9 +13,6 @@ from p4runtime_lib.error_utils import printGrpcError
 from p4runtime_lib.switch import ShutdownAllSwitchConnections
 import p4runtime_lib.helper
 
-SWITCH_TO_HOST_PORT = 1
-SWITCH_TO_SWITCH_PORT = 2
-
 
 
 def controller():
@@ -27,6 +24,7 @@ def controller():
     s1.MasterArbitrationUpdate()
     while (True):
         packetin = s1.PacketIn()
+        print ("recieved packet")
         if packetin.WhichOneof('update')=='packet':
                 # print("Received Packet-in\n")
                 packet = packetin.packet.payload
