@@ -20,7 +20,7 @@ typedef bit<RING_ID_SIZE> group_id;
 
 typedef bit<9> PortId;
 const PortId DROP_PORT = 0xF;
-const PortId CPU_OUT_PORT = 0xE;
+#define CPU_PORT 255
 const PortId RECIRCULATE_OUT_PORT = 0xD;
 
 
