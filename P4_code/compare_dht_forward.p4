@@ -2,11 +2,6 @@
 #include <v1model.p4>
 
 
-
-#define RING_ID_SIZE 6  /* Please note that ID size changes on ID space, meening this field might have to be changed depending on size of ring */
-#define ID_SPACE 1<<RING_ID_SIZE
-
-
 const bit<16> TYPE_DHT = 0x1212;
 const bit<16> TYPE_IPV4 = 0x800;
 

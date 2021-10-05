@@ -10,7 +10,7 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    28,
+                    31,
                     32
                 ]
             },
@@ -26,7 +26,7 @@
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
                     0,
-                    0
+                    1
                 ]
             },
             "priority": 1,
@@ -40,8 +40,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    0,
-                    4
+                    1,
+                    7
                 ]
             },
             "priority": 1,
@@ -55,22 +55,7 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    4,
-                    6
-                ]
-            },
-            "priority": 1,
-            "table": "ThisIngress.no_hop_lookup"
-        },
-        {
-            "action_name": "ThisIngress.dht_rewrite",
-            "action_params": {
-                "dht_address": "10.0.5.5"
-            },
-            "match": {
-                "hdr.dht.group_id": 1,
-                "hdr.dht.id": [
-                    6,
+                    7,
                     9
                 ]
             },
@@ -80,7 +65,7 @@
         {
             "action_name": "ThisIngress.dht_rewrite",
             "action_params": {
-                "dht_address": "10.0.6.6"
+                "dht_address": "10.0.5.5"
             },
             "match": {
                 "hdr.dht.group_id": 1,
@@ -95,13 +80,28 @@
         {
             "action_name": "ThisIngress.dht_rewrite",
             "action_params": {
-                "dht_address": "10.0.7.7"
+                "dht_address": "10.0.6.6"
             },
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
                     12,
-                    17
+                    15
+                ]
+            },
+            "priority": 1,
+            "table": "ThisIngress.no_hop_lookup"
+        },
+        {
+            "action_name": "ThisIngress.dht_rewrite",
+            "action_params": {
+                "dht_address": "10.0.7.7"
+            },
+            "match": {
+                "hdr.dht.group_id": 1,
+                "hdr.dht.id": [
+                    15,
+                    21
                 ]
             },
             "priority": 1,
@@ -115,8 +115,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    17,
-                    24
+                    21,
+                    28
                 ]
             },
             "priority": 1,
@@ -130,8 +130,8 @@
             "match": {
                 "hdr.dht.group_id": 1,
                 "hdr.dht.id": [
-                    24,
-                    28
+                    28,
+                    31
                 ]
             },
             "priority": 1,
