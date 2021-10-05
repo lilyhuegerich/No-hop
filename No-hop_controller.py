@@ -24,14 +24,6 @@ def controller():
     s1.MasterArbitrationUpdate()
     for entry in s1.ReadTableEntries():
         print entry
-    mc_group_entry = p4info_helper.buildMCEntry(
-            mc_group_id = 1,
-            replicas = {
-                1:1,
-                2:2,
-                3:3
-            })
-    s1.WritePRE(mc_group = mc_group_entry)
     try:
         while (True):
             packetin = s1.PacketIn()

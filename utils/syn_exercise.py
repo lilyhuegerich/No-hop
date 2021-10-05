@@ -21,6 +21,8 @@
 #
 import os, sys, json, subprocess, re, argparse
 from time import sleep
+import time
+import threading
 
 from p4_mininet import P4Switch, P4Host, P4HostV6, P4RuntimeSwitch
 
@@ -72,6 +74,7 @@ class ExerciseTopo(Topo):
         assumptions, mostly about the IP and MAC addresses.
     """
     def __init__(self, hosts, switches, links, log_dir, host_mode, **opts):
+
         Topo.__init__(self, **opts)
         host_links = []
         switch_links = []
@@ -83,46 +86,35 @@ class ExerciseTopo(Topo):
             else:
                 switch_links.append(link)
 
-        link_sort_key = lambda x: x['node1'] + x['node2']
-        # Links must be added in a sorted order so bmv2 port numbers are predictable
-        host_links.sort(key=link_sort_key)
-        switch_links.sort(key=link_sort_key)
+        # link_sort_key = lambda x: x['node1'] + x['node2']
+        # # Links must be added in a sorted order so bmv2 port numbers are predictable
+        # host_links.sort(key=link_sort_key)
+        # switch_links.sort(key=link_sort_key)
 
         for sw in switches:
             self.addSwitch(sw, log_file="%s/%s.log" %(log_dir, sw))
-
-        if host_mode is 4:
-            for link in host_links:
-                host_name = link['node1']
-                host_sw   = link['node2']
-                host_num = int(host_name[1:])
-                sw_num   = int(host_sw[1:])
-                host_ip = "10.0.%d.%d" % (sw_num, host_num)
-                host_mac = '00:00:00:00:%02x:%02x' % (sw_num, host_num)
-                # Each host IP should be /24, so all exercise traffic will use the
-                # default gateway (the switch) without sending ARP requests.
-                self.addHost(host_name, ip=host_ip+'/24', mac=host_mac)
-                self.addLink(host_name, host_sw,
-                            delay=link['latency'], bw=link['bandwidth'],
-                            addr1=host_mac, addr2=host_mac)
-                self.addSwitchPort(host_sw, host_name)
-        if host_mode is 6:
-            for link in host_links:
-                host_name = link['node1']
-                host_sw   = link['node2']
-                host_num = int(host_name[1:])
-                sw_num   = int(host_sw[1:])
-                host_ip = "10.0.%d.%d" % (sw_num, host_num)
-                host_ipv6 = '1000::%d:%d' % (sw_num, host_num)
-                host_mac = '00:00:00:00:%02x:%02x' % (sw_num, host_num)
-                # Each host IP should be /24, so all exercise traffic will use the
-                # default gateway (the switch) without sending ARP requests.
-                self.addHost(host_name, ip=host_ip+'/24', v6Addr=host_ipv6+'/64', mac=host_mac)
-                self.addLink(host_name, host_sw,
-                            delay=link['latency'], bw=link['bandwidth'],
-                            addr1=host_mac, addr2=host_mac)
-                self.addSwitchPort(host_sw, host_name)
         
+        for host in hosts:
+            print(host)
+        
+        if host_mode is 4:
+            host_index = 0
+            for link in host_links:
+                host_name = link['node1']
+                host_sw   = link['node2']
+                host_num = int(host_name[1:])
+                sw_num   = int(host_sw[1:])
+                # host_ip = "10.0.%d.%d" % (sw_num, host_num)
+                host_ip = hosts[host_index][1]
+                host_mac = '00:00:00:00:%02x:%02x' % (sw_num, host_num)
+                # Each host IP should be /24, so all exercise traffic will use the
+                # default gateway (the switch) without sending ARP requests.
+                self.addHost(host_name, ip=host_ip+'/32', mac=host_mac)
+                self.addLink(host_name, host_sw,
+                            delay=link['latency'], bw=link['bandwidth'],
+                            addr1=host_mac, addr2=host_mac)
+                self.addSwitchPort(host_sw, host_name)
+                host_index = host_index+1
 
         for link in switch_links:
             self.addLink(link['node1'], link['node2'],
@@ -229,11 +221,37 @@ class ExerciseRunner:
         self.program_switches()
 
         # wait for that to finish. Not sure how to do this better
-        sleep(1)
+        print "please open controller"
+        s1 = self.net.get(self.topo.switches()[0])
+        s22 = self.net.get(self.topo.switches()[21])
+        s23 = self.net.get(self.topo.switches()[22])
+        s2 = self.net.get(self.topo.switches()[1])
+        s4 = self.net.get(self.topo.switches()[3])
+        s5 = self.net.get(self.topo.switches()[4])
+        
+        sleep(15)
+        
+        s1.cmdPrint("python sniffer.py s1 1 >sniffer/s1.txt &")
+        s22.cmdPrint("python sniffer.py s22 1 >sniffer/r1.txt &")
+        s23.cmdPrint("python sniffer.py s23 1 >sniffer/r2.txt &")
+        s2.cmdPrint("python sniffer.py s2 1 >sniffer/s2.txt &")
+        s4.cmdPrint("python sniffer.py s4 2 >sniffer/s3.txt &")
+        s5.cmdPrint("python sniffer.py s5 2 >sniffer/s4.txt &")
+        
+        self.start_time=time.time()
 
-        self.do_net_cli()
+        normal = threading.Thread(target=self.normal_testing)
+        normal.start()
+        # a2 = threading.Thread(target=self.attack_testing)
+        # a2.start()
+
+        # self.do_net_cli()
         # stop right after the CLI is exited
-        self.net.stop()
+        normal.join()
+        # a2.join()
+        while True:
+            if time.time()-self.start_time > 200:
+                self.net.stop()
 
 
     def parse_links(self, unparsed_links):
@@ -347,6 +365,7 @@ class ExerciseRunner:
                 - A mininet instance is stored as self.net and self.net.start() has
                   been called.
         """
+        
         for host_name in self.topo.hosts():
             h = self.net.get(host_name)
             h_iface = h.intfs.values()[0]
@@ -371,7 +390,45 @@ class ExerciseRunner:
             #if self.host_mode is 6:
             #    h.setDefaultRoute("via %s" % sw_v6_ip)
 
+        # syn test setting
+        server = self.net.get(self.topo.hosts()[0])
 
+        server.cmd("cd ./file")
+        server.cmd("python -m SimpleHTTPServer 80 &")
+
+    def normal_testing(self):
+        h = self.net.get(self.topo.hosts()[4])
+        while True:
+            # for host_name in self.topo.hosts()[1:10]:
+            if time.time()-self.start_time >= 200:
+                print "normal_stop"
+                return
+            h.cmd("curl 10.0.1.1 &")
+            sleep(20)
+            # if time.time()-self.start_time >= 150:
+            #     print "normal_stop"
+            #     return
+            # h = self.net.get(self.topo.hosts()[14])
+            # h.cmd("curl 10.0.1.1 &")
+            # sleep(0.5)
+
+    def attack_testing(self):
+        # sleep(60)
+        h = self.net.get(self.topo.hosts()[1])
+        # h2 = self.net.get(self.topo.hosts()[1])
+        # h3 = self.net.get(self.topo.hosts()[2])
+        # h4 = self.net.get(self.topo.hosts()[3])
+        # h5 = self.net.get(self.topo.hosts()[4])
+        while True:
+            if time.time()-self.start_time > 200:
+                print "attack_stop"
+                return
+            h.cmd("hping3 10.0.1.1 -S -p 80 -i u40000 -a 11.0.0.1")
+                # h2.cmd("hping3 10.0.1.1 -S -p 80 -c 5 -a 11.0.0."+str(index))
+                # h3.cmd("hping3 10.0.1.1 -S -p 80 -c 5 -a 11.0.1."+str(index))
+                # h4.cmd("hping3 10.0.1.1 -S -p 80 -c 5 -a 11.0.2."+str(index))
+                # h5.cmd("hping3 10.0.1.1 -S -p 80 -c 5 -a 11.1.0."+str(index))
+            
     def do_net_cli(self):
         """ Starts up the mininet CLI and prints some helpful output.
 
