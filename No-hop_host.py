@@ -66,8 +66,7 @@ class No_hop_host:
             self.stabilize()
             thread.join()
             self.handle_fail()
-            return
-
+        return
 
     def stabilize(self):
         """
@@ -231,6 +230,9 @@ if __name__ == "__main__":
     else:
         if sys.argv[1]=="c":
             host= No_hop_host(client=True)
+        if "t" in sys.argv[1]:
+            test= int(sys.argv[1].split("=")[1])
+            host= No_hop_host(test=test)
         elif  type(int(sys.argv[1]))==int:
             host= No_hop_host(client=False, ID=int(sys.argv[1]))
         else:
