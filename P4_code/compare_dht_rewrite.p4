@@ -170,7 +170,7 @@ control ThisIngress(inout headers hdr,
     }
 
     action send_to_controller(){
-          standard_metadata.egress_spec = CPU_OUT_PORT;
+         /* standard_metadata.egress_spec = CPU_OUT_PORT;*/
       }
 
 
