@@ -48,7 +48,7 @@ class No_hop_host:
         self.waiting=0
         self.last_stabilize=time.time()
         self.stabilze_timeout=stabilze_timeout
-        self.test=test
+        self.test_amount=test
         self.keep_log_files=keep_log_files
 
     def run(self):
@@ -58,7 +58,7 @@ class No_hop_host:
         print ("Starting No-hop")
         if self.client:
             self.send()
-        elif (not self.test ==None):
+        elif (not self.test_amount ==None):
             self.test()
         else:
             thread=  threading.Thread(target = self.start)
@@ -98,7 +98,7 @@ class No_hop_host:
         """
         Send test many ids of every id to test system. Each test message has a payload the time of sending.
         """
-        for i in range(self.test):
+        for i in range(self.test_amount):
             for test_id in range(0, max_id):
                 test_message= "Sent: "+str(time.time())
                 send_No_hop( ID=test_id , message=test_message ,message_type=1, gid=1)
@@ -230,7 +230,7 @@ if __name__ == "__main__":
     else:
         if sys.argv[1]=="c":
             host= No_hop_host(client=True)
-        if "t" in sys.argv[1]:
+        elif "t" in sys.argv[1]:
             test= int(sys.argv[1].split("=")[1])
             host= No_hop_host(test=test)
         elif  type(int(sys.argv[1]))==int:
