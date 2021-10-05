@@ -11,11 +11,9 @@ ifndef TOPO
 TOPO = topology.json
 endif
 
-ifndef SOURCE
-SOURCE = ../../P4_code/compare_dht_rewrite.p4
-#SOURCE= ../../P4_code/compare_dht_forward.p4
-endif
-compiled_json := $(SOURCE:.p4=.json)
+source = ../../P4_code/compare_dht_rewrite.p4
+#source = ../../P4_code/compare_dht_forward.p4
+compiled_json := $(source:.p4=.json)
 
 ifndef DEFAULT_PROG
 DEFAULT_PROG = $(../P4_code/wildcard *.p4)

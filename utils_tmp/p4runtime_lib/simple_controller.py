@@ -127,14 +127,6 @@ def program_switch(addr, device_id, sw_conf_file, workdir, proto_dump_fpath):
             for entry in table_entries:
                 info(tableEntryToString(entry))
                 insertTableEntry(sw, entry, p4info_helper)
-
-        if 'multicast_group_entries' in sw_conf:
-            group_entries = sw_conf['multicast_group_entries']
-            info("Inserting %d group entries..." % len(group_entries))
-            for entry in group_entries:
-                info(groupEntryToString(entry))
-                insertMulticastGroupEntry(sw, entry, p4info_helper)
-
     finally:
         sw.shutdown()
 
@@ -192,23 +184,11 @@ def tableEntryToString(flow):
         match_str = '(default action)'
     else:
         match_str = '(any)'
-    print(flow)
     params = ['%s=%s' % (param_name, str(flow['action_params'][param_name])) for param_name in
               flow['action_params']]
     params = ', '.join(params)
     return "%s: %s => %s(%s)" % (
         flow['table'], match_str, flow['action_name'], params)
-
-
-def groupEntryToString(rule):
-    group_id = rule["multicast_group_id"]
-    replicas = ['%d' % replica["egress_port"] for replica in rule['replicas']]
-    ports_str = ', '.join(replicas)
-    return 'Group {0} => ({1})'.format(group_id, ports_str)
-
-def insertMulticastGroupEntry(sw, rule, p4info_helper):
-    mc_entry = p4info_helper.buildMulticastGroupEntry(rule["multicast_group_id"], rule['replicas'])
-    sw.WriteMulticastGroupEntry(mc_entry)
 
 
 if __name__ == '__main__':
