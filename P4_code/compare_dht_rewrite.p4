@@ -38,7 +38,7 @@ header packet_out_header_t {
     bit<16> egress_port;
 }
 @controller_header("packet_in")
-header packet_out_header_t {
+header packet_in_header_t {
     bit<16> ingress_port;
 }
 
