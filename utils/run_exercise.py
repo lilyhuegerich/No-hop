@@ -362,31 +362,12 @@ class ExerciseRunner:
             print('corresponding txt file in %s:' % self.log_dir)
             print(' for example run:  cat %s/s1-p4runtime-requests.txt' % self.log_dir)
             print('')
+        for
+        for host_name, host_info in self.hosts.items():
+            h = self.net.get(host_name)
 
-        #r=(threading.Thread(target=dht_functionality_test.check_dht, args=(self.hosts,)))
-        #r.start()
-        hosts=self.net.hosts
-        command1="python import dht_functionality_test as t;"
-        command2=" t.run"
-        for i in hosts:
-            print i
-            if "client" in i.name:
-                job="client"
-                client=i
-            else:
-                i.cmd(command1)
-                i.cmd(command2+"'server'"+")")
+            h.cmd("python test.py")
 
-        client.cmd(command1)
-        #print client.ip()
-        #test=client.cmd('t.test()')
-        #print test
-        #print client.waitOutput()
-        #h.cmd("wait", pid)
-        #raise Exception("check")
-
-        CLI(self.net)
-        #r.join()
 
 
 def get_args():
@@ -407,8 +388,6 @@ def get_args():
 
 
 if __name__ == '__main__':
-    # from mininet.log import setLogLevel
-    # setLogLevel("info")
 
     args = get_args()
     exercise = ExerciseRunner(args.topo, args.log_dir, args.pcap_dir,

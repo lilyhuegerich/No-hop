@@ -13,8 +13,7 @@
             "mac": "08:00:00:00:02:22",
             "commands": [
                 "route add default gw 10.0.2.20  dev eth0",
-                "arp -i eth0 -s 10.0.2.20 08:00:00:00:02:00",
-                "python test.py"
+                "arp -i eth0 -s 10.0.2.20 08:00:00:00:02:00"
             ]
         },
         "h_3": {
