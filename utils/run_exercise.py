@@ -362,7 +362,6 @@ class ExerciseRunner:
             print('corresponding txt file in %s:' % self.log_dir)
             print(' for example run:  cat %s/s1-p4runtime-requests.txt' % self.log_dir)
             print('')
-        for
         for host_name, host_info in self.hosts.items():
             h = self.net.get(host_name)
 
