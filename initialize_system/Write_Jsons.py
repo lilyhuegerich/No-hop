@@ -261,6 +261,7 @@ def write_build_files(network):
     with open(network.folder+"/Makefile", "w+") as f:
         lines=["BMV2_SWITCH_EXE = simple_switch_grpc \n",
         "TOPO = ./topology.json \n",
+        "source = "+network.compiled_p4_program_path+".p4\n",
         "include ../../utils/Makefile \n" ]
         f.writelines(lines)
 
