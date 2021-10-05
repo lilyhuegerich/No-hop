@@ -236,7 +236,7 @@ control ThisIngress(inout headers hdr,
             if (hdr.dht.message_type==0){
                 first_contact();
             }
-            if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
+            else if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
                 send_to_controller();
             }
             else{
