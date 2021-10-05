@@ -24,7 +24,7 @@ def controller():
     s1.MasterArbitrationUpdate()
     while (True):
         packetin = s1.PacketIn()
-        print ("recieved packet")
+        print ("recieved packet", packetin)
         if packetin.WhichOneof('update')=='packet':
                 # print("Received Packet-in\n")
                 packet = packetin.packet.payload
