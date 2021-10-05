@@ -239,18 +239,22 @@ control ThisIngress(inout headers hdr,
             if (hdr.dht.message_type==0){
                 first_contact();
             }
+            if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
+                send_to_controller();
+            }
+            else{
             ingressDHTCounter.count((bit<32>) hdr.dht.id);
             hdr.dht.counter=hdr.dht.counter+1;
-            No_hop_lookup.apply();
+            no_hop_lookup.apply();
+        }
 	    }
 
-
+        else{
 
         ipv4_lpm.apply();
-
+    }
     }
 }
-
 
 /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
