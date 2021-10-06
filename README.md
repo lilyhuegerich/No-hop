@@ -71,7 +71,7 @@ To assign an ID to a host, send with the client a message of type=1, ID=some id 
 To run a test:
 
 ```bash
-# python ../../No-hop_host.py t:<Number of times each ID should be sent>
+# python ../../No-hop_host.py t=<Number of times each ID should be sent>
 ```
 
 ![](figs/test.gif)
