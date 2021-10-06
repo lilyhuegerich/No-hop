@@ -1,6 +1,7 @@
 #ifndef __HEADERS__
 #define __HEADERS__
 
+#define CPU_OUT_PORT 255
 // packet in
 @controller_header("packet_in")
 header packet_in_header_t {
