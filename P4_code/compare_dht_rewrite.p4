@@ -186,7 +186,7 @@ control ThisIngress(inout headers hdr,
                 first_contact();
             }*/
         if (hdr.dht.message_type==1){
-            if (!no_hop_lookup.apply().hit;){
+            if (!no_hop_lookup.apply().hit){
                     ipv4_lpm.apply();
                 }
             }
