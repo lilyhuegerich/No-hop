@@ -211,13 +211,13 @@ def handle_packet(pkt):
     ttl=int(pkt[IP].ttl)
 
     if ttl==50:
-        return
-    print (pkt)
+
+        print (pkt)
     if ICMP in pkt:
         return
     #print (pkt)
     if IP in pkt:
-        if pkt[IP].proto==2 and pkt[IP].ttl<50:
+        if pkt[IP].proto==2:
             raise Message(str(pkt[No_hop].payload), pkt[No_hop].ID)
     return
 
