@@ -23,7 +23,7 @@ $ python No_hop_Network.py rewrite
 
 If ```rewrite_build_folders=1```in ```No_hop_Network.py``` The experiment folder will be in ````No_hop_<forward, rewrite>_0````, else if ```rewrite_build_folders=0``` a new folder will be created with the next free index so, ````No_hop_<forward, rewrite>_<free_index>````
 
-For more on generating build files please refer to ```initialize_system/No_hop_Init_system.pdf```.
+For more on generating build files please refer to [Init Docs](initialize_system/No_hop_Init_system.pdf).
 
 ### Running Experiment
 
@@ -42,6 +42,7 @@ In the mininet CLI to open a terminal for a host:
 mininet> xterm host_name
 ```
 ![](figs/xterm.gif)
+
 To see network:
 
 ```bash
