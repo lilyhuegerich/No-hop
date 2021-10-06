@@ -174,7 +174,7 @@ control ThisIngress(inout headers hdr,
         /* on first contact messages the value of ingoing or outgoing is saved in the id.
         This is only nessacary if the leaf nodes do not calculate the ids themselves*/
 
-        hdr.dht.message_type= hdr.dht.id[1:0];
+        /*hdr.dht.message_type= hdr.dht.id[1:0];
 
 
         hash (hdr.dht.id,
@@ -183,7 +183,7 @@ control ThisIngress(inout headers hdr,
                 { hdr.ipv4.srcAddr,
 	               hdr.ipv4.dstAddr,
                    hdr.ipv4.protocol},
-                bit<6> 63);
+                bit<6> 63); */
 
     }
 
