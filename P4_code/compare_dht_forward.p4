@@ -123,22 +123,10 @@ control ThisIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
 
-
-    counter(8192, CounterType.packets_and_bytes) ingressDHTCounter;
-    counter(8192, CounterType.packets_and_bytes) egressDHTCounter;
-
-    /* drop():
-        Packet has been determined as not to be proccesed.
-    */
-
     action drop() {
         mark_to_drop(standard_metadata);
     }
 
-    /* send_to_controller():
-        send packet to controller
-        Used for tabilize proccess
-    */
     action ipv4_forward(bit<48>  dstAddr, bit<9> port) {
         hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
         hdr.ethernet.dstAddr = dstAddr;
@@ -147,6 +135,7 @@ control ThisIngress(inout headers hdr,
 
     action no_hop_forward(bit<9> port){
         standard_metadata.egress_spec = port;
+        
     }
 
     action send_to_controller(){

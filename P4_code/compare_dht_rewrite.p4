@@ -180,9 +180,7 @@ control ThisIngress(inout headers hdr,
     }
     apply {
         bool found=false;
-
-        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
-
+        hdr.ipv4.ttl = 10;
         if (hdr.dht.isValid()){
         if (hdr.dht.message_type==1){
             if (no_hop_lookup.apply().hit){
