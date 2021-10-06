@@ -178,23 +178,27 @@ control ThisIngress(inout headers hdr,
         default_action = drop();
     }
     apply {
+        bool found=false;
         if (hdr.ipv4.isValid()){
             hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
         }
         if (hdr.dht.isValid()){
-            /*if (hdr.dht.message_type==0){
-                first_contact();
-            }*/
         if (hdr.dht.message_type==1){
-            if (!no_hop_lookup.apply().hit){
-                    ipv4_lpm.apply();
+            if (no_hop_lookup.apply().hit){
+                found=true;
                 }
             }
             if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
                 send_to_controller();
+                found=true;
             }
 	    }
-    }
+
+        if found==false
+        {
+            ipv4_lpm.apply();
+        }
+
 }
 
 /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
