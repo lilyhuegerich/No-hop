@@ -114,7 +114,7 @@ class No_hop_host:
         try:
             while (self.On):
                 sys.stdout.flush()
-                input = raw_input("Send packet: Type, ID, Message")
+                input = raw_input("Send packet: Type, ID, Message ")
                 to_send=input.split(",")
                 if (not len(to_send)==3):
                     print ("not in correct form. Type, ID, Message")
@@ -212,7 +212,7 @@ def handle_packet(pkt):
 
     if ttl==50:
         return
-    print(ttl)
+    
     if ICMP in pkt:
         return
     #print (pkt)

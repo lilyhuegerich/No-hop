@@ -140,7 +140,6 @@ control ThisIngress(inout headers hdr,
     action ipv4_forward(bit<48>  dstAddr, bit<9> port) {
         hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
         hdr.ethernet.dstAddr = dstAddr;
-        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
         standard_metadata.egress_spec = port;
     }
 
@@ -180,7 +179,7 @@ control ThisIngress(inout headers hdr,
     }
     apply {
         bool found=false;
-        hdr.ipv4.ttl = 10;
+        hdr.ipv4.ttl = hdr.ipv4.ttl-1;
         if (hdr.dht.isValid()){
         if (hdr.dht.message_type==1){
             if (no_hop_lookup.apply().hit){
