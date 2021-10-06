@@ -207,8 +207,12 @@ def handle_packet(pkt):
     sys.stdout.flush()
     if not IP in pkt:
         return
+
     ttl=int(pkt[IP].ttl)
-    print (ttl)
+    print (pkt)
+    if ttl==50:
+        return
+
     if ICMP in pkt:
         return
     #print (pkt)
