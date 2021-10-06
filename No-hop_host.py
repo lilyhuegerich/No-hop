@@ -66,7 +66,7 @@ class No_hop_host:
             self.stabilize()
             thread.join()
             self.handle_fail()
-        return
+            return
 
     def stabilize(self):
         """

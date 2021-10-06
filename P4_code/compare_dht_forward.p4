@@ -8,8 +8,8 @@ const bit<16> TYPE_IPV4 = 0x800;
 
 
 
-typedef bit<RING_ID_SIZE> node_id;
-typedef bit<RING_ID_SIZE> group_id;
+typedef bit<6> node_id;
+typedef bit<6> group_id;
 /***** Below 6 lines taken from P4v16 language specification *****/
 /* special output port values for outgoing packet */
 
@@ -179,15 +179,7 @@ control ThisIngress(inout headers hdr,
 
         hdr.dht.message_type= hdr.dht.id[1:0];
 
-        /* The ID for the packet is then calculcated
-        this is done useing a hash algorithm of choice with data to hash of choice.
-        Hash algorithm and inputs can be choosen to fit application requirments
-
-        base and max should stay the same.
-        Base=1 since id 0 is reserved
-        Max= the largest possible id, or ID_SPACE, to addapt this please change RING_ID_SIZE defintion.
-        */
-
+    
         hash (hdr.dht.id,
                 HashAlgorithm.crc32,
                 first_valid_id,
