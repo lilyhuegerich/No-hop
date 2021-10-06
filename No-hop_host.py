@@ -209,10 +209,10 @@ def handle_packet(pkt):
         return
 
     ttl=int(pkt[IP].ttl)
-    print (pkt)
+
     if ttl==50:
         return
-
+    print (pkt)
     if ICMP in pkt:
         return
     #print (pkt)
