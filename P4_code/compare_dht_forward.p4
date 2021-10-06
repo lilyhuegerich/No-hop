@@ -16,17 +16,11 @@ typedef bit<9> PortId;
 const PortId DROP_PORT = 0xF;
 const PortId CPU_OUT_PORT = 0xE;
 const PortId RECIRCULATE_OUT_PORT = 0xD;
-
-
-
 /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
    -:-:-:                           H E A D E R                             -:-:-:
 -:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-
-
 
 header ethernet_t {
     bit<48>      dstAddr;
@@ -166,7 +160,7 @@ control ThisIngress(inout headers hdr,
             hdr.dht.id               : range;      /* can be replaced with ternary but controller has to be changed for switches without range match type */
         }
         actions={
-            no_hop_forward;                      /* switch rewrites packet headers */ 
+            no_hop_forward;                      /* switch rewrites packet headers */
             NoAction;
         }
         size = 1024;
