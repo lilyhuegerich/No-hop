@@ -3,8 +3,7 @@
 
 
 
-#define RING_ID_SIZE 6  /* Please note that ID size changes on ID space, meening this field might have to be changed depending on size of ring */
-#define ID_SPACE 1<<RING_ID_SIZE
+
 
 
 const bit<16> TYPE_DHT = 0x1212;
@@ -13,8 +12,7 @@ const bit<16> TYPE_IPV4 = 0x800;
 
 
 
-typedef bit<RING_ID_SIZE> node_id;
-typedef bit<RING_ID_SIZE> group_id;
+
 /***** Below 6 lines taken from P4v16 language specification *****/
 /* special output port values for outgoing packet */
 
@@ -24,8 +22,7 @@ const PortId DROP_PORT = 0xF;
 const PortId RECIRCULATE_OUT_PORT = 0xD;
 
 
-const node_id first_valid_id=1;
-const node_id last_valid_id=ID_SPACE-1;
+
 
 /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
@@ -66,8 +63,8 @@ header ethernet_t {
 
 header dht_t {
     bit<2>  message_type;       /* message type */
-    node_id id;                 /* packet id*/
-    group_id group_id;             /*tentative implimintation of group deinfened DHT subdivision */
+    bit<6> id;                 /* packet id*/
+    bit<8> group_id;             /*tentative implimintation of group deinfened DHT subdivision */
     bit<10>  counter;            /* please note that counter is not an actual field just for testing */
 }
 
@@ -191,14 +188,7 @@ control ThisIngress(inout headers hdr,
 
         hdr.dht.message_type= hdr.dht.id[1:0];
 
-        /* The ID for the packet is then calculcated
-        this is done useing a hash algorithm of choice with data to hash of choice.
-        Hash algorithm and inputs can be choosen to fit application requirments
 
-        base and max should stay the same.
-        Base=1 since id 0 is reserved
-        Max= the largest possible id, or ID_SPACE, to addapt this please change RING_ID_SIZE defintion.
-        */
 
         hash (hdr.dht.id,
                 HashAlgorithm.crc32,
