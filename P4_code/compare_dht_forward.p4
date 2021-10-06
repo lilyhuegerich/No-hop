@@ -179,7 +179,7 @@ control ThisIngress(inout headers hdr,
 
         hdr.dht.message_type= hdr.dht.id[1:0];
 
-    
+
         hash (hdr.dht.id,
                 HashAlgorithm.crc32,
                 first_valid_id,
@@ -223,7 +223,7 @@ control ThisIngress(inout headers hdr,
             if (hdr.dht.message_type==0){
                 first_contact();
             }
-            else if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
+            if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
                 send_to_controller();
             }
             else{
