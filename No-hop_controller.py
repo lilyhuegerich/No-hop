@@ -24,15 +24,15 @@ def controller():
     s1.MasterArbitrationUpdate()
     for entry in s1.ReadTableEntries():
         print entry
-    try:
-        while (True):
+    while (True):
+        try:
             packetin = s1.PacketIn()
             print ("recieved packet", packetin)
             if packetin.WhichOneof('update')=='packet':
                     # print("Received Packet-in\n")
                     packet = packetin.packet.payload
                     print(packet)
-    except KeyboardInterrupt:
-        return
+        except KeyboardInterrupt:
+            return
 
 controller()
