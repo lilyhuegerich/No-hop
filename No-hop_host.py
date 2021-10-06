@@ -208,6 +208,7 @@ def handle_packet(pkt):
     if not IP in pkt:
         return
     ttl=int(pkt[IP].ttl)
+    print (ttl)
     if ICMP in pkt:
         return
     #print (pkt)
