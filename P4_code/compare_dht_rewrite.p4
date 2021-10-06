@@ -1,15 +1,8 @@
 #include <core.p4>
 #include <v1model.p4>
 
-
-
-
-
-
 const bit<16> TYPE_DHT = 0x1212;
 const bit<16> TYPE_IPV4 = 0x800;
-
-
 
 
 
@@ -20,9 +13,6 @@ typedef bit<9> PortId;
 const PortId DROP_PORT = 0xF;
 #define CPU_OUT_PORT 255
 const PortId RECIRCULATE_OUT_PORT = 0xD;
-
-
-
 
 /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
