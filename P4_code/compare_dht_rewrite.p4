@@ -194,10 +194,7 @@ control ThisIngress(inout headers hdr,
                 send_to_controller();
             }
 	    }
-        else{
-            ipv4_lpm.apply();
-            }
-        }
+    }
 }
 
 /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
