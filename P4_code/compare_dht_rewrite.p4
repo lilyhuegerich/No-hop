@@ -140,11 +140,13 @@ control ThisIngress(inout headers hdr,
     action ipv4_forward(bit<48>  dstAddr, bit<9> port) {
         hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
         hdr.ethernet.dstAddr = dstAddr;
+        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
         standard_metadata.egress_spec = port;
     }
 
     action dht_rewrite(bit<32> dht_address){
         hdr.ipv4.dstAddr=dht_address;
+        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
     }
 
     action send_to_controller(){
