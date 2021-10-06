@@ -212,7 +212,7 @@ def handle_packet(pkt):
         return
     #print (pkt)
     if IP in pkt:
-        if pkt[IP].proto==2:
+        if pkt[IP].proto==2 and pkt[IP].ttl<50:
             raise Message(str(pkt[No_hop].payload), pkt[No_hop].ID)
     return
 
