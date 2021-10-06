@@ -8,8 +8,7 @@ const bit<16> TYPE_IPV4 = 0x800;
 
 
 
-typedef bit<6> node_id;
-typedef bit<6> group_id;
+
 /***** Below 6 lines taken from P4v16 language specification *****/
 /* special output port values for outgoing packet */
 
@@ -19,8 +18,6 @@ const PortId CPU_OUT_PORT = 0xE;
 const PortId RECIRCULATE_OUT_PORT = 0xD;
 
 
-const node_id first_valid_id=1;
-const node_id last_valid_id=ID_SPACE-1;
 
 /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
@@ -54,8 +51,8 @@ header ethernet_t {
 
 header dht_t {
     bit<2>  message_type;       /* message type */
-    node_id id;                 /* packet id*/
-    group_id group_id;             /*tentative implimintation of group deinfened DHT subdivision */
+    bit<6> id;                 /* packet id*/
+    bit<8> group_id;             /*tentative implimintation of group deinfened DHT subdivision */
     bit<10>  counter;            /* please note that counter is not an actual field just for testing */
 }
 
