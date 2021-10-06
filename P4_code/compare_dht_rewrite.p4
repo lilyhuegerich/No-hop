@@ -55,7 +55,7 @@ header dht_t {
     bit<2>  message_type;       /* message type */
     bit<6> id;                 /* packet id*/
     bit<8> group_id;             /*tentative implimintation of group deinfened DHT subdivision */
-    bit<10>  counter;            /* please note that counter is not an actual field just for testing */
+    bit<8>  counter;            /* please note that counter is not an actual field just for testing */
 }
 
 struct headers {
@@ -132,13 +132,6 @@ control ThisIngress(inout headers hdr,
                   inout standard_metadata_t standard_metadata) {
 
 
-    counter(8192, CounterType.packets_and_bytes) ingressDHTCounter;
-    counter(8192, CounterType.packets_and_bytes) egressDHTCounter;
-
-    /* drop():
-        Packet has been determined as not to be proccesed.
-    */
-
     action drop() {
         mark_to_drop(standard_metadata);
     }
@@ -157,40 +150,8 @@ control ThisIngress(inout headers hdr,
     }
 
     action send_to_controller(){
-         /* standard_metadata.egress_spec = CPU_OUT_PORT;*/
+         standard_metadata.egress_spec = CPU_OUT_PORT;
       }
-
-
-    action vertical_lookup(){
-        /* vertical lookup functionality is implemented in vertical lookup in and out tables, this function later triggers these tables, ententionally empty */
-    }
-
-
-    /* first_contact():
-        This is incase of the incoming packet not yet haveing an ID.
-        The ID is calculated based on a hash of packet values.
-        The hash values can be changed to fit implementation
-    */
-    action first_contact(){
-
-        /* on first contact messages the value of ingoing or outgoing is saved in the id.
-        This is only nessacary if the leaf nodes do not calculate the ids themselves*/
-
-        hdr.dht.message_type= hdr.dht.id[1:0];
-
-
-
-        hash (hdr.dht.id,
-                HashAlgorithm.crc32,
-                first_valid_id,
-                { hdr.ipv4.srcAddr,
-	               hdr.ipv4.dstAddr,
-                   hdr.ipv4.protocol},
-                 last_valid_id);
-
-    }
-
-
 
     table no_hop_lookup {
         key={
@@ -223,21 +184,17 @@ control ThisIngress(inout headers hdr,
             if (hdr.dht.message_type==0){
                 first_contact();
             }
+            if (hdr.dht.message_type==1){
+                no_hop_lookup.apply();
+            }
             if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
                 send_to_controller();
             }
-            else{
-            ingressDHTCounter.count((bit<32>) hdr.dht.id);
-            hdr.dht.counter=hdr.dht.counter+1;
-            no_hop_lookup.apply();
-        }
 	    }
-
         else{
-
-        ipv4_lpm.apply();
-    }
-    }
+            ipv4_lpm.apply();
+            }
+        }
 }
 
 /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

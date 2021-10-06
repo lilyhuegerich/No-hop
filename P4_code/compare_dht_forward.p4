@@ -154,40 +154,11 @@ control ThisIngress(inout headers hdr,
 
     action no_hop_forward(bit<9> port){
         standard_metadata.egress_spec = port;
-
     }
 
     action send_to_controller(){
           standard_metadata.egress_spec = CPU_OUT_PORT;
       }
-
-
-
-
-    /* first_contact():
-        This is incase of the incoming packet not yet haveing an ID.
-        The ID is calculated based on a hash of packet values.
-        The hash values can be changed to fit implementation
-    */
-    action first_contact(){
-
-        /* on first contact messages the value of ingoing or outgoing is saved in the id.
-        This is only nessacary if the leaf nodes do not calculate the ids themselves*/
-
-        /*hdr.dht.message_type= hdr.dht.id[1:0];
-
-
-        hash (hdr.dht.id,
-                HashAlgorithm.crc32,
-                bit<6> 0,
-                { hdr.ipv4.srcAddr,
-	               hdr.ipv4.dstAddr,
-                   hdr.ipv4.protocol},
-                bit<6> 63); */
-
-    }
-
-
 
     table no_hop_lookup {
         key={
@@ -220,20 +191,16 @@ control ThisIngress(inout headers hdr,
             if (hdr.dht.message_type==0){
                 first_contact();
             }
+            if ((hdr.dht.message_type==1){
+                no_hop_lookup.apply();
+            }
             if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
                 send_to_controller();
-            }
-            else{
-            ingressDHTCounter.count((bit<32>) hdr.dht.id);
-            hdr.dht.counter=hdr.dht.counter+1;
-            no_hop_lookup.apply();
-        }
+                }
 	    }
-
         else{
-
-        ipv4_lpm.apply();
-    }
+            ipv4_lpm.apply();
+        }
     }
 }
 
