@@ -73,6 +73,16 @@ To run a test:
 # python ../../No-hop_host.py t:<Number of times each ID should be sent>
 ```
 
+![](figs/test.gif)
+
+To run hosts that immediatly start to stabilize pass them their ID at start:
+
+```bash
+# python ../../No-hop_host.py ID
+```
+
+![](figs/stabilize.gif)
+
 To leave mininet:
 
 ```bash
