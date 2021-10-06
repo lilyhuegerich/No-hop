@@ -146,7 +146,6 @@ control ThisIngress(inout headers hdr,
 
     action dht_rewrite(bit<32> dht_address){
         hdr.ipv4.dstAddr=dht_address;
-        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
     }
 
     action send_to_controller(){
@@ -181,9 +180,9 @@ control ThisIngress(inout headers hdr,
     }
     apply {
         bool found=false;
-        if (hdr.ipv4.isValid()){
-            hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
-        }
+
+        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
+
         if (hdr.dht.isValid()){
         if (hdr.dht.message_type==1){
             if (no_hop_lookup.apply().hit){
