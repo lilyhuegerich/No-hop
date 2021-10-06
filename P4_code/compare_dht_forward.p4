@@ -191,7 +191,7 @@ control ThisIngress(inout headers hdr,
             /*if (hdr.dht.message_type==0){
                 first_contact();
             }*/
-            if ((hdr.dht.message_type==1){
+            if (hdr.dht.message_type==1){
                 no_hop_lookup.apply();
             }
             if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
