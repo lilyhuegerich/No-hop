@@ -101,7 +101,7 @@ class No_hop_host:
         for i in range(self.test_amount):
             for test_id in range(0, max_id):
                 print test_id
-                test_message= "sent: "+str(time.time())
+                test_message= "sent "+str(test_id)+" : "+str(time.time())
                 time.sleep(.3)
                 send_No_hop( ID=test_id , message=test_message ,message_type=1, gid=1)
         return
