@@ -97,6 +97,6 @@ $ sudo mn -c
 
 ## Dependancies
 
-No-hop runs needs the P4 compiler, simple switch and grpc, so its easiest to use the [P4 tutorial VM](https://github.com/p4lang/tutorials). 
+Running No-hop expirements needs the P4 compiler, simple switch and grpc, so its easiest to use the [P4 tutorial VM](https://github.com/p4lang/tutorials). 
 
 Additonally to generate the experiments one needs [Networkx](https://networkx.org/), and [matplotlib](https://matplotlib.org/). Matplotlib only to generate network.pdf diagram.
