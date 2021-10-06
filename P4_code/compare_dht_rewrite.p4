@@ -192,11 +192,7 @@ control ThisIngress(inout headers hdr,
                 found=true;
             }
 	    }
-
-        if (found==false)
-        {
-            ipv4_lpm.apply();
-        }
+        ipv4_lpm.apply();
     }
 }
 
