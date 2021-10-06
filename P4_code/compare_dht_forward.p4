@@ -179,11 +179,11 @@ control ThisIngress(inout headers hdr,
 
         hash (hdr.dht.id,
                 HashAlgorithm.crc32,
-                first_valid_id,
+                0,
                 { hdr.ipv4.srcAddr,
 	               hdr.ipv4.dstAddr,
                    hdr.ipv4.protocol},
-                 last_valid_id);
+                 64);
 
     }
 
