@@ -54,7 +54,7 @@ header ethernet_t {
 header dht_t {
     bit<2>  message_type;       /* message type */
     bit<6> id;                 /* packet id*/
-    bit<8> group_id;             /*tentative implimintation of group deinfened DHT subdivision */
+    bit<6> group_id;             /*tentative implimintation of group deinfened DHT subdivision */
     bit<8>  counter;            /* please note that counter is not an actual field just for testing */
 }
 
