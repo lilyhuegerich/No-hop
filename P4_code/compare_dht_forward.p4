@@ -166,8 +166,7 @@ control ThisIngress(inout headers hdr,
             hdr.dht.id               : range;      /* can be replaced with ternary but controller has to be changed for switches without range match type */
         }
         actions={
-            no_hop_forward;                      /* switch rewrites packet headers */
-            send_to_controller;                       /* either this will be intended for succesor (packet id node id +1) or should be sent back to controller if  id= node id */
+            no_hop_forward;                      /* switch rewrites packet headers */ 
             NoAction;
         }
         size = 1024;
