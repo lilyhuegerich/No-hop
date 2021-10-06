@@ -3,7 +3,7 @@
 
 #include "headers.p4"
 
-control packetio_ingress(inout headers_t hdr,
+control packetio_ingress(inout headers hdr,
                          inout standard_metadata_t standard_metadata) {
     apply {
         if (standard_metadata.ingress_port == CPU_PORT) {
