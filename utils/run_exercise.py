@@ -82,55 +82,38 @@ class ExerciseTopo(Topo):
                 host_links.append(link)
             else:
                 switch_links.append(link)
+        for sw, params in switches.iteritems():
+            if "program" in params:
+                switchClass = configureP4Switch(
+                        sw_path=bmv2_exe,
+                        json_path=params["program"],
+                        log_console=True,
+                        pcap_dump=pcap_dir)
+            else:
+                # add default switch
+                switchClass = None
+            self.addSwitch(sw, log_file="%s/%s.log" %(log_dir, sw), cls=switchClass)
 
-        link_sort_key = lambda x: x['node1'] + x['node2']
-        # Links must be added in a sorted order so bmv2 port numbers are predictable
-        host_links.sort(key=link_sort_key)
-        switch_links.sort(key=link_sort_key)
-
-        for sw in switches:
-            self.addSwitch(sw, log_file="%s/%s.log" %(log_dir, sw))
-
-        if host_mode is 4:
-            for link in host_links:
+        for link in host_links:
+            if (link['node1'][0] == 'h'):
                 host_name = link['node1']
-                host_sw   = link['node2']
-                host_num = int(host_name[2:])
-                sw_num   = int(host_sw[2:])
-                host_ip = "10.0.%d.%d" % (sw_num, host_num)
-                host_mac = '00:00:00:00:%02x:%02x' % (sw_num, host_num)
-                # Each host IP should be /24, so all exercise traffic will use the
-                # default gateway (the switch) without sending ARP requests.
-                self.addHost(host_name, ip=host_ip+'/24', mac=host_mac)
-                self.addLink(host_name, host_sw,
-                            delay=link['latency'], bw=link['bandwidth'],
-                            addr1=host_mac, addr2=host_mac)
-                self.addSwitchPort(host_sw, host_name)
-        if host_mode is 6:
-            for link in host_links:
-                host_name = link['node1']
-                host_sw   = link['node2']
-                host_num = int(host_name[1:])
-                sw_num   = int(host_sw[1:])
-                host_ip = "10.0.%d.%d" % (sw_num, host_num)
-                host_ipv6 = '1000::%d:%d' % (sw_num, host_num)
-                host_mac = '00:00:00:00:%02x:%02x' % (sw_num, host_num)
-                # Each host IP should be /24, so all exercise traffic will use the
-                # default gateway (the switch) without sending ARP requests.
-                self.addHost(host_name, ip=host_ip+'/24', v6Addr=host_ipv6+'/64', mac=host_mac)
-                self.addLink(host_name, host_sw,
-                            delay=link['latency'], bw=link['bandwidth'],
-                            addr1=host_mac, addr2=host_mac)
-                self.addSwitchPort(host_sw, host_name)
-
+                sw_name, sw_port = self.parse_switch_node(link['node2'])
+            else:
+                host_name = link['node2']
+                sw_name, sw_port = self.parse_switch_node(link['node1'])
+            host_ip = hosts[host_name]['ip']
+            host_mac = hosts[host_name]['mac']
+            self.addHost(host_name, ip=host_ip, mac=host_mac)
+            self.addLink(host_name, sw_name,
+                         delay=link['latency'], bw=link['bandwidth'],
+                         port2=sw_port)
 
         for link in switch_links:
-            self.addLink(link['node1'], link['node2'],
+            sw1_name, sw1_port = self.parse_switch_node(link['node1'])
+            sw2_name, sw2_port = self.parse_switch_node(link['node2'])
+            self.addLink(sw1_name, sw2_name,
+                        port1=sw1_port, port2=sw2_port,
                         delay=link['latency'], bw=link['bandwidth'])
-            self.addSwitchPort(link['node1'], link['node2'])
-            self.addSwitchPort(link['node2'], link['node1'])
-
-        self.printPortMapping()
 
     def addSwitchPort(self, sw, node2):
         if sw not in self.sw_port_mapping:
