@@ -28,15 +28,17 @@ def controller():
     for entry in s1.ReadTableEntries():
         print entry
     while (True):
-        try:
+
             print ("waiting to recieve packet from switch")
-            packetin = s1.PacketIn()
+            try:
+                packetin = s1.PacketIn()
+            except KeyboardInterrupt:
+                return
             print ("recieved packet", packetin)
             if packetin.WhichOneof('update')=='packet':
                     # print("Received Packet-in\n")
                     packet = packetin.packet.payload
                     print(packet)
-        except KeyboardInterrupt:
-            return
+
 
 controller()
