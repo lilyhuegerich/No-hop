@@ -274,12 +274,12 @@ class ExerciseRunner:
                 log_console=True,
                 pcap_dump=self.pcap_dir)
 
-        if self.host_mode is 4:
-            self.net = Mininet(topo = self.topo,
-                        link = TCLink,
-                        host = P4Host,
-                        switch = switchClass,
-                        controller = None)
+
+        self.net = Mininet(topo = self.topo,
+                    link = TCLink,
+                    host = P4Host,
+                    switch = switchClass,
+                    controller = None)
 
 
     def program_switch_p4runtime(self, sw_name, sw_dict):
