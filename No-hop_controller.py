@@ -27,6 +27,16 @@ def controller():
     s1.MasterArbitrationUpdate(role=3, election_id = 3)
     for entry in s1.ReadTableEntries():
         print entry
+    mc_group_entry = p4info_helper.buildMCEntry(
+            mc_group_id = 1,
+            replicas = {
+                1:1,
+                2:2,
+                3:3
+            })
+    s1.WritePRE(mc_group = mc_group_entry)
+    print "Installed mgrp on s1."
+
     wait=1
     while (wait==1):
             print ("waiting to recieve packet from switch")
