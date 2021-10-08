@@ -179,7 +179,7 @@ class ExerciseRunner:
 
 
     def __init__(self, topo_file, log_dir, pcap_dir,
-                       switch_json, bmv2_exe='simple_switch', quiet=False, host_mode=4):
+                       switch_json, bmv2_exe='simple_switch', quiet=False, host_mode=0):
         """ Initializes some attributes and reads the topology json. Does not
             actually run the exercise. Use run_exercise() for that.
 
