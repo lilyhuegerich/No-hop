@@ -208,7 +208,7 @@ class P4RuntimeSwitch(P4Switch):
         self.sw_path = sw_path
         # make sure that the provided sw_path is valid
         pathCheck(sw_path)
-        self.cpu_port = P4RuntimeSwitch.cpu_port
+        self.cpu_port =255
         if json_path is not None:
             # make sure that the provided JSON file exists
             if not os.path.isfile(json_path):
