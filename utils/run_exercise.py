@@ -22,7 +22,7 @@
 import os, sys, json, subprocess, re, argparse
 from time import sleep
 
-from p4_mininet import P4Switch, P4Host, P4HostV6, P4RuntimeSwitch
+from p4_mininet import P4Switch, P4Host, P4RuntimeSwitch
 
 from mininet.net import Mininet
 from mininet.topo import Topo
@@ -287,12 +287,7 @@ class ExerciseRunner:
                         host = P4Host,
                         switch = switchClass,
                         controller = None)
-        if self.host_mode is 6:
-            self.net = Mininet(topo = self.topo,
-                        link = TCLink,
-                        host = P4HostV6,
-                        switch = switchClass,
-                        controller = None)
+
 
     def program_switch_p4runtime(self, sw_name, sw_dict):
         """ This method will use P4Runtime to program the switch using the
