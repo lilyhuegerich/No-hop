@@ -22,7 +22,7 @@
 import os, sys, json, subprocess, re, argparse
 from time import sleep
 
-from p4_mininet import P4Switch, P4Host, P4HostV6, P4RuntimeSwitch
+from p4_mininet import P4Switch, P4Host, P4RuntimeSwitch
 
 from mininet.net import Mininet
 from mininet.topo import Topo
@@ -95,8 +95,8 @@ class ExerciseTopo(Topo):
             for link in host_links:
                 host_name = link['node1']
                 host_sw   = link['node2']
-                host_num = int(host_name[1:])
-                sw_num   = int(host_sw[1:])
+                host_num = int(host_name[2:])
+                sw_num   = int(host_sw[2:])
                 host_ip = "10.0.%d.%d" % (sw_num, host_num)
                 host_mac = '00:00:00:00:%02x:%02x' % (sw_num, host_num)
                 # Each host IP should be /24, so all exercise traffic will use the
@@ -122,7 +122,7 @@ class ExerciseTopo(Topo):
                             delay=link['latency'], bw=link['bandwidth'],
                             addr1=host_mac, addr2=host_mac)
                 self.addSwitchPort(host_sw, host_name)
-        
+
 
         for link in switch_links:
             self.addLink(link['node1'], link['node2'],
@@ -287,12 +287,7 @@ class ExerciseRunner:
                         host = P4Host,
                         switch = switchClass,
                         controller = None)
-        if self.host_mode is 6:
-            self.net = Mininet(topo = self.topo,
-                        link = TCLink,
-                        host = P4HostV6,
-                        switch = switchClass,
-                        controller = None)
+
 
     def program_switch_p4runtime(self, sw_name, sw_dict):
         """ This method will use P4Runtime to program the switch using the
@@ -347,29 +342,12 @@ class ExerciseRunner:
                 - A mininet instance is stored as self.net and self.net.start() has
                   been called.
         """
-        for host_name in self.topo.hosts():
+        for host_name, host_info in self.hosts.items():
             h = self.net.get(host_name)
-            h_iface = h.intfs.values()[0]
-            link = h_iface.link
+            if "commands" in host_info:
+                for cmd in host_info["commands"]:
+                    h.cmd(cmd)
 
-            sw_iface = link.intf1 if link.intf1 != h_iface else link.intf2
-            # phony IP to lie to the host about
-            host_id = int(host_name[1:])
-            sw_ip = '10.0.%d.254' % host_id
-            if self.host_mode is 6:
-                sw_v6_ip = '1000::%d:1' % host_id
-            # Ensure each host's interface name is unique, or else
-            # mininet cannot shutdown gracefully
-            h.defaultIntf().rename('%s-eth0' % host_name)
-            # static arp entries and default routes
-            h.cmd('arp -i %s -s %s %s' % (h_iface.name, sw_ip, sw_iface.mac))
-            h.cmd('ethtool --offload %s rx off tx off' % h_iface.name)
-            h.cmd('ip route add %s dev %s' % (sw_ip, h_iface.name))
-            if self.host_mode is 6:
-                h.cmd('ip -6 route add %s dev %s' % (sw_v6_ip, h_iface.name))
-            h.setDefaultRoute("via %s" % sw_ip)
-            #if self.host_mode is 6:
-            #    h.setDefaultRoute("via %s" % sw_v6_ip)
 
 
     def do_net_cli(self):
@@ -442,5 +420,3 @@ if __name__ == '__main__':
                               args.switch_json, args.behavioral_exe, args.quiet,args.host_mode)
 
     exercise.run_exercise()
-
-
