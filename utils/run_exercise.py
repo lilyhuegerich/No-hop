@@ -52,6 +52,9 @@ def configureP4Switch(**switch_args):
 
             def describe(self):
                 print (self.name)
+                print '====================================='
+                print 'Switch Device ID: %s' % str(self.device_id)
+                print 'Switch CPU port: %s' % str(self.cpu_port)
                 print "%s -> gRPC port: %d" % (self.name, self.grpc_port)
 
         return ConfiguredP4RuntimeSwitch
