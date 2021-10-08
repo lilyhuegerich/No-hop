@@ -26,6 +26,7 @@ def controller():
         print entry
     while (True):
         try:
+            print ("waiting to recieve packet from switch")
             packetin = s1.PacketIn()
             print ("recieved packet", packetin)
             if packetin.WhichOneof('update')=='packet':
