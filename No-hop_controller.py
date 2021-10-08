@@ -28,7 +28,7 @@ def controller():
     for entry in s1.ReadTableEntries():
         print entry
     wait=1
-    while (wait=1):
+    while (wait==1):
             print ("waiting to recieve packet from switch")
             try:
                 packetin = s1.PacketIn()
