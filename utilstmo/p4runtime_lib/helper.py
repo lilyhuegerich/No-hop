@@ -161,14 +161,14 @@ class P4InfoHelper(object):
         p4runtime_param.value = encode(value, p4info_param.bitwidth)
         return p4runtime_param
 
-    # get replicas 
+    # get replicas
     def get_replicas_pb(self, egress_port, instance):
         p4runtime_replicas = p4runtime_pb2.Replica()
         p4runtime_replicas.egress_port = egress_port
         p4runtime_replicas.instance = instance
         return p4runtime_replicas
 
-    # get metadata 
+    # get metadata
     def get_metadata_pb(self, metadata_id, value):
         p4runtime_metadata = p4runtime_pb2.PacketMetadata()
         p4runtime_metadata.metadata_id = metadata_id
@@ -199,7 +199,7 @@ class P4InfoHelper(object):
 
     def buildDigestEntry(self, digest_name=None):
         digest_entry = p4runtime_pb2.DigestEntry()
-        # using name 
+        # using name
         digest_entry.digest_id = self.get_digests_id(digest_name)
         # using id directly
         #digest_entry.digest_id = int(digest_id)
