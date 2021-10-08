@@ -4,7 +4,7 @@ import grpc
 import os
 import sys
 from time import sleep
-
+from scapy.all import *
 sys.path.append(
     os.path.join(os.path.dirname(os.path.abspath(__file__)),
                  './utils/'))
