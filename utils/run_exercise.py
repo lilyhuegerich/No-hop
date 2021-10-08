@@ -276,10 +276,10 @@ class ExerciseRunner:
 
 
         self.net = Mininet(topo = self.topo,
-                    link = TCLink,
-                    host = P4Host,
-                    switch = switchClass,
-                    controller = None)
+                      link = TCLink,
+                      host = P4Host,
+                      switch = defaultSwitchClass,
+                      controller = None)
 
 
     def program_switch_p4runtime(self, sw_name, sw_dict):
