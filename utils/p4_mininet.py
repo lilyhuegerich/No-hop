@@ -62,7 +62,7 @@ class P4HostV6(Host):
         for off in ["rx", "tx", "sg"]:
             cmd = "/sbin/ethtool --offload eth0 %s off" % off
             self.cmd(cmd)
-        
+
         # Do not disable IPV6
 
         return r
@@ -208,7 +208,7 @@ class P4RuntimeSwitch(P4Switch):
         self.sw_path = sw_path
         # make sure that the provided sw_path is valid
         pathCheck(sw_path)
-
+        self.cpu_port = P4RuntimeSwitch.cpu_port
         if json_path is not None:
             # make sure that the provided JSON file exists
             if not os.path.isfile(json_path):
@@ -252,7 +252,7 @@ class P4RuntimeSwitch(P4Switch):
             P4Switch.device_id += 1
         self.nanomsg = "ipc:///tmp/bm-{}-log.ipc".format(self.device_id)
         # setting cpu port
-        self.cpu_port = P4RuntimeSwitch.cpu_port
+
 
 
     def check_switch_started(self, pid):
