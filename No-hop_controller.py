@@ -18,9 +18,9 @@ import p4runtime_lib.helper
 def controller():
     p4info_helper = p4runtime_lib.helper.P4InfoHelper("../../P4_code/compare_dht_forward.p4.p4info.txt")
     s1 = p4runtime_lib.bmv2.Bmv2SwitchConnection(
+            name='s1',
             address='127.0.0.1:50051',
-            device_id=0
-            )
+            device_id=0)
     s1.MasterArbitrationUpdate(role=3, election_id = 3)
     for entry in s1.ReadTableEntries():
         print entry
