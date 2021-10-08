@@ -82,6 +82,7 @@ class ExerciseTopo(Topo):
                 host_links.append(link)
             else:
                 switch_links.append(link)
+
         for sw, params in switches.iteritems():
             if "program" in params:
                 switchClass = configureP4Switch(
@@ -256,7 +257,7 @@ class ExerciseRunner:
         """
         self.logger("Building mininet topology.")
 
-        self.topo = ExerciseTopo(self.hosts, self.switches.keys(), self.links, self.log_dir,self.host_mode)
+        self.topo = ExerciseTopo(self.hosts, self.switches, self.links, self.log_dir,self.host_mode)
 
         switchClass = configureP4Switch(
                 sw_path=self.bmv2_exe,
