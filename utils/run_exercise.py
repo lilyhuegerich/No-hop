@@ -212,7 +212,7 @@ class ExerciseRunner:
         self.switch_json = switch_json
         self.bmv2_exe = bmv2_exe
         # IPv4/6
-        self.host_mode = host_mode
+        self.host_mode = 0
 
     def run_exercise(self):
         """ Sets up the mininet instance, programs the switches,
