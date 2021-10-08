@@ -202,6 +202,7 @@ control ThisChecksumCompute(inout headers  hdr, inout metadata meta) {
 
 control ThisDeparser(packet_out packet, in headers hdr) {
     apply {
+        packet.emit(hdr.packet_in);
         packet.emit(hdr.ethernet);
         packet.emit(hdr.ipv4);
         packet.emit(hdr.dht);
