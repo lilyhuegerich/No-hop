@@ -24,7 +24,7 @@ def controller():
             name='s1',
             address='127.0.0.1:50051',
             device_id=0)
-    s1.MasterArbitrationUpdate(role=3, election_id = 3)
+    s1.MasterArbitrationUpdate(role=3, election_id = 1)
     for entry in s1.ReadTableEntries():
         print entry
     mc_group_entry = p4info_helper.buildMCEntry(
