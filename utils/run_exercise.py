@@ -115,6 +115,15 @@ class ExerciseTopo(Topo):
             self.addLink(sw1_name, sw2_name,
                         port1=sw1_port, port2=sw2_port,
                         delay=link['latency'], bw=link['bandwidth'])
+    def parse_switch_node(self, node):
+        assert(len(node.split('-')) == 2)
+        sw_name, sw_port = node.split('-')
+        try:
+            sw_port = int(sw_port[1:])
+        except:
+            raise Exception('Invalid switch node in topology file: {}'.format(node))
+        return sw_name, sw_port
+
 
     def addSwitchPort(self, sw, node2):
         if sw not in self.sw_port_mapping:
