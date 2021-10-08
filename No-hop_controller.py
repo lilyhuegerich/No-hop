@@ -27,13 +27,15 @@ def controller():
     s1.MasterArbitrationUpdate(role=3, election_id = 3)
     for entry in s1.ReadTableEntries():
         print entry
-    while (True):
-
+    wait=1
+    while (wait=1):
             print ("waiting to recieve packet from switch")
             try:
                 packetin = s1.PacketIn()
-            except KeyboardInterrupt:
+            except:
+                wait=0
                 return
+
             print ("recieved packet", packetin)
             if packetin.WhichOneof('update')=='packet':
                     # print("Received Packet-in\n")
