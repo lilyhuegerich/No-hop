@@ -49,7 +49,7 @@ def configureP4Switch(**switch_args):
             def __init__(self, *opts, **kwargs):
                 kwargs.update(switch_args)
                 P4RuntimeSwitch.__init__(self, *opts, **kwargs)
-
+                self.cpu_port=255
             def describe(self):
                 print (self.name)
                 print '====================================='
