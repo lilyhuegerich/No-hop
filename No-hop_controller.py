@@ -21,7 +21,7 @@ def controller():
             address='127.0.0.1:50051',
             device_id=0
             )
-    s1.MasterArbitrationUpdate()
+    s1.MasterArbitrationUpdate(role=3)
     for entry in s1.ReadTableEntries():
         print entry
     while (True):
