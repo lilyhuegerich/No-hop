@@ -3,6 +3,7 @@ import argparse
 import grpc
 import os
 import sys
+import json
 from time import sleep
 from scapy.all import *
 sys.path.append(
@@ -37,12 +38,22 @@ def printCounter(p4info_helper, sw, counter_name, index):
 
 def controller():
     p4info_helper = p4runtime_lib.helper.P4InfoHelper("../../P4_code/compare_dht_forward.p4.p4info.txt")
-    s1 = p4runtime_lib.bmv2.Bmv2SwitchConnection(
-            name='s1',
-            address='127.0.0.1:50051',
-            device_id=0)
-    s1.MasterArbitrationUpdate(role=3, election_id = 1)
-    for entry in s1.ReadTableEntries():
+
+    with open('topology.json') as f:
+        data = json.load(f)
+    print data[hosts]
+    switches=data[switches]
+    s_l=[]
+    i=0
+    for switch in switches:
+        s_l.append(p4runtime_lib.bmv2.Bmv2SwitchConnection(
+                name='s'+str(i),
+                address='127.0.0.1:5005'+str(i),
+                device_id=0))
+    for s in s_l:
+        s.MasterArbitrationUpdate(role=3, election_id = 1)
+
+    for entry in s_l[3].ReadTableEntries():
         print entry
 
 
