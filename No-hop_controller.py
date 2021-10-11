@@ -100,7 +100,7 @@ class controller:
             con_switch=0
             if "client" in host:
                 continue
-            if (host == i[0] or host== i[1]) for i in h_pairs:
+            if len([h for h in h_pairs if host in h])>0:
                 continue
             for link in data["links"]:
                 if host in link:
