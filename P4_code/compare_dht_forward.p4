@@ -94,8 +94,8 @@ control ThisIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
 
-    counter(MAX_TUNNEL_ID, CounterType.packets_and_bytes) ingressTunnelCounter;
-    counter(MAX_TUNNEL_ID, CounterType.packets_and_bytes) egressTunnelCounter;
+    counter(32, CounterType.packets_and_bytes) ingressTunnelCounter;
+    counter(32, CounterType.packets_and_bytes) egressTunnelCounter;
     action drop() {
         mark_to_drop(standard_metadata);
     }
@@ -117,6 +117,9 @@ control ThisIngress(inout headers hdr,
           hdr.packet_in.setValid();
           hdr.packet_in.ingress_port = (bit<16>)standard_metadata.ingress_port;
       }
+     action first_contact(){
+         
+     }
 
     table no_hop_lookup {
         key={
