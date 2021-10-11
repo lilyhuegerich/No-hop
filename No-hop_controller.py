@@ -51,11 +51,10 @@ def controller():
                 address='127.0.0.1:5005'+str(i),
                 device_id=i))
         i+=1
-    for s in s_l:
-        s.MasterArbitrationUpdate(role=3, election_id = 1)
-        for entry in s.ReadTableEntries():
+        s_l[-1].MasterArbitrationUpdate(role=3, election_id = 1)
+        for entry in s_l[-1].ReadTableEntries():
             print entry
-
+    
 
     wait=1
     while (wait==1):
