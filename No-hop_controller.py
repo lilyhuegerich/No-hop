@@ -42,7 +42,7 @@ def controller():
     with open('topology.json') as f:
         data = json.load(f)
     print data["switches"]
-    switches=data[switches]
+    switches=data["switches"]
     s_l=[]
     i=0
     for switch in switches:
