@@ -17,7 +17,7 @@ import p4runtime_lib.bmv2
 #from p4runtime_lib.error_utils import printGrpcError
 from p4runtime_lib.switch import ShutdownAllSwitchConnections
 import p4runtime_lib.helper
-from No_hop_host import No_hop
+from No-hop_host import No_hop
 max_id=32
 
 class Switch:
