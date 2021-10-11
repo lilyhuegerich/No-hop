@@ -56,7 +56,7 @@ class Switch:
     def read_tables(self):
         for entry in self.s.ReadTableEntries():
             print entry
-            
+
 class controller:
     def __init__(self):
         with open('topology.json') as f:
@@ -81,7 +81,7 @@ class controller:
         while (True):
                 sleep(1)
                 for switch in self.s_l:
-                    fail, join= switch.check_counters(self.P4InfoHelper)
+                    fail, join= switch.check_counters(self.p4info_helper)
                     if not len(fail)==0:
                         handle_fail(fail)
                     if not len(join)==0:
