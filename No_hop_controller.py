@@ -89,12 +89,11 @@ class controller:
     def host_ids(self, data):
         h_ids=[]
         for h in data["hosts"]:
-            print (h)
             if "client" in h:
                 continue
             h_ids.append(int( h.split("_")[1]))
-            h_ids.sort()
-            return h_ids
+        h_ids.sort()
+        return h_ids
 
     def find_host_pairs(self, data):
         h_pairs=[]
