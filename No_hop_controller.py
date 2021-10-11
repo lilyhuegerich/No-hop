@@ -14,7 +14,6 @@ SWITCH_TO_HOST_PORT = 1
 SWITCH_TO_SWITCH_PORT = 2
 
 import p4runtime_lib.bmv2
-#from p4runtime_lib.error_utils import printGrpcError
 from p4runtime_lib.switch import ShutdownAllSwitchConnections
 import p4runtime_lib.helper
 from No_hop_host import No_hop
