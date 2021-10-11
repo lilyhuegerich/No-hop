@@ -27,7 +27,7 @@ def printCounter(p4info_helper, sw, counter_name, index):
     :param counter_name: the name of the counter from the P4 program
     :param index: the counter index (in our case, the tunnel ID)
     """
-    for response in sw.ReadRegister():
+    for response in sw.ReadCounters(p4info_helper.get_counters_id(counter_name), index):
         for entity in response.entities:
             counter = entity.counter_entry
             print("%s %s %d: %d packets (%d bytes)" % (

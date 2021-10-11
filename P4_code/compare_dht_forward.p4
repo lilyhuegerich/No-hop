@@ -97,7 +97,7 @@ control ThisIngress(inout headers hdr,
     counter(32, CounterType.packets) ingressTunnelCounter;
     counter(32, CounterType.packets_and_bytes) egressTunnelCounter;
 
-    register< bit<6> >(2) my_register_array;
+    
 
 
     action drop() {
