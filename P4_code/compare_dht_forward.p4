@@ -94,8 +94,8 @@ control ThisIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
 
-    counter(6, CounterType.packets_and_bytes) ingressTunnelCounter;
-    counter(32, CounterType.packets_and_bytes) egressTunnelCounter;
+    counter(6, CounterType.bytes) ingressTunnelCounter;
+    counter(6, CounterType.bytes) egressTunnelCounter;
     action drop() {
         mark_to_drop(standard_metadata);
     }
