@@ -53,7 +53,10 @@ class Switch:
                         self.join_counter[i]=counter.data.packet_count
                         joined.append(i)
         return joined
-
+    def read_tables(self):
+        for entry in self.s.ReadTableEntries():
+            print entry
+            
 class controller:
     def __init__(self):
         with open('topology.json') as f:
@@ -71,9 +74,8 @@ class controller:
         for _ in switches:
             self.s_l.append( Switch(i))
             i+=1
-        for switch in self.s_l:
-            for entry in switch.s.ReadTableEntries():
-                print entry
+
+
 
     def run(self):
         while (True):
