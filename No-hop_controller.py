@@ -52,7 +52,8 @@ def controller():
                 device_id=i-1))
         i+=1
         s_l[-1].MasterArbitrationUpdate(role=3, election_id = 1)
-        for entry in s_l[-1].ReadTableEntries():
+    for s in s_l:
+        for entry in s.ReadTableEntries():
             print entry
 
 
