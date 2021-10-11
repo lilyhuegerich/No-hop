@@ -104,16 +104,17 @@ class controller:
                 continue
             for link in data["links"]:
                 if host in link:
-                    con_switch= link[(link.index(host)+1)%2]
+                    con_switch= str(link[(link.index(host)+1)%2]).split("-")[0]
                     break
             else:
                 raise ValueError ("Cannot find host ", str(host), " in ", str(data["links"]))
             for link in data["links"]:
-                if (con_switch in link) and ("h" in link[(link.index(con_switch)+1)%2]) and not ( link[(link.index(con_switch)+1)%2]==host) :
+
+                if (con_switch in [str(l).split("-") for l in link]) and ("h" in link[(link.index(con_switch)+1)%2]) and (not link[(link.index(con_switch)+1)%2]==host) :
                     h_pairs.append((str(host), str(link[(link.index(con_switch)+1)%2])))
                     break
             else:
-                raise ValueError("Could not find pair for ", str(host), " in ", str(data["links"]), h_pairs)
+                raise ValueError("Could not find pair for ", str(host), " in ", str(data["links"]), "h_pairs ", h_pairs)
         return h_pairs
     def run(self):
         print "Waiting for switch updates......"
