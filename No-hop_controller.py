@@ -63,15 +63,15 @@ class controller:
 
         with open(str(switches["s_a"]["runtime_json"])) as switch_file:
             switch_data=json.load(switch_file)
-            
+
         self.p4info_helper = p4runtime_lib.helper.P4InfoHelper(switch_data["p4info"])
         self.s_l=[]
         self.topo=data
         i=1
         for switch in switches:
-            s_l.append(switch(i))
+            self.s_l.append(switch(i))
             i+=1
-        for switch in s_l:
+        for switch in self.s_l:
             for entry in switch.s.ReadTableEntries():
                 print entry
 
