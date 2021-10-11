@@ -50,7 +50,8 @@ def controller():
     while (wait==1):
 
             sleep(1)
-            printCounter(p4info_helper, s1, "ThisIngress.c", 0)
+            printCounter(p4info_helper, s1, "ThisIngress.fail",2)
+            printCounter(p4info_helper, s1, "ThisIngress.join",2)
             """"try:
                 packetin = s1.PacketIn()
             except:
