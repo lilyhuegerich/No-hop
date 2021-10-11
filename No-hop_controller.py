@@ -177,7 +177,7 @@ class controller:
             raise ValueError ("could not find responsible switch ", responsible[1], " in " , str([s.name for s in self.s_l]))
 
 
-    return
+        return
 
     def handle_join(self, join, switch):
         print "Recieved join", str(join), " from switch ", switch.name
