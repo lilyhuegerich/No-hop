@@ -75,7 +75,6 @@ class controller:
             self.type="rewrite"
 
         self.h_ids=self.host_ids(data)
-        print(self.h_ids)
 
         self.p4info_helper = p4runtime_lib.helper.P4InfoHelper(str(switch_data["p4info"]))
         self.s_l=[]
@@ -160,7 +159,7 @@ class controller:
             raise ValueError("Both hosts to the same TOR switch failing at the same time is not yet implemented for No-hop-forward.") #TODO
 
     def rewrite_tables(self, id):
-        if self.type==forward:
+        if self.type=="forward":
             self.rewrite_forward_tables(self, id)
         else:
             self.rewrite_rewirte_tables(self, id)
