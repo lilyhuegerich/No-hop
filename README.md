@@ -50,18 +50,18 @@ mininet> net
 ```
 ![](gifs/mininet_net.gif)
 
-In a host xterm to run the No-hop_host program.
+In a host xterm to run the No_hop_host program.
 
 To run a client:
 
 ```bash
-# python ../../No-hop_host.py c
+# python ../../No_hop_host.py c
 ```
 
 To run a server without an ID (Will not run stabilize proccess until ID is assigned):
 
 ```bash
-# python ../../No-hop_host.py
+# python ../../No_hop_host.py
 ```
 
 To assign an ID to a host, send with the client a message of type=1, ID=some id that sends to that host, message= join:ID that you want to assign.
@@ -71,7 +71,7 @@ To assign an ID to a host, send with the client a message of type=1, ID=some id 
 To run a test:
 
 ```bash
-# python ../../No-hop_host.py t=<Number of times each ID should be sent>
+# python ../../No_hop_host.py t=<Number of times each ID should be sent>
 ```
 
 ![](gifs/test.gif)
@@ -79,7 +79,7 @@ To run a test:
 To run hosts that immediatly start to stabilize pass them their ID at start:
 
 ```bash
-# python ../../No-hop_host.py ID
+# python ../../No_hop_host.py ID
 ```
 
 ![](gifs/stabilize.gif)
