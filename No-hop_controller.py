@@ -44,7 +44,7 @@ def controller():
     print data["switches"]
     switches=data["switches"]
     s_l=[]
-    i=0
+    i=1
     for switch in switches:
         s_l.append(p4runtime_lib.bmv2.Bmv2SwitchConnection(
                 name='s'+str(i),
@@ -53,9 +53,8 @@ def controller():
         i+=1
     for s in s_l:
         s.MasterArbitrationUpdate(role=3, election_id = 1)
-
-    for entry in s_l[0].ReadTableEntries():
-        print entry
+        for entry in s.ReadTableEntries():
+            print entry
 
 
     wait=1
