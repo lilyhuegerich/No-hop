@@ -76,7 +76,7 @@ class controller:
         self.topo=data
         i=1
         for s in switches:
-            self.s_l.append( Switch(i), str(s))
+            self.s_l.append( Switch(i, str(s)))
             i+=1
 
 
