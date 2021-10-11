@@ -74,7 +74,7 @@ class controller:
         else:
             self.type="rewrite"
 
-        self.h_ids=host_ids(data)
+        self.h_ids=self.host_ids(data)
         print(self.h_ids)
 
         self.p4info_helper = p4runtime_lib.helper.P4InfoHelper(str(switch_data["p4info"]))
