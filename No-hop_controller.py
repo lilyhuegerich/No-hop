@@ -19,7 +19,7 @@ from p4runtime_lib.switch import ShutdownAllSwitchConnections
 import p4runtime_lib.helper
 max_id=32
 
-class switch:
+class Switch:
     def __init__(self, i):
         self.s=p4runtime_lib.bmv2.Bmv2SwitchConnection(
                     name='s'+str(i),
@@ -69,7 +69,7 @@ class controller:
         self.topo=data
         i=1
         for _ in switches:
-            self.s_l.append(switch(i))
+            self.s_l.append( Switch(i))
             i+=1
         for switch in self.s_l:
             for entry in switch.s.ReadTableEntries():
