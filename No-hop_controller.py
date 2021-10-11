@@ -57,10 +57,6 @@ def controller():
                 return
             """
             #print ("recieved packet", packetin)
-            if packetin.WhichOneof('update')=='packet':
-                    # print("Received Packet-in\n")
-                    packet = packetin.packet.payload
-                    print(packet)
 
 
 controller()
