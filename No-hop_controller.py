@@ -165,7 +165,7 @@ class controller:
             self.rewrite_rewirte_tables(self, id)
 
     def rewrite_rewirte_tables(self, id):
-
+        return
     def rewrite_forward_tables(self, id):
         id= self.find_responsible(id)
         responsible= self.find_pair_responsible(id)
