@@ -109,7 +109,7 @@ class controller:
             else:
                 raise ValueError ("Cannot find host ", str(host), " in ", str(data["links"]))
             for link in data["links"]:
-                if (con_switch in [str(l).split("-")[0] for l in link]) and ("h" in h[0] for h in link) and (host not in link) :
+                if (con_switch in [str(l).split("-")[0] for l in link]) and ("h" in str(h)[0] for h in link) and (host not in link) :
                     h_pairs.append((str(host), [h for h in link if "h" == str(h)[0]][0]))
                     break
             else:
