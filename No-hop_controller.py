@@ -110,9 +110,9 @@ class controller:
                 raise ValueError ("Cannot find host ", str(host), " in ", str(data["links"]))
             print con_switch
             for link in data["links"]:
-                if (con_switch in [str(l).split("-")[0] for l in link]) and ( ) and (host not in link) :
+                if (con_switch in link[0] and "h"==link[1][0] and not link[1]==host):
                     print(link)
-                    h_pairs.append((str(host), [str(h) for h in link if "h" == str(h)[0]]))
+                    h_pairs.append((str(host), str(link[1]))
                     break
             else:
                 raise ValueError("Could not find pair for ", str(host), " in ", str(data["links"]), "h_pairs ", h_pairs)
