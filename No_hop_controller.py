@@ -160,9 +160,9 @@ class controller:
 
     def rewrite_tables(self, id):
         if self.type=="forward":
-            self.rewrite_forward_tables(self, id)
+            self.rewrite_forward_tables(id)
         else:
-            self.rewrite_rewirte_tables(self, id)
+            self.rewrite_rewirte_tables(id)
 
     def rewrite_rewirte_tables(self, id):
         return
