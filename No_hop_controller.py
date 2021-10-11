@@ -204,7 +204,7 @@ class controller:
             action_params=action_params,
             priority=priority)
 
-        to_change.s.ModifyTableEntry(table_entry)
+        to_change.s.ModifyTableEntry(new_entry)
 
         return
 
