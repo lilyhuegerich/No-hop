@@ -110,7 +110,7 @@ class controller:
                 raise ValueError ("Cannot find host ", str(host), " in ", str(data["links"]))
             for link in data["links"]:
                 if (con_switch in link[0] and "h"==link[1][0] and not link[1]==host):
-                    h_pairs.append((str(host), str(link[1]), con_switch))
+                    h_pairs.append([str(host), str(link[1]), con_switch])
                     break
             else:
                 raise ValueError("Could not find pair for ", str(host), " in ", str(data["links"]), "h_pairs ", h_pairs)
@@ -148,11 +148,11 @@ class controller:
     def find_pair_responsible(self, id):
         for i in self.h_pairs:
             if str(id) in i[0]:
-                responsible=(i[1], i[2])
+                responsible=[i[1], i[2]]
                 i.remove(i[0])
                 return responsible
             if str(id) in i[1]:
-                responsible=(i[0], i[2])
+                responsible=[i[0], i[2]]
                 i.remove(i[1])
                 return responsible
         else:
