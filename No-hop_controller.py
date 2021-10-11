@@ -20,13 +20,14 @@ import p4runtime_lib.helper
 max_id=32
 
 class Switch:
-    def __init__(self, i):
+    def __init__(self, i, name):
         self.s=p4runtime_lib.bmv2.Bmv2SwitchConnection(
                     name='s'+str(i),
                     address='127.0.0.1:5005'+str(i),
                     device_id=i-1)
         self.join_counter=[0]*max_id
         self.fail_counter=[0]*max_id
+        self.name=name
         self.s.MasterArbitrationUpdate(role=3, election_id = 1)
 
     def check_counters(self, p4info_helper):
@@ -61,36 +62,41 @@ class controller:
     def __init__(self):
         with open('topology.json') as f:
             data = json.load(f)
-        print data["switches"]
+        #print data["switches"]
         switches=data["switches"]
 
         with open(str(switches["s_a"]["runtime_json"])) as switch_file:
             switch_data=json.load(switch_file)
-
+        if "forward" in str(switch_data["p4info"]):
+            self.type="forward"
+        else:
+            self.type="rewrite"
         self.p4info_helper = p4runtime_lib.helper.P4InfoHelper(str(switch_data["p4info"]))
         self.s_l=[]
         self.topo=data
         i=1
-        for _ in switches:
-            self.s_l.append( Switch(i))
+        for s in switches:
+            self.s_l.append( Switch(i), str(s))
             i+=1
 
 
 
     def run(self):
+        print "Waiting for switch updates......"
         while (True):
                 sleep(1)
                 for switch in self.s_l:
                     fail, join= switch.check_counters(self.p4info_helper)
                     if not len(fail)==0:
-                        self.handle_fail(fail)
+                        self.handle_fail(fail, switch)
                     if not len(join)==0:
-                        self.handle_join(join)
+                        self.handle_join(join, switch)
 
-    def handle_fail(self, fail):
-        print "Recieved fail", str(fail)
-    def handle_join(self, join):
-        print "Recieved join", str(join)
+    def handle_fail(self, fail, switch):
+        print "Recieved fail", str(fail), " from switch ", switch.name
+
+    def handle_join(self, join, switch):
+        print "Recieved join", str(join), " from switch ", switch.name
 
 if __name__ == "__main__":
     c= controller()
