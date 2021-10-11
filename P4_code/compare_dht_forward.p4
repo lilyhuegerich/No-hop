@@ -113,10 +113,10 @@ control ThisIngress(inout headers hdr,
     }
 
     action send_to_controller(){
-          if (hdr.dht.type==2){
+          if (hdr.dht.message_type==2){
               fail.count((bit<32>)  hdr.dht.id);
           }
-          if (hdr.dht.type==3){
+          if (hdr.dht.message_type==3){
               join.count((bit<32>)  hdr.dht.id);
           }
           standard_metadata.egress_spec = CPU_OUT_PORT;
