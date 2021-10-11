@@ -83,9 +83,9 @@ class controller:
                 for switch in self.s_l:
                     fail, join= switch.check_counters(self.p4info_helper)
                     if not len(fail)==0:
-                        handle_fail(fail)
+                        self.handle_fail(fail)
                     if not len(join)==0:
-                        handle_join(join)
+                        self.handle_join(join)
 
     def handle_fail(self, fail):
         print "Recieved fail", str(fail)
