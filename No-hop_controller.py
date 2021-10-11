@@ -50,6 +50,7 @@ def controller():
                 name='s'+str(i),
                 address='127.0.0.1:5005'+str(i),
                 device_id=0))
+        i+=1
     for s in s_l:
         s.MasterArbitrationUpdate(role=3, election_id = 1)
 
