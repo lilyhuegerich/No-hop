@@ -96,7 +96,7 @@ control ThisIngress(inout headers hdr,
 
     counter(32, CounterType.packets_and_bytes) ingressTunnelCounter;
     counter(32, CounterType.packets_and_bytes) egressTunnelCounter;
-    Register<bit<32>>(2) registerBank;
+    
     action drop() {
         mark_to_drop(standard_metadata);
     }
