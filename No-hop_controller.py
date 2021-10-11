@@ -174,7 +174,7 @@ class controller:
                 to_change=switch
                 break
         else:
-            raise ValueError ("could not find responsible switch ", responsible[1], " in " str([s.name for s in self.s_l]))
+            raise ValueError ("could not find responsible switch ", responsible[1], " in " , str([s.name for s in self.s_l]))
 
 
     return
