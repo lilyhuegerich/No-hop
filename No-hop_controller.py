@@ -112,7 +112,7 @@ class controller:
             for link in data["links"]:
                 if (con_switch in link[0] and "h"==link[1][0] and not link[1]==host):
                     print(link)
-                    h_pairs.append((str(host), str(link[1]))
+                    h_pairs.append((str(host), str(link[1])))
                     break
             else:
                 raise ValueError("Could not find pair for ", str(host), " in ", str(data["links"]), "h_pairs ", h_pairs)
