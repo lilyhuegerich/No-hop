@@ -41,14 +41,14 @@ In the mininet CLI to open a terminal for a host:
 ```bash
 mininet> xterm host_name
 ```
-![](figs/xterm.gif)
+![](gifs/xterm.gif)
 
 To see network:
 
 ```bash
 mininet> net
 ```
-![](figs/mininet_net.gif)
+![](gifs/mininet_net.gif)
 
 In a host xterm to run the No-hop_host program.
 
@@ -66,7 +66,7 @@ To run a server without an ID (Will not run stabilize proccess until ID is assig
 
 To assign an ID to a host, send with the client a message of type=1, ID=some id that sends to that host, message= join:ID that you want to assign.
 
-![](figs/joinID.gif)
+![](gifs/joinID.gif)
 
 To run a test:
 
@@ -74,7 +74,7 @@ To run a test:
 # python ../../No-hop_host.py t=<Number of times each ID should be sent>
 ```
 
-![](figs/test.gif)
+![](gifs/test.gif)
 
 To run hosts that immediatly start to stabilize pass them their ID at start:
 
@@ -82,7 +82,7 @@ To run hosts that immediatly start to stabilize pass them their ID at start:
 # python ../../No-hop_host.py ID
 ```
 
-![](figs/stabilize.gif)
+![](gifs/stabilize.gif)
 
 To leave mininet:
 
