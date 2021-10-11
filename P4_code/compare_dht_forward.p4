@@ -123,7 +123,7 @@ control ThisIngress(inout headers hdr,
           hdr.packet_in.ingress_port = (bit<16>)standard_metadata.ingress_port;
       }
      action first_contact(){
-         hdr.dht.id=first_contact_random.read();
+         /*hdr.dht.id=first_contact_random.read();*/
      }
 
     table no_hop_lookup {
