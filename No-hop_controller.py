@@ -60,7 +60,7 @@ class controller:
             data = json.load(f)
         print data["switches"]
         switches=data["switches"]
-        print (str(switches[0]["runtime_json"]))
+        print (str(switches["s_a"]["runtime_json"]))
         with open(str(switches[0]["runtime_json"])) as switch_file:
             switch_data=json.load(switch_file)
 
