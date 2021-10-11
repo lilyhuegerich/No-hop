@@ -67,10 +67,16 @@ class controller:
 
         with open(str(switches["s_a"]["runtime_json"])) as switch_file:
             switch_data=json.load(switch_file)
+
         if "forward" in str(switch_data["p4info"]):
             self.type="forward"
+            self.h_pairs=self.find_host_pairs(data)
         else:
             self.type="rewrite"
+
+        self.h_ids=host_ids(data)
+        print(self.h_ids)
+
         self.p4info_helper = p4runtime_lib.helper.P4InfoHelper(str(switch_data["p4info"]))
         self.s_l=[]
         self.topo=data
@@ -80,7 +86,35 @@ class controller:
             i+=1
 
 
+    def host_ids(self, data):
+        h_ids=[]
+        for h in data["hosts"]:
+            if "client" in h:
+                continue
+            h_ids.append(int( h.split("_")[1]))
+        return h_ids.sort()
 
+    def find_host_pairs(self, data):
+        h_pairs=[]
+        for host in data["hosts"]:
+            con_switch=0
+            if "client" in host:
+                continue
+            if (host == i[0] or host== i[1]) for i in h_pairs:
+                continue
+            for link in data["links"]:
+                if host in link:
+                    con_switch= link[(link.index(host)+1)%2]
+                    break
+            else:
+                raise ValueError ("Cannot find host ", str(host), " in ", str(data["links"]))
+            for link in data["links"]:
+                if (con_switch in link) and ("h" in link[(link.index(con_switch)+1)%2]):
+                    h_pairs.append((host, link[(link.index(con_switch)+1)%2]))
+                    break
+            else:
+                raise ValueError("Could not find pair for ", str(host), " in ", str(data["links"]))
+        return h_pairs
     def run(self):
         print "Waiting for switch updates......"
         while (True):
@@ -94,6 +128,11 @@ class controller:
 
     def handle_fail(self, fail, switch):
         print "Recieved fail", str(fail), " from switch ", switch.name
+        if self.type=="forward":
+            print (self.h_pairs)
+    def rewrite_tables():
+        return
+
 
     def handle_join(self, join, switch):
         print "Recieved join", str(join), " from switch ", switch.name
