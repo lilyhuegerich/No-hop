@@ -113,7 +113,7 @@ class controller:
                     h_pairs.append((str(host), str(link[(link.index(con_switch)+1)%2])))
                     break
             else:
-                raise ValueError("Could not find pair for ", str(host), " in ", str(data["links"]))
+                raise ValueError("Could not find pair for ", str(host), " in ", str(data["links"]), h_pairs)
         return h_pairs
     def run(self):
         print "Waiting for switch updates......"
