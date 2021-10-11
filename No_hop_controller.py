@@ -165,6 +165,7 @@ class controller:
 
     def rewrite_rewirte_tables(self, id):
         return
+
     def rewrite_forward_tables(self, id):
         id= self.find_responsible(id)
         responsible= self.find_pair_responsible(id)
@@ -175,6 +176,14 @@ class controller:
         else:
             raise ValueError ("could not find responsible switch ", responsible[1], " in " , str([s.name for s in self.s_l]))
 
+        for entry in to_change.s.ReadTableEntries():
+            print entry
+            if id in entry.range:
+                to_change_entry=entry
+                break
+        raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
+        to_change_entry["port"]=new_port #todo
+        to_change.s.ModifyTableEntry(t)
 
         return
 
