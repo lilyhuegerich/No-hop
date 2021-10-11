@@ -5,7 +5,7 @@ import os
 import sys
 import json
 from time import sleep
-from scapy.all import *
+from scapy.all import Ether, BitEnumField, BitField, IP, ICMP
 sys.path.append(
     os.path.join(os.path.dirname(os.path.abspath(__file__)),
                  './utils/'))
@@ -17,6 +17,7 @@ import p4runtime_lib.bmv2
 #from p4runtime_lib.error_utils import printGrpcError
 from p4runtime_lib.switch import ShutdownAllSwitchConnections
 import p4runtime_lib.helper
+from No_hop_host import No_hop
 max_id=32
 
 class Switch:
@@ -56,7 +57,7 @@ class Switch:
         return joined
     def read_tables(self):
         for entry in self.s.ReadTableEntries():
-            print entry
+             print entry
 
 class controller:
     def __init__(self):
@@ -108,15 +109,15 @@ class controller:
                     break
             else:
                 raise ValueError ("Cannot find host ", str(host), " in ", str(data["links"]))
-            print con_switch
             for link in data["links"]:
                 if (con_switch in link[0] and "h"==link[1][0] and not link[1]==host):
-                    print(link)
-                    h_pairs.append((str(host), str(link[1])))
+                    h_pairs.append((str(host), str(link[1]), con_switch))
                     break
             else:
                 raise ValueError("Could not find pair for ", str(host), " in ", str(data["links"]), "h_pairs ", h_pairs)
         return h_pairs
+
+
     def run(self):
         print "Waiting for switch updates......"
         while (True):
@@ -130,14 +131,57 @@ class controller:
 
     def handle_fail(self, fail, switch):
         print "Recieved fail", str(fail), " from switch ", switch.name
-        if self.type=="forward":
-            print (self.h_pairs)
-    def rewrite_tables():
-        return
 
+
+
+    def find_responsible(self, id):
+        for i, h in enumerate(self.h_ids):
+            if i==0 and id>self.h_ids[-1] :
+                return h
+            if i==0 and id<h:
+                return h
+            if self.h_ids[i-1]<id and id<=h:
+                return h
+        else:
+            raise ValueError("could not find responsible host in in ids ", self.h_ids, " for the id ", str(id))
+
+    def find_pair_responsible(self, id):
+        for i in self.h_pairs:
+            if id in i[0]:
+                responsible=(i[1], i[2])
+                i.remove(i[0])
+                return responsible
+            if id in i[1]:
+                responsible=(i[0], i[2])
+                i.remove(i[1])
+                return responsible
+        else:
+            raise ValueError("Both hosts to the same TOR switch failing at the same time is not yet implemented for No-hop-forward.") #TODO
+
+    def rewrite_tables(self, id):
+        if self.type==forward:
+            self.rewrite_forward_tables(self, id)
+        else:
+            self.rewrite_rewirte_tables(self, id)
+
+    def rewrite_rewirte_tables(self, id):
+
+    def rewrite_forward_tables(self, id):
+        id= self.find_responsible(id)
+        responsible= self.find_pair_responsible(id)
+        for switch in self.s_l:
+            if switch.name==responsible[1]:
+                to_change=switch
+                break
+        else:
+            raise ValueError ("could not find responsible switch ", responsible[1], " in " str([s.name for s in self.s_l]))
+
+
+    return
 
     def handle_join(self, join, switch):
         print "Recieved join", str(join), " from switch ", switch.name
+        #switch.s.PacketOut() #Ether(dst='00:04:00:00:00:00', type=0x800) / IP(dst=addr, ttl=50, proto=2) / No_hop(message_type=int(message_type), ID=int(ID), gid=gid, counter=0) / message)
 
 if __name__ == "__main__":
     c= controller()
