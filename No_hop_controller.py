@@ -94,7 +94,7 @@ class controller:
                 continue
             h_ids.append(int( h.split("_")[1]))
             h_ids.sort()
-            return h_ids()
+            return h_ids
 
     def find_host_pairs(self, data):
         h_pairs=[]
