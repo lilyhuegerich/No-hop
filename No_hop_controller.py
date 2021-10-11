@@ -132,7 +132,8 @@ class controller:
 
     def handle_fail(self, fail, switch):
         print "Recieved fail", str(fail), " from switch ", switch.name
-
+        for i in fail:
+            self.rewrite_tables(i)
 
 
     def find_responsible(self, id):
