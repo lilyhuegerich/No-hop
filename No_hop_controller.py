@@ -147,11 +147,11 @@ class controller:
 
     def find_pair_responsible(self, id):
         for i in self.h_pairs:
-            if id in i[0]:
+            if str(id) in i[0]:
                 responsible=(i[1], i[2])
                 i.remove(i[0])
                 return responsible
-            if id in i[1]:
+            if str(id) in i[1]:
                 responsible=(i[0], i[2])
                 i.remove(i[1])
                 return responsible
