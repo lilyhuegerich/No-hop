@@ -17,59 +17,78 @@ import p4runtime_lib.bmv2
 #from p4runtime_lib.error_utils import printGrpcError
 from p4runtime_lib.switch import ShutdownAllSwitchConnections
 import p4runtime_lib.helper
+max_id=32
 
-def printCounter(p4info_helper, sw, counter_name, index):
-    """
-    Reads the specified counter at the specified index from the switch. In our
-    program, the index is the tunnel ID. If the index is 0, it will return all
-    values from the counter.
-    :param p4info_helper: the P4Info helper
-    :param sw:  the switch connection
-    :param counter_name: the name of the counter from the P4 program
-    :param index: the counter index (in our case, the tunnel ID)
-    """
-    for response in sw.ReadCounters(p4info_helper.get_counters_id(counter_name), index):
-        for entity in response.entities:
-            counter = entity.counter_entry
-            print("%s %s %d: %d packets (%d bytes)" % (
-                sw.name, counter_name, index,
-                counter.data.packet_count, counter.data.byte_count
-            ))
+class switch:
+    def __init__(self, i):
+        self.s=p4runtime_lib.bmv2.Bmv2SwitchConnection(
+                    name='s'+str(i),
+                    address='127.0.0.1:5005'+str(i),
+                    device_id=i-1))
+        self.join_counter=[0]*max_id
+        self.fail_counter=[0]*max_id
+        self.s.MasterArbitrationUpdate(role=3, election_id = 1)
 
-def controller():
-    p4info_helper = p4runtime_lib.helper.P4InfoHelper("../../P4_code/compare_dht_forward.p4.p4info.txt")
+    def check_counters(self, p4info_helper):
+        return (self.check_fail(p4info_helper), self.check_join(p4info_helper) )
 
-    with open('topology.json') as f:
-        data = json.load(f)
-    print data["switches"]
-    switches=data["switches"]
-    s_l=[]
-    i=1
-    for switch in switches:
-        s_l.append(p4runtime_lib.bmv2.Bmv2SwitchConnection(
-                name='s'+str(i),
-                address='127.0.0.1:5005'+str(i),
-                device_id=i-1))
-        i+=1
-        s_l[-1].MasterArbitrationUpdate(role=3, election_id = 1)
-    for s in s_l:
-        for entry in s.ReadTableEntries():
-            print entry
+    def check_fail(self, p4info_helper):
+        failed=[]
+        for i in range(max_id):
+            for response in self.s.ReadCounters(p4info_helper.get_counters_id(ThisIngress.fail), i):
+                for entity in response.entities:
+                    counter = entity.counter_entry
+                    if not self.fail_counter[i]==counter.data.packet_count:
+                        self.fail_counter[i]=counter.data.packet_count
+                        failed.append(i)
+        return failed
 
+    def check_join(self, p4info_helper):
+        joined=[]
+        for i in range(max_id):
+            for response in self.s.ReadCounters(p4info_helper.get_counters_id(ThisIngress.join), i):
+                for entity in response.entities:
+                    counter = entity.counter_entry
+                    if not self.join_counter[i]==counter.data.packet_count:
+                        self.join_counter[i]=counter.data.packet_count
+                        joined.append(i)
+        return joined
 
-    wait=1
-    while (wait==1):
+class controller:
+    def __init__(self):
+        with open('topology.json') as f:
+            data = json.load(f)
+        print data["switches"]
+        switches=data["switches"]
+        with open(switches[0]["runtime_json"]) as switch_file:
+            switch_data=json.load(switch_file)
 
-            sleep(1)
-            printCounter(p4info_helper, s1, "ThisIngress.fail",2)
-            printCounter(p4info_helper, s1, "ThisIngress.join",2)
-            """"try:
-                packetin = s1.PacketIn()
-            except:
-                wait=0
-                return
-            """
-            #print ("recieved packet", packetin)
+        self.p4info_helper = p4runtime_lib.helper.P4InfoHelper(switch_data["p4info"])
+        self.s_l=[]
+        self.topo=data
+        i=1
+        for switch in switches:
+            s_l.append(switch(i))
+            i+=1
+        for switch in s_l:
+            for entry in switch.s.ReadTableEntries():
+                print entry
 
+    def run(self):
+        while (True):
+                sleep(1)
+                for switch in self.s_l:
+                    fail, join= switch.check_counters(self.P4InfoHelper)
+                    if not len(fail)==0:
+                        handle_fail(fail)
+                    if not len(join)==0:
+                        handle_join(join)
 
-controller()
+    def handle_fail(self, fail):
+        print "Recieved fail", str(fail)
+    def handle_join(self, join):
+        print "Recieved join", str(join)
+
+if __name__ == "__main__":
+    c= controller()
+    c.run()
