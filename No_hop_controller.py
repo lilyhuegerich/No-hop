@@ -93,6 +93,7 @@ class controller:
             if "client" in h:
                 continue
             h_ids.append(int( h.split("_")[1]))
+        print (h_ids)
         return h_ids.sort()
 
     def find_host_pairs(self, data):
