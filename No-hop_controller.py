@@ -27,8 +27,8 @@ def controller():
     s1.MasterArbitrationUpdate(role=3, election_id = 1)
     for entry in s1.ReadTableEntries():
         print entry
+
     
-    print "Installed mgrp on s1."
 
     wait=1
     while (wait==1):
