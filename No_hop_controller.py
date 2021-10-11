@@ -181,7 +181,7 @@ class controller:
             raise ValueError ("could not find responsible switch ", responsible[1], " in " , str([s.name for s in self.s_l]))
 
         for entry in to_change.runtime_json["table_entries"]:
-            if entry["action_name"] ==  "ThisIngress.no_hop_forward" and (entry["match"]["hdr.dht.id"][0]<id) and  (entry["match"]["hdr.dht.id"][1]>=id):
+            if entry["action_name"] ==  "ThisIngress.no_hop_forward" and (int(entry["match"]["hdr.dht.id"][0])<id) and  (int(entry["match"]["hdr.dht.id"][1])>=id):
                 new_entry=entry
                 break
         raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
