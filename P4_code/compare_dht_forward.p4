@@ -97,7 +97,7 @@ control ThisIngress(inout headers hdr,
     counter(32, CounterType.packets_and_bytes) ingressTunnelCounter;
     counter(32, CounterType.packets_and_bytes) egressTunnelCounter;
 
-    Register<bit<6>,  PortId_t>((bit<32>) 3) regs;
+    
     Random<bit<6>>(0, 32) first_contact_random;
 
     action drop() {
