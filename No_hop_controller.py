@@ -190,11 +190,11 @@ class controller:
         #TODO change outgoing port
 
         table_name = new_entry['table']
-        match_fields = new_entry.get('match') # None if not found
+        match_fields = new_entry.get('match')
         action_name = new_entry['action_name']
-        default_action = new_entry.get('default_action') # None if not found
+        default_action = new_entry.get('default_action')
         action_params = new_entry['action_params']
-        priority = new_entry.get('priority')  # None if not found
+        priority = new_entry.get('priority')
 
         table_entry = self.p4info_helper.buildTableEntry(
             table_name=table_name,
@@ -204,7 +204,7 @@ class controller:
             action_params=action_params,
             priority=priority)
 
-        to_change.s.ModifyTableEntry(table_entry)
+        to_change.s.DeleteTableEntry(table_entry)
 
         return
 
