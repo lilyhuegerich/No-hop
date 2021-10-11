@@ -49,7 +49,7 @@ def controller():
     wait=1
     while (wait==1):
             print ("waiting to recieve packet from switch")
-            printCounter(p4info_helper, s1, "MyIngress.ingressTunnelCounter", 0)
+            printCounter(p4info_helper, s1, "ThisIngress.ingressTunnelCounter", 0)
             """"try:
                 packetin = s1.PacketIn()
             except:
