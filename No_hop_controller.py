@@ -20,7 +20,7 @@ from No_hop_host import No_hop
 max_id=32
 
 class Switch:
-    def __init__(self, i, name):
+    def __init__(self, i, name, switches):
         self.s=p4runtime_lib.bmv2.Bmv2SwitchConnection(
                     name='s'+str(i),
                     address='127.0.0.1:5005'+str(i),
@@ -28,6 +28,9 @@ class Switch:
         self.join_counter=[0]*max_id
         self.fail_counter=[0]*max_id
         self.name=name
+        with open (str(switches[name]["runtime_json"])) as f:
+            self.runtime_json=json.load(f)
+
         self.s.MasterArbitrationUpdate(role=3, election_id = 1)
 
     def check_counters(self, p4info_helper):
@@ -81,7 +84,7 @@ class controller:
         self.topo=data
         i=1
         for s in switches:
-            self.s_l.append( Switch(i, str(s)))
+            self.s_l.append( Switch(i, s, switches)
             i+=1
 
 
@@ -177,14 +180,29 @@ class controller:
         else:
             raise ValueError ("could not find responsible switch ", responsible[1], " in " , str([s.name for s in self.s_l]))
 
-        for entry in to_change.s.ReadTableEntries():
-            print entry
-            if id in entry.range:
-                to_change_entry=entry
+        for entry in to_change.runtime_json["table_entries"]:
+            if entry["action_name"] ==  "ThisIngress.no_hop_forward" and (entry["match"]["hdr.dht.id"][0]<id) and  (entry["match"]["hdr.dht.id"][1]>id):
+                new_entry=entry
                 break
         raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
-        to_change_entry["port"]=new_port #todo
-        to_change.s.ModifyTableEntry(t)
+        #TODO change outgoing port
+
+        table_name = new_entry['table']
+        match_fields = new_entry.get('match') # None if not found
+        action_name = new_entry['action_name']
+        default_action = new_entry.get('default_action') # None if not found
+        action_params = new_entry['action_params']
+        priority = new_entry.get('priority')  # None if not found
+
+        table_entry = p4info_helper.buildTableEntry(
+            table_name=table_name,
+            match_fields=match_fields,
+            default_action=default_action,
+            action_name=action_name,
+            action_params=action_params,
+            priority=priority)
+
+        to_change.s.ModifyTableEntry(table_entry)
 
         return
 
