@@ -94,6 +94,8 @@ control ThisIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
 
+    counter(MAX_TUNNEL_ID, CounterType.packets_and_bytes) ingressTunnelCounter;
+    counter(MAX_TUNNEL_ID, CounterType.packets_and_bytes) egressTunnelCounter;
     action drop() {
         mark_to_drop(standard_metadata);
     }
@@ -110,6 +112,7 @@ control ThisIngress(inout headers hdr,
     }
 
     action send_to_controller(){
+          ingressTunnelCounter.count((bit<32>) hdr.packet_in.ingress_port);
           standard_metadata.egress_spec = CPU_OUT_PORT;
           hdr.packet_in.setValid();
           hdr.packet_in.ingress_port = (bit<16>)standard_metadata.ingress_port;
@@ -145,9 +148,9 @@ control ThisIngress(inout headers hdr,
             hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
         }
         if (hdr.dht.isValid()){
-            /*if (hdr.dht.message_type==0){
+            if (hdr.dht.message_type==0){
                 first_contact();
-            }*/
+            }
         if (hdr.dht.message_type==1){
             no_hop_lookup.apply();
         }

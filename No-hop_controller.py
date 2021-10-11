@@ -28,17 +28,17 @@ def controller():
     for entry in s1.ReadTableEntries():
         print entry
 
-    
 
     wait=1
     while (wait==1):
             print ("waiting to recieve packet from switch")
-            try:
+            printCounter(p4info_helper, s1, "MyIngress.ingressTunnelCounter", 100)
+            """"try:
                 packetin = s1.PacketIn()
             except:
                 wait=0
                 return
-
+            """
             print ("recieved packet", packetin)
             if packetin.WhichOneof('update')=='packet':
                     # print("Received Packet-in\n")
