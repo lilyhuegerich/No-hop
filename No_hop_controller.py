@@ -185,7 +185,7 @@ class controller:
             if (str(entry["action_name"]) ==  "ThisIngress.no_hop_forward") and (int(entry["match"]["hdr.dht.id"][0])<id) and  (int(entry["match"]["hdr.dht.id"][1])>=id):
                 new_entry=entry
                 break
-        raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
+        #raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
         #TODO change outgoing port
 
         table_name = new_entry['table']
