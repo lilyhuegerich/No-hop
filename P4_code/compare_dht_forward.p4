@@ -96,6 +96,7 @@ control ThisIngress(inout headers hdr,
 
     counter(32, CounterType.packets_and_bytes) ingressTunnelCounter;
     counter(32, CounterType.packets_and_bytes) egressTunnelCounter;
+    Register<bit<32>>(2) registerBank;
     action drop() {
         mark_to_drop(standard_metadata);
     }
@@ -112,7 +113,7 @@ control ThisIngress(inout headers hdr,
     }
 
     action send_to_controller(){
-          ingressTunnelCounter.count((bit<32>) hdr.dht.id);
+          ingressTunnelCounter.count((bit<32>) 0,  hdr.dht.id);
           standard_metadata.egress_spec = CPU_OUT_PORT;
           hdr.packet_in.setValid();
           hdr.packet_in.ingress_port = (bit<16>)standard_metadata.ingress_port;
