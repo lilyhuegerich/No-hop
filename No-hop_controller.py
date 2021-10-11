@@ -31,8 +31,8 @@ def printCounter(p4info_helper, sw, counter_name, index):
         for entity in response.entities:
             counter = entity.counter_entry
             print("%s %s %d: %d packets (%d bytes)" % (
-                sw.name, counter_name, index
-                #counter.data.packet_count, counter.data.byte_count
+                sw.name, counter_name, index,
+                counter.data.packet_count, counter.data.byte_count
             ))
 
 def controller():
