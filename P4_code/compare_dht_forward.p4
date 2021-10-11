@@ -113,12 +113,6 @@ control ThisIngress(inout headers hdr,
     }
 
     action send_to_controller(){
-          if (hdr.dht.message_type==2){
-              fail.count((bit<32>)  hdr.dht.id);
-          }
-          if (hdr.dht.message_type==3){
-              join.count((bit<32>)  hdr.dht.id);
-          }
           standard_metadata.egress_spec = CPU_OUT_PORT;
           hdr.packet_in.setValid();
           hdr.packet_in.ingress_port = (bit<16>)standard_metadata.ingress_port;
@@ -164,6 +158,12 @@ control ThisIngress(inout headers hdr,
             no_hop_lookup.apply();
         }
         if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
+             if (hdr.dht.message_type==2){
+                 fail.count((bit<32>)  hdr.dht.id);
+             }
+             if (hdr.dht.message_type==3){
+                 join.count((bit<32>)  hdr.dht.id);
+             }
             send_to_controller();
             }
 	    }
