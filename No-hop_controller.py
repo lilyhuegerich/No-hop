@@ -60,7 +60,7 @@ class controller:
             data = json.load(f)
         print data["switches"]
         switches=data["switches"]
-        with open(switches[0]["runtime_json"]) as switch_file:
+        with open(str(switches[0]["runtime_json"])) as switch_file:
             switch_data=json.load(switch_file)
 
         self.p4info_helper = p4runtime_lib.helper.P4InfoHelper(switch_data["p4info"])
