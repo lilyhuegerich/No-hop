@@ -49,7 +49,7 @@ def controller():
         s_l.append(p4runtime_lib.bmv2.Bmv2SwitchConnection(
                 name='s'+str(i),
                 address='127.0.0.1:5005'+str(i),
-                device_id=0))
+                device_id=i))
         i+=1
     for s in s_l:
         s.MasterArbitrationUpdate(role=3, election_id = 1)
