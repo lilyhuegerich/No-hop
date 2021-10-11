@@ -181,11 +181,12 @@ class controller:
             raise ValueError ("could not find responsible switch ", responsible[1], " in " , str([s.name for s in self.s_l]))
 
         for entry in to_change.runtime_json["table_entries"]:
-            print ((int(entry["match"]["hdr.dht.id"][0]),  int(entry["match"]["hdr.dht.id"][1]), id), entry["action_name"])
+            #print ((int(entry["match"]["hdr.dht.id"][0]),  int(entry["match"]["hdr.dht.id"][1]), id), entry["action_name"])
             if (str(entry["action_name"]) ==  "ThisIngress.no_hop_forward") and (int(entry["match"]["hdr.dht.id"][0])<id) and  (int(entry["match"]["hdr.dht.id"][1])>=id):
                 new_entry=entry
                 break
-        #raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
+        else:
+            raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
         #TODO change outgoing port
 
         table_name = new_entry['table']
@@ -195,7 +196,7 @@ class controller:
         action_params = new_entry['action_params']
         priority = new_entry.get('priority')  # None if not found
 
-        table_entry = p4info_helper.buildTableEntry(
+        table_entry = self.p4info_helper.buildTableEntry(
             table_name=table_name,
             match_fields=match_fields,
             default_action=default_action,
