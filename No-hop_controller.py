@@ -35,7 +35,7 @@ class Switch:
     def check_fail(self, p4info_helper):
         failed=[]
         for i in range(max_id):
-            for response in self.s.ReadCounters(p4info_helper.get_counters_id(ThisIngress.fail), i):
+            for response in self.s.ReadCounters(p4info_helper.get_counters_id("ThisIngress.fail"), i):
                 for entity in response.entities:
                     counter = entity.counter_entry
                     if not self.fail_counter[i]==counter.data.packet_count:
@@ -46,7 +46,7 @@ class Switch:
     def check_join(self, p4info_helper):
         joined=[]
         for i in range(max_id):
-            for response in self.s.ReadCounters(p4info_helper.get_counters_id(ThisIngress.join), i):
+            for response in self.s.ReadCounters(p4info_helper.get_counters_id("ThisIngress.join"), i):
                 for entity in response.entities:
                     counter = entity.counter_entry
                     if not self.join_counter[i]==counter.data.packet_count:
@@ -66,7 +66,7 @@ class controller:
 
         with open(str(switches["s_a"]["runtime_json"])) as switch_file:
             switch_data=json.load(switch_file)
-        print (switch_data["p4info"])
+
         self.p4info_helper = p4runtime_lib.helper.P4InfoHelper(str(switch_data["p4info"]))
         self.s_l=[]
         self.topo=data
