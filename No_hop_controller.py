@@ -59,6 +59,7 @@ class Switch:
         return joined
     def read_tables(self):
         for entry in self.s.ReadTableEntries():
+            self.s.DeleteTableEntry(entry)
              print entry
 
 class controller:
@@ -122,6 +123,7 @@ class controller:
 
     def run(self):
         print "Waiting for switch updates......"
+        self.s_l[0].read_tables()
         while (True):
                 sleep(1)
                 for switch in self.s_l:
