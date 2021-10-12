@@ -260,12 +260,15 @@ class controller:
 
         for entry in to_change.s.ReadTableEntries():
             for e in entry.entities:
-                print e.table_entry , i
-                print dir(e)
-                self.s.DeleteTableEntry(e.table_entry)
-                break
 
-        to_change.s.DeleteTableEntry(table_entry)
+                print e.table_entry
+                print dir(e)
+                if e.table_entry==table_entry:
+                    self.s.DeleteTableEntry(e.table_entry)
+                    break
+
+
+        to_change.s.WriteTableEntry(table_entry)
 
         return
 
