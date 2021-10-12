@@ -61,9 +61,10 @@ class Switch:
     def read_tables(self):
         i=0
         for entry in self.s.ReadTableEntries():
-            pprint(dir(entry))
+            #pprint(dir(entry))
+            print entry.entities , i
             self.s.DeleteTableEntry(e)
-            print i
+
             i+=1
 
 class controller:
