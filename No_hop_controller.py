@@ -60,10 +60,10 @@ class Switch:
     def read_tables(self):
         i=0
         for entry in self.s.ReadTableEntries():
-            for e in entry["table_entry"]:
-                print e, i
-                self.s.DeleteTableEntry(e)
-                i+=1
+            pprint(vars(entry))
+            self.s.DeleteTableEntry(e)
+            print i
+            i+=1
 
 class controller:
     def __init__(self):
