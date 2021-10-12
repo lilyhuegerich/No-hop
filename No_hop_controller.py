@@ -142,13 +142,13 @@ class controller:
             for link in data["links"]:
                 if host in link:
                     con_switch= str(link[(link.index(host)+1)%2]).split("-")[0]
-                    port_a=int(str(link[(link.index(host)+1)%2]).split("-")[1])
+                    port_a=int(str(link[(link.index(host)+1)%2]).split("-p")[1])
                     break
             else:
                 raise ValueError ("Cannot find host ", str(host), " in ", str(data["links"]))
             for link in data["links"]:
                 if (con_switch in link[0] and "h"==link[1][0] and not link[1]==host):
-                    port_b=int(str(link[0]).split("-")[1])
+                    port_b=int(str(link[0]).split("-p")[1])
                     h_pairs.append([str(host), str(link[1]), con_switch, (port_a, port_b)])
                     break
             else:
