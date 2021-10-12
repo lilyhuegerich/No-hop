@@ -64,6 +64,7 @@ class Switch:
             #pprint(dir(entry))
             for e in entry.entities:
                 print e , i
+                print dir(e)
                 self.s.DeleteTableEntry(e)
                 i+=1
 
