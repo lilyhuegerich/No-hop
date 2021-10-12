@@ -260,9 +260,8 @@ class controller:
 
         for entry in to_change.s.ReadTableEntries():
             for e in entry.entities:
-
-                print e.table_entry
-                print dir(e)
+                #print e.table_entry
+                #print dir(e)
                 if e.table_entry==table_entry:
                     print "removing table entry, " , e.table_entry
                     self.s.DeleteTableEntry(e.table_entry)
