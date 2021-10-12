@@ -266,7 +266,7 @@ class controller:
         for entry in to_change.s.ReadTableEntries():
             for e in entry.entities:
                 print "removing table entry, " , entry.entities[entry_index].table_entry
-                self.s.DeleteTableEntry(entry.entities[entry_index].table_entry)
+                to_change.s.DeleteTableEntry(entry.entities[entry_index].table_entry)
                 break
 
 
