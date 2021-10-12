@@ -256,6 +256,13 @@ class controller:
             action_name=action_name,
             action_params=action_params,
             priority=priority)
+        print (table_entry)
+        for table_entry in to_change.s.ReadTableEntries():
+            for e in entry.entities:
+                print e.table_entry , i
+                print dir(e)
+                self.s.DeleteTableEntry(e.table_entry)
+                break
 
         to_change.s.DeleteTableEntry(table_entry)
 
