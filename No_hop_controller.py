@@ -258,7 +258,7 @@ class controller:
             priority=priority)
         print (table_entry)
         to_change.delete_tables()
-         in to_change.s.ReadTableEntries():
+        for entry in to_change.s.ReadTableEntries():
             for e in entry.entities:
                 print e.table_entry , i
                 print dir(e)
