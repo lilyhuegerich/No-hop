@@ -21,6 +21,9 @@ from No_hop_host import No_hop
 max_id=32
 
 class Switch:
+    """
+    Controller Class for switches
+    """
     def __init__(self, i, name, switches):
         self.s=p4runtime_lib.bmv2.Bmv2SwitchConnection(
                     name='s'+str(i),
@@ -35,9 +38,15 @@ class Switch:
         self.s.MasterArbitrationUpdate(role=3, election_id = 1)
 
     def check_counters(self, p4info_helper):
+        """
+        Check to see if fail and join counters have changed (If a new fail or join was noticed by a switch)
+        """
         return (self.check_fail(p4info_helper), self.check_join(p4info_helper) )
 
     def check_fail(self, p4info_helper):
+        """
+        Check to see if fail counters have changed (If a new fail was noticed by a switch)
+        """
         failed=[]
         for i in range(max_id):
             for response in self.s.ReadCounters(p4info_helper.get_counters_id("ThisIngress.fail"), i):
@@ -49,6 +58,9 @@ class Switch:
         return failed
 
     def check_join(self, p4info_helper):
+        """
+        Check to see if join counters have changed (If a new join was noticed by a switch)
+        """
         joined=[]
         for i in range(max_id):
             for response in self.s.ReadCounters(p4info_helper.get_counters_id("ThisIngress.join"), i):
@@ -58,7 +70,10 @@ class Switch:
                         self.join_counter[i]=counter.data.packet_count
                         joined.append(i)
         return joined
-    def read_tables(self):
+    def delete_tables(self):
+        """
+        Delete all table entries of a switch
+        """
         i=0
         for entry in self.s.ReadTableEntries():
             #pprint(dir(entry))
@@ -70,6 +85,9 @@ class Switch:
         for entry in  self.s.ReadTableEntries():
             print (entry)
 class controller:
+    """
+    Controller class
+    """
     def __init__(self):
         with open('topology.json') as f:
             data = json.load(f)
@@ -97,6 +115,9 @@ class controller:
 
 
     def host_ids(self, data):
+        """
+        From the topology file finds the ids of the hosts, returns an ordered list of ints
+        """
         h_ids=[]
         for h in data["hosts"]:
             if "client" in h:
@@ -106,6 +127,9 @@ class controller:
         return h_ids
 
     def find_host_pairs(self, data):
+        """
+        Only relevant for no-hop_forward in a tree structure, sort hosts by witch TOR switch they are connected to.
+        """
         h_pairs=[]
         for host in data["hosts"]:
             con_switch=0
@@ -129,8 +153,10 @@ class controller:
 
 
     def run(self):
+        """
+        Start controller
+        """
         print "Waiting for switch updates......"
-        self.s_l[0].read_tables()
         while (True):
                 sleep(1)
                 for switch in self.s_l:
@@ -141,12 +167,18 @@ class controller:
                         self.handle_join(join, switch)
 
     def handle_fail(self, fail, switch):
+        """
+        respond to fail message
+        """
         print "Recieved fail", str(fail), " from switch ", switch.name
         for i in fail:
             self.rewrite_tables(i)
 
 
     def find_responsible(self, id):
+        """
+        Returns which host ID is responsible for id
+        """
         for i, h in enumerate(self.h_ids):
             if i==0 and id>self.h_ids[-1] :
                 return h
@@ -158,6 +190,9 @@ class controller:
             raise ValueError("could not find responsible host in in ids ", self.h_ids, " for the id ", str(id))
 
     def find_pair_responsible(self, id):
+        """
+        Returns which TOR and the attatched hosts proccess the id (again only for No-hop-forward in a tree topology)
+        """
         for i in self.h_pairs:
             if str(id) in i[0]:
                 responsible=[i[1], i[2]]
@@ -171,15 +206,24 @@ class controller:
             raise ValueError("Both hosts to the same TOR switch failing at the same time is not yet implemented for No-hop-forward.") #TODO
 
     def rewrite_tables(self, id):
+        """
+        Update tables so that they do not forward to failed hosts.
+        """
         if self.type=="forward":
             self.rewrite_forward_tables(id)
         else:
             self.rewrite_rewirte_tables(id)
 
     def rewrite_rewirte_tables(self, id):
+        """
+        Rewrite tables if network of type rewrite
+        """
         return
 
     def rewrite_forward_tables(self, id):
+        """
+        Rewrite tables if network of type forward
+        """
         id= self.find_responsible(id)
         responsible= self.find_pair_responsible(id)
         for switch in self.s_l:
@@ -218,6 +262,9 @@ class controller:
         return
 
     def handle_join(self, join, switch):
+        """
+        respond to join message
+        """
         print "Recieved join", str(join), " from switch ", switch.name
         #switch.s.PacketOut() #Ether(dst='00:04:00:00:00:00', type=0x800) / IP(dst=addr, ttl=50, proto=2) / No_hop(message_type=int(message_type), ID=int(ID), gid=gid, counter=0) / message)
 
