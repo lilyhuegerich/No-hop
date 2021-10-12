@@ -212,7 +212,7 @@ def handle_packet(pkt):
 
     if ttl==50:
         return
-    
+
     if ICMP in pkt:
         return
     #print (pkt)
