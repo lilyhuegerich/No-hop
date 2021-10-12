@@ -18,7 +18,7 @@ To generate a new forward experiment run:
 
 ```bash
 $ cd initialize_system/
-$ python No_hop_Network.py rewrite
+$ python No_hop_Network.py forward
 ```
 
 If ```rewrite_build_folders=1```in ```No_hop_Network.py``` The experiment folder will be in ````No_hop_<forward, rewrite>_0````, else if ```rewrite_build_folders=0``` a new folder will be created with the next free index so, ````No_hop_<forward, rewrite>_<free_index>````
