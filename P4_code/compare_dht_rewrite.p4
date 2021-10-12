@@ -92,6 +92,8 @@ control ThisIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
 
+    counter(32, CounterType.packets) fail;
+    counter(32, CounterType.packets) join;
 
     action drop() {
         mark_to_drop(standard_metadata);
@@ -141,20 +143,22 @@ control ThisIngress(inout headers hdr,
         default_action = drop();
     }
     apply {
-        bool found=false;
         hdr.ipv4.ttl = hdr.ipv4.ttl-1;
         if (hdr.dht.isValid()){
         if (hdr.dht.message_type==1){
-            if (no_hop_lookup.apply().hit){
-                found=true;
-                }
+            no_hop_lookup.apply()
+        }
+        if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
+            if (hdr.dht.message_type==2){
+                 fail.count((bit<32>)  hdr.dht.id);
+                 }
+            if (hdr.dht.message_type==3){
+                     join.count((bit<32>)  hdr.dht.id);
+                 }
+            send_to_controller();
             }
-            if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
-                send_to_controller();
-                found=true;
-            }
-	    }
-        ipv4_lpm.apply();
+	  }
+    ipv4_lpm.apply();
     }
 }
 
