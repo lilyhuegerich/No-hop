@@ -264,11 +264,13 @@ class controller:
                 print e.table_entry
                 print dir(e)
                 if e.table_entry==table_entry:
+                    print "removing table entry, " , e.table_entry
                     self.s.DeleteTableEntry(e.table_entry)
                     break
 
 
         to_change.s.WriteTableEntry(table_entry)
+        print "Added table entry: ", new_entry
 
         return
 
