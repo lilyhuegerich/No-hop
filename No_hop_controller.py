@@ -133,6 +133,8 @@ class controller:
         h_pairs=[]
         for host in data["hosts"]:
             con_switch=0
+            port_a=-1
+            port_b=-1
             if "client" in host:
                 continue
             if len([h for h in h_pairs if host in h])>0:
@@ -140,12 +142,14 @@ class controller:
             for link in data["links"]:
                 if host in link:
                     con_switch= str(link[(link.index(host)+1)%2]).split("-")[0]
+                    port_a=int(str(link[(link.index(host)+1)%2]).split("-")[1])
                     break
             else:
                 raise ValueError ("Cannot find host ", str(host), " in ", str(data["links"]))
             for link in data["links"]:
                 if (con_switch in link[0] and "h"==link[1][0] and not link[1]==host):
-                    h_pairs.append([str(host), str(link[1]), con_switch])
+                    port_b=int(str(link[0]).split("-")[1])
+                    h_pairs.append([str(host), str(link[1]), con_switch, (port_a, port_b)])
                     break
             else:
                 raise ValueError("Could not find pair for ", str(host), " in ", str(data["links"]), "h_pairs ", h_pairs)
@@ -193,14 +197,13 @@ class controller:
         """
         Returns which TOR and the attatched hosts proccess the id (again only for No-hop-forward in a tree topology)
         """
+        #TODO remove failed hosts
         for i in self.h_pairs:
             if str(id) in i[0]:
-                responsible=[i[1], i[2]]
-                i.remove(i[0])
+                responsible=[i[1], i[2], i[3][1]]
                 return responsible
             if str(id) in i[1]:
-                responsible=[i[0], i[2]]
-                i.remove(i[1])
+                responsible=[i[0], i[2], i[3][0]]
                 return responsible
         else:
             raise ValueError("Both hosts to the same TOR switch failing at the same time is not yet implemented for No-hop-forward.") #TODO
@@ -229,19 +232,21 @@ class controller:
         for switch in self.s_l:
             if switch.name==responsible[1]:
                 to_change=switch
+                new_port=responsible[2]
                 break
         else:
             raise ValueError ("could not find responsible switch ", responsible[1], " in " , str([s.name for s in self.s_l]))
 
-        for entry in to_change.runtime_json["table_entries"]:
+        for index, entry in enumerate(to_change.runtime_json["table_entries"]):
             #print ((int(entry["match"]["hdr.dht.id"][0]),  int(entry["match"]["hdr.dht.id"][1]), id), entry["action_name"])
             if (str(entry["action_name"]) ==  "ThisIngress.no_hop_forward") and (int(entry["match"]["hdr.dht.id"][0])<id) and  (int(entry["match"]["hdr.dht.id"][1])>=id):
+                entry_index=index
                 new_entry=entry
                 break
         else:
             raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
-        #TODO change outgoing port
 
+        entry["action_params"]["port"]=new_port
         table_name = new_entry['table']
         match_fields = new_entry.get('match')
         action_name = new_entry['action_name']
@@ -260,12 +265,9 @@ class controller:
 
         for entry in to_change.s.ReadTableEntries():
             for e in entry.entities:
-                #print e.table_entry
-                #print dir(e)
-                if e.table_entry==table_entry:
-                    print "removing table entry, " , e.table_entry
-                    self.s.DeleteTableEntry(e.table_entry)
-                    break
+                print "removing table entry, " , entry.enitities[entry_index].table_entry
+                self.s.DeleteTableEntry(entry.enitities[entry_index].table_entry)
+                break
 
 
         to_change.s.WriteTableEntry(table_entry)
