@@ -67,7 +67,8 @@ class Switch:
                 print dir(e)
                 self.s.DeleteTableEntry(e.table_entry)
                 i+=1
-
+        for entry in  self.s.ReadTableEntries():
+            print (entry)
 class controller:
     def __init__(self):
         with open('topology.json') as f:
