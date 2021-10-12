@@ -269,8 +269,11 @@ class controller:
                 to_change.s.DeleteTableEntry(entry.entities[entry_index].table_entry)
                 break
 
-
-        to_change.s.WriteTableEntry(table_entry)
+        try:
+            to_change.s.WriteTableEntry(table_entry)
+        except:
+            pass
+            
         print "Added table entry: ", new_entry
 
         return
