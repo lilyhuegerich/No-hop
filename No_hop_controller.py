@@ -60,7 +60,7 @@ class Switch:
     def read_tables(self):
         i=0
         for entry in self.s.ReadTableEntries():
-            for e in entry:
+            for e in entry["entities"]:
                 print e, i
                 self.s.DeleteTableEntry(e)
                 i+=1
