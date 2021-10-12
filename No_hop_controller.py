@@ -58,9 +58,11 @@ class Switch:
                         joined.append(i)
         return joined
     def read_tables(self):
+        i=0
         for entry in self.s.ReadTableEntries():
             self.s.DeleteTableEntry(entry)
-             print entry
+            print entry, i
+            i+=1
 
 class controller:
     def __init__(self):
