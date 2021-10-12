@@ -61,7 +61,7 @@ class Switch:
     def read_tables(self):
         i=0
         for entry in self.s.ReadTableEntries():
-            pprint(vars(entry))
+            pprint(dir(entry))
             self.s.DeleteTableEntry(e)
             print i
             i+=1
