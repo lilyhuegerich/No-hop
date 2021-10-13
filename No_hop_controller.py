@@ -179,6 +179,7 @@ class controller():
         """
         print "Waiting for switch updates......"
         while (True):
+                print ("........")
                 sleep(1)
                 for switch in self.s_l:
                     fail, join= switch.check_counters(self.p4info_helper)
