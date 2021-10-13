@@ -116,6 +116,16 @@ class controller():
         self.h_ids=self.host_ids(data)
 
         self.p4info_helper = p4runtime_lib.helper.P4InfoHelper(str(switch_data["p4info"]))
+
+        with open(str(switch_data["p4info"])) as p4_info:
+            p4_info_data=json.load(p4_info)
+        for table in p4_info_data["tables"]:
+            if table[name]=="ThisIngress.no_hop_lookup":
+                self.no_hop_table_id=table[id]
+                break
+        else:
+            raise ValueError("Could not find no_hop table id in info file.")
+
         self.s_l=[]
         self.topo=data
         i=1
@@ -249,7 +259,7 @@ class controller():
 
         for index, entry in enumerate(to_change.runtime_json["table_entries"]):
             #print ((int(entry["match"]["hdr.dht.id"][0]),  int(entry["match"]["hdr.dht.id"][1]), id), entry["action_name"])
-            if (str(entry["action_name"]) ==  "ThisIngress.no_hop_forward") and (int(entry["match"]["hdr.dht.id"][0])<id) and  (int(entry["match"]["hdr.dht.id"][1])>=id):
+            if (str(entry["action_name"]) ==  "ThisIngress.no_hop_forward") and (int(entry["match"]["hdr.dht.id"][0])<id) and  (int(entry["match"]["hdr.dht.id"][1])>=id) and not (int(entry["match"]["hdr.dht.id"][1])>=32 and int(entry["match"]["hdr.dht.id"][0])<=1):
                 entry_index=index
                 new_entry=entry
                 break
@@ -273,13 +283,28 @@ class controller():
             priority=priority)
         #print (table_entry
 
+        for entry in to_change.s.ReadTableEntries():
+            #pprint(dir(entry))
+            for e in entry.entities:
+                print e.table_entry
+                if (e.table_entry["table_id"]== self.no_hop_table_id and str(new_entry["action_params"][port]) in str(e.table_entry["action"]["action"]["params"]["value"]).split("\0")[-1]):
+                    print ("deleting table entry " e.table_entry)
+                    to_change.s.DeleteTableEntry(e.table_entry)
+                    break
+            else:
         try:
+            to_change.s.WriteTableEntry(table_entry)
+            print "Added table entry: ", table_entry
+        except Exception as ex:
+            print (ex, to_change.name)
+            pass
+        """try:
             to_change.s.ModifyTableEntry(table_entry)
             print "Added table entry: ", new_entry
         except Exception as ex:
             to_change.read_tables()
             print (ex, to_change.name)
-            pass
+            pass"""
 
         return
 
