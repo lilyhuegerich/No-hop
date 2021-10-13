@@ -296,7 +296,7 @@ class controller():
             priority=priority)
         try:
             #to_change.s.WriteTableEntry(table_entry)
-            #print "Added table entry"# ", table_entry
+            print "Added table entry"# ", table_entry
         except Exception as ex:
             print (ex, to_change.name)
             pass
