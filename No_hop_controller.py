@@ -271,9 +271,7 @@ class controller():
             for e in entry.entities:
                 #print (e.table_entry.table_id, self.no_hop_table_id)
                 if (str(e.table_entry.table_id)== str(self.no_hop_table_id)):
-                    print ((e.table_entry.action.action.params._values))
-                    print (e.table_entry.table_id,  str(e.table_entry.action.action.params._values).split("\0")[-1])
-                    print (str(new_entry["action_params"]["port"]), self.no_hop_table_id)
+                    
                     if str(new_entry["action_params"]["port"]) in str(e.table_entry.action.action.params._values).split("\0")[-1]:
                         print "deleting table entry "#,  e.table_entry)
                         to_change.s.DeleteTableEntry(e.table_entry)
@@ -306,7 +304,7 @@ class controller():
 
     def handle_join(self, join, switch):
         """
-        respond to join message
+        respond to join message, currently only a stub since only in mininet
         """
         print "Recieved join", str(join), " from switch ", switch.name
         #switch.s.PacketOut() #Ether(dst='00:04:00:00:00:00', type=0x800) / IP(dst=addr, ttl=50, proto=2) / No_hop(message_type=int(message_type), ID=int(ID), gid=gid, counter=0) / message)
