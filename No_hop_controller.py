@@ -263,21 +263,7 @@ class controller():
         else:
             raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
 
-        new_entry["action_params"]["port"]=new_port
-        table_name = new_entry['table']
-        match_fields = new_entry.get('match')
-        action_name = new_entry['action_name']
-        default_action = new_entry.get('default_action')
-        action_params = new_entry['action_params']
-        priority = new_entry.get('priority')
 
-        table_entry = self.p4info_helper.buildTableEntry(
-            table_name=table_name,
-            match_fields=match_fields,
-            default_action=default_action,
-            action_name=action_name,
-            action_params=action_params,
-            priority=priority)
         #print (table_entry
         found=0
         for entry in to_change.s.ReadTableEntries():
@@ -295,6 +281,21 @@ class controller():
                         break
         if found==0:
             raise ValueError("Could not find entry to delete")
+        new_entry["action_params"]["port"]=new_port
+        table_name = new_entry['table']
+        match_fields = new_entry.get('match')
+        action_name = new_entry['action_name']
+        default_action = new_entry.get('default_action')
+        action_params = new_entry['action_params']
+        priority = new_entry.get('priority')
+
+        table_entry = self.p4info_helper.buildTableEntry(
+            table_name=table_name,
+            match_fields=match_fields,
+            default_action=default_action,
+            action_name=action_name,
+            action_params=action_params,
+            priority=priority)
         try:
             to_change.s.WriteTableEntry(table_entry)
             print "Added table entry"# ", table_entry
