@@ -279,7 +279,7 @@ class controller():
             action_params=action_params,
             priority=priority)
         #print (table_entry
-
+        found=0
         for entry in to_change.s.ReadTableEntries():
             #pprint(dir(entry))
             for e in entry.entities:
@@ -291,9 +291,12 @@ class controller():
                 if (e.table_entry.table_id== self.no_hop_table_id and str(new_entry.action["action_params"][port]) in str(e.table_entry.action["action"]["params"]["value"]).split("\0")[-1]):
                     print ("deleting table entry ",  e.table_entry)
                     to_change.s.DeleteTableEntry(e.table_entry)
+                    found=1
                     break
-            else:
-                raise ValueError ("could not find table entry to modify")
+        if found==0:
+            raise ValueError("Could not find entry to delete")
+
+
 
         try:
             to_change.s.WriteTableEntry(table_entry)
