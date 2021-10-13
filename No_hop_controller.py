@@ -200,12 +200,19 @@ class controller():
         """
         Returns which host ID is responsible for id
         """
+
         for i, h in enumerate(self.h_ids):
             if i==0 and id>self.h_ids[-1] :
+                if self.verbose:
+                    print "responsible for id ", id , " is ", h
                 return h
             if i==0 and id<=h:
+                if self.verbose:
+                    print "responsible for id ", id , " is ", h
                 return h
             if self.h_ids[i-1]<id and id<=h:
+                if self.verbose:
+                    print "responsible for id ", id , " is ", h
                 return h
         else:
             raise ValueError("could not find responsible host in in ids ", self.h_ids, " for the id ", str(id))
@@ -218,9 +225,13 @@ class controller():
         for i in self.h_pairs:
             if str(id) in i[0]:
                 responsible=[i[1], i[2], i[3][0]]
+                if self.verbose:
+                    print "responsible for id ", id , " is switch  ", i[2].name, " new port : ", i[3][0]
                 return responsible
             if str(id) in i[1]:
                 responsible=[i[0], i[2], i[3][1]]
+                if self.verbose:
+                    print "responsible for id ", id , " is switch  ", i[2].name, " new port : ", i[3][1]
                 return responsible
         else:
             raise ValueError("Both hosts to the same TOR switch failing at the same time is not yet implemented for No-hop-forward.") #TODO
