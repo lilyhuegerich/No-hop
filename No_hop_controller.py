@@ -94,7 +94,7 @@ class Switch:
             for e in entry.entities:
                 print e.table_entry , i
                 i+=1
-
+class controller():
     """
     Controller class
     """
@@ -271,7 +271,7 @@ class Switch:
             action_name=action_name,
             action_params=action_params,
             priority=priority)
-
+        #print (table_entry
         to_change.read_tables()
         try:
             to_change.s.ModifyTableEntry(table_entry)
