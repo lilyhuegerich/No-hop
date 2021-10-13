@@ -246,7 +246,7 @@ class controller:
         else:
             raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
 
-        entry["action_params"]["port"]=new_port
+        new_entry["action_params"]["port"]=new_port
         table_name = new_entry['table']
         match_fields = new_entry.get('match')
         action_name = new_entry['action_name']
@@ -261,20 +261,12 @@ class controller:
             action_name=action_name,
             action_params=action_params,
             priority=priority)
-        print (table_entry)
-
-        for entry in to_change.s.ReadTableEntries():
-            for e in entry.entities:
-                print "removing table entry, " , entry.entities[entry_index].table_entry
-                to_change.s.DeleteTableEntry(entry.entities[entry_index].table_entry)
-                break
-
+        #print (table_entry
         try:
-            to_change.s.WriteTableEntry(table_entry)
+            to_change.s.ModifyTableEntry(table_entry)
+            print "Added table entry: ", new_entry
         except:
             pass
-            
-        print "Added table entry: ", new_entry
 
         return
 
