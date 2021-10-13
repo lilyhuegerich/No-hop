@@ -287,8 +287,8 @@ class controller():
                 #print dir(e.table_entry)
                 print ((e.table_entry.action.action.params._values))
                 print (e.table_entry.table_id, e.table_entry.table_id, str(e.table_entry.action.action.params._values).split("\0")[-1])
-                print (str(new_entry.action["action_params"][port]))
-                if (e.table_entry.table_id== self.no_hop_table_id and str(new_entry.action["action_params"][port]) in str(e.table_entry.action["action"]["params"]["value"]).split("\0")[-1]):
+                print (str(new_entry.["action"]["action_params"][port]))
+                if (e.table_entry.table_id== self.no_hop_table_id and str(new_entry["action"]["action_params"][port]) in str(e.table_entry.action.action.params._values).split("\0")[-1]):
                     print ("deleting table entry ",  e.table_entry)
                     to_change.s.DeleteTableEntry(e.table_entry)
                     found=1
