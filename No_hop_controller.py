@@ -118,13 +118,10 @@ class controller():
         self.p4info_helper = p4runtime_lib.helper.P4InfoHelper(str(switch_data["p4info"]))
 
         with open(str(switch_data["p4info"])) as p4_info:
-            p4_info_data=json.load(p4_info)
-        for table in p4_info_data["tables"]:
-            if table[name]=="ThisIngress.no_hop_lookup":
-                self.no_hop_table_id=table[id]
-                break
-        else:
-            raise ValueError("Could not find no_hop table id in info file.")
+            p4_info_data=p4_info.readlines()
+
+        self.no_hop_table_id=p4_info_data[4].split(":")[-1]
+        assert "no_hop" in p4_info_data[5]
 
         self.s_l=[]
         self.topo=data
