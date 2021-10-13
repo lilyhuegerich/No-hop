@@ -283,16 +283,15 @@ class controller():
         for entry in to_change.s.ReadTableEntries():
             #pprint(dir(entry))
             for e in entry.entities:
-                #print e.table_entry
-                #print dir(e.table_entry)
-                print ((e.table_entry.action.action.params._values))
-                print (e.table_entry.table_id, e.table_entry.table_id, str(e.table_entry.action.action.params._values).split("\0")[-1])
-                print (str(new_entry["action_params"]["port"]), self.no_hop_table_id)
-                if (e.table_entry.table_id== self.no_hop_table_id and str(new_entry["action_params"][port]) in str(e.table_entry.action.action.params._values).split("\0")[-1]):
-                    print ("deleting table entry ",  e.table_entry)
-                    to_change.s.DeleteTableEntry(e.table_entry)
-                    found=1
-                    break
+                if (e.table_entry.table_id== self.no_hop_table_id ):
+                    print ((e.table_entry.action.action.params._values))
+                    print (e.table_entry.table_id, e.table_entry.table_id, str(e.table_entry.action.action.params._values).split("\0")[-1])
+                    print (str(new_entry["action_params"]["port"]), self.no_hop_table_id)
+                    if  str(new_entry["action_params"][port]) in str(e.table_entry.action.action.params._values).split("\0")[-1]):
+                        print ("deleting table entry ",  e.table_entry)
+                        to_change.s.DeleteTableEntry(e.table_entry)
+                        found=1
+                        break
         if found==0:
             raise ValueError("Could not find entry to delete")
 
