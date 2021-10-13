@@ -283,7 +283,7 @@ class controller():
         for entry in to_change.s.ReadTableEntries():
             #pprint(dir(entry))
             for e in entry.entities:
-                if (e.table_entry.table_id== self.no_hop_table_id ):
+                if (str(e.table_entry.table_id)== str(self.no_hop_table_id)):
                     print ((e.table_entry.action.action.params._values))
                     print (e.table_entry.table_id, e.table_entry.table_id, str(e.table_entry.action.action.params._values).split("\0")[-1])
                     print (str(new_entry["action_params"]["port"]), self.no_hop_table_id)
