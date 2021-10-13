@@ -121,7 +121,7 @@ class controller():
             p4_info_data=p4_info.readlines()
 
         self.no_hop_table_id=p4_info_data[4].split(":")[-1]
-        assert "no_hop" in p4_info_data[5]
+        assert "no_hop" in str(p4_info_data)[5]
 
         self.s_l=[]
         self.topo=data
