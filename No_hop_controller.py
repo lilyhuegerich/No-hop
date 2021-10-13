@@ -265,7 +265,8 @@ class controller:
         try:
             to_change.s.ModifyTableEntry(table_entry)
             print "Added table entry: ", new_entry
-        except:
+        except Exception as ex:
+            print (ex)
             pass
 
         return
