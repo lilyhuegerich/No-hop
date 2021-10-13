@@ -179,7 +179,6 @@ class controller():
         """
         print "Waiting for switch updates......"
         while (True):
-                print ("........")
                 sleep(1)
                 for switch in self.s_l:
                     fail, join= switch.check_counters(self.p4info_helper)
@@ -218,10 +217,10 @@ class controller():
         #TODO remove failed hosts
         for i in self.h_pairs:
             if str(id) in i[0]:
-                responsible=[i[1], i[2], i[3][1]]
+                responsible=[i[1], i[2], i[3][0]]
                 return responsible
             if str(id) in i[1]:
-                responsible=[i[0], i[2], i[3][0]]
+                responsible=[i[0], i[2], i[3][1]]
                 return responsible
         else:
             raise ValueError("Both hosts to the same TOR switch failing at the same time is not yet implemented for No-hop-forward.") #TODO
