@@ -284,12 +284,13 @@ class controller():
             #pprint(dir(entry))
             for e in entry.entities:
                 #print e.table_entry
-                print dir(e.table_entry)
+                #print dir(e.table_entry)
                 if (e.table_entry.table_id== self.no_hop_table_id and str(new_entry.action["action_params"][port]) in str(e.table_entry.action["action"]["params"]["value"]).split("\0")[-1]):
                     print ("deleting table entry ",  e.table_entry)
-
                     to_change.s.DeleteTableEntry(e.table_entry)
                     break
+            else:
+                raise ValueError ("could not find table entry to modify")
 
         try:
             to_change.s.WriteTableEntry(table_entry)
@@ -297,14 +298,6 @@ class controller():
         except Exception as ex:
             print (ex, to_change.name)
             pass
-        """try:
-            to_change.s.ModifyTableEntry(table_entry)
-            print "Added table entry: ", new_entry
-        except Exception as ex:
-            to_change.read_tables()
-            print (ex, to_change.name)
-            pass"""
-
         return
 
     def handle_join(self, join, switch):
