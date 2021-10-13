@@ -203,7 +203,7 @@ class controller():
         for i, h in enumerate(self.h_ids):
             if i==0 and id>self.h_ids[-1] :
                 return h
-            if i==0 and id<h:
+            if i==0 and id<=h:
                 return h
             if self.h_ids[i-1]<id and id<=h:
                 return h
@@ -271,15 +271,13 @@ class controller():
             for e in entry.entities:
                 #print (e.table_entry.table_id, self.no_hop_table_id)
                 if (str(e.table_entry.table_id)== str(self.no_hop_table_id)):
-
                     if str(new_entry["action_params"]["port"]) in str(e.table_entry.action.action.params._values).split("\0")[-1]:
                         print "deleting table entry "#,  e.table_entry)
                         to_change.s.DeleteTableEntry(e.table_entry)
                         found=1
                         break
-        #if found==0:
-
-            #raise ValueError("Could not find entry to delete")
+        if found==0:
+            raise ValueError("Could not find entry to delete")
         new_entry["action_params"]["port"]=new_port
         table_name = new_entry['table']
         match_fields = new_entry.get('match')
@@ -296,8 +294,7 @@ class controller():
             action_params=action_params,
             priority=priority)
         try:
-            #to_change.s.WriteTableEntry(table_entry)
-            to_change.delete_tables()
+            to_change.s.WriteTableEntry(table_entry)
             print "Added table entry"# ", table_entry
         except Exception as ex:
             print (ex, to_change.name)
