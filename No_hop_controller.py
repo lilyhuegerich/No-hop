@@ -84,7 +84,17 @@ class Switch:
                 i+=1
         for entry in  self.s.ReadTableEntries():
             print (entry)
-class controller:
+    def read_tables(self):
+        """
+        read all table entries of a switch
+        """
+        i=0
+        for entry in self.s.ReadTableEntries():
+            #pprint(dir(entry))
+            for e in entry.entities:
+                print e.table_entry , i
+                i+=1
+
     """
     Controller class
     """
@@ -261,7 +271,8 @@ class controller:
             action_name=action_name,
             action_params=action_params,
             priority=priority)
-        #print (table_entry
+
+        to_change.read_tables()
         try:
             to_change.s.ModifyTableEntry(table_entry)
             print "Added table entry: ", new_entry
