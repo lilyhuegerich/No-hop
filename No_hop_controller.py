@@ -291,7 +291,7 @@ class controller():
                     print ("deleting table entry ",  e.table_entry)
                     to_change.s.DeleteTableEntry(e.table_entry)
                     break
-            else:
+
         try:
             to_change.s.WriteTableEntry(table_entry)
             print "Added table entry: ", table_entry
