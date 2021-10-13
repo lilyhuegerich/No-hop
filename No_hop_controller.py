@@ -122,7 +122,7 @@ class controller():
 
         self.no_hop_table_id=p4_info_data[5].split(":")[-1]
         print p4_info_data[5], p4_info_data[6]
-        assert "no_hop" in str(p4_info_data)[6]
+        assert "no_hop" in str(p4_info_data[6])
 
         self.s_l=[]
         self.topo=data
