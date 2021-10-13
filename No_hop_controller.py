@@ -223,12 +223,12 @@ class controller():
         """
         #TODO remove failed hosts
         for i in self.h_pairs:
-            if str(id) in i[0]:
+            if str(id) in i[0].split("_")[1]:
                 responsible=[i[1], i[2], i[3][0]]
                 if self.verbose:
                     print "responsible for id ", id , " is switch  ", i[2], " new port : ", i[3][0]
                 return responsible
-            if str(id) in i[1]:
+            if str(id) == i[1].split("_")[1]:
                 responsible=[i[0], i[2], i[3][1]]
                 if self.verbose:
                     print "responsible for id ", id , " is switch  ", i[2], " new port : ", i[3][1]
