@@ -285,7 +285,7 @@ class controller():
             for e in entry.entities:
                 #print e.table_entry
                 print dir(e.table_entry)
-                if (e.table_entry["table_id"]== self.no_hop_table_id and str(new_entry["action_params"][port]) in str(e.table_entry["action"]["action"]["params"]["value"]).split("\0")[-1]):
+                if (e.table_entry.table_id== self.no_hop_table_id and str(new_entry.action["action_params"][port]) in str(e.table_entry.action["action"]["params"]["value"]).split("\0")[-1]):
                     print ("deleting table entry ",  e.table_entry)
 
                     to_change.s.DeleteTableEntry(e.table_entry)
