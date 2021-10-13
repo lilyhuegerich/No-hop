@@ -277,8 +277,9 @@ class controller():
                         to_change.s.DeleteTableEntry(e.table_entry)
                         found=1
                         break
-        if found==0:
-            raise ValueError("Could not find entry to delete")
+        #if found==0:
+
+            #raise ValueError("Could not find entry to delete")
         new_entry["action_params"]["port"]=new_port
         table_name = new_entry['table']
         match_fields = new_entry.get('match')
