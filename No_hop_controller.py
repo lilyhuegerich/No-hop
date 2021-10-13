@@ -98,7 +98,7 @@ class controller():
     """
     Controller class
     """
-    def __init__(self):
+    def __init__(self, verbose=True):
         with open('topology.json') as f:
             data = json.load(f)
         #print data["switches"]
@@ -106,7 +106,7 @@ class controller():
 
         with open(str(switches["s_a"]["runtime_json"])) as switch_file:
             switch_data=json.load(switch_file)
-
+        self.verbose=verbose
         if "forward" in str(switch_data["p4info"]):
             self.type="forward"
             self.h_pairs=self.find_host_pairs(data)
@@ -249,6 +249,8 @@ class controller():
         for switch in self.s_l:
             if switch.name==responsible[1]:
                 to_change=switch
+                if self.verbose:
+                    print "to_change: ", to_change.name
                 new_port=responsible[2]
                 break
         else:
