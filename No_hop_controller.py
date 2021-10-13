@@ -272,12 +272,13 @@ class controller():
             action_params=action_params,
             priority=priority)
         #print (table_entry
-        to_change.read_tables()
+
         try:
             to_change.s.ModifyTableEntry(table_entry)
             print "Added table entry: ", new_entry
         except Exception as ex:
-            print (ex)
+            to_change.read_tables()
+            print (ex, to_change.name)
             pass
 
         return
