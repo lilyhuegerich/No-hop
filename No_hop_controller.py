@@ -256,13 +256,12 @@ class controller():
 
         for index, entry in enumerate(to_change.runtime_json["table_entries"]):
             #print ((int(entry["match"]["hdr.dht.id"][0]),  int(entry["match"]["hdr.dht.id"][1]), id), entry["action_name"])
-            if (str(entry["action_name"]) ==  "ThisIngress.no_hop_forward") and (int(entry["match"]["hdr.dht.id"][0])<id) and  (int(entry["match"]["hdr.dht.id"][1])>=id) and not (int(entry["match"]["hdr.dht.id"][1])>=32 and int(entry["match"]["hdr.dht.id"][0])<=1):
+            if (str(entry["action_name"]) ==  "ThisIngress.no_hop_forward") and (int(entry["match"]["hdr.dht.id"][0])<id) and  (int(entry["match"]["hdr.dht.id"][1])>=id) and not (int(entry["match"]["hdr.dht.id"][1])>=32 and int(entry["match"]["hdr.dht.id"][0])<=0):
                 entry_index=index
                 new_entry=entry
                 break
         else:
             raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
-
 
         #print (table_entry
         found=0
