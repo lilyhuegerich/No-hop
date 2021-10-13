@@ -271,7 +271,7 @@ class controller():
             for e in entry.entities:
                 #print (e.table_entry.table_id, self.no_hop_table_id)
                 if (str(e.table_entry.table_id)== str(self.no_hop_table_id)):
-                    
+
                     if str(new_entry["action_params"]["port"]) in str(e.table_entry.action.action.params._values).split("\0")[-1]:
                         print "deleting table entry "#,  e.table_entry)
                         to_change.s.DeleteTableEntry(e.table_entry)
@@ -295,8 +295,8 @@ class controller():
             action_params=action_params,
             priority=priority)
         try:
-            to_change.s.WriteTableEntry(table_entry)
-            print "Added table entry"# ", table_entry
+            #to_change.s.WriteTableEntry(table_entry)
+            #print "Added table entry"# ", table_entry
         except Exception as ex:
             print (ex, to_change.name)
             pass
