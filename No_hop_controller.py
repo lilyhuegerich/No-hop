@@ -255,7 +255,7 @@ class controller():
         failed_ip=self.find_host_ip(id)
         succesor_id=self.succesor(id)
         succesor_ip= self.find_host_ip(succesor_id)
-        
+
         return
     def succesor(self, id):
         """
@@ -284,7 +284,7 @@ class controller():
             if str(id)==str(host).split("_")[1]:
                 return self.topo[host]["ip"]
         else:
-            raise ValueError("Could not find host with id ", id, " in " str(self.topo["hosts"]))
+            raise ValueError("Could not find host with id ", id, " in ", str(self.topo["hosts"]))
     def rewrite_forward_tables(self, id):
         """
         Rewrite tables if network of type forward
