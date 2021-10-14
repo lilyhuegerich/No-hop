@@ -128,8 +128,9 @@ class controller():
         self.topo=data
 
         for s in switches:
+            print s
             i = int(s["mac"].split(":")[-1])+1
-            print s, i
+            print  i
             self.s_l.append( Switch(i, s, switches))
 
 
