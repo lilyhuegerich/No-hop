@@ -42,6 +42,7 @@ class No_hop_host:
     def __init__(self, client= False, verbose=True, keep_log_files=True, stabilze_timeout=10, ID=None, test=None):
         self.client=client
         self.ID=ID
+        self.tmp_id=0
         self.verbose=verbose
         self.Recieved={"No_hop":list()}
         self.On=True
@@ -90,7 +91,10 @@ class No_hop_host:
         except KeyboardInterrupt:
             self.On=0
             time.sleep(1)
-            send_No_hop(ID=(self.ID)%max_id, message="Fail" ,message_type=1)
+            if self.ID==None:
+                send_No_hop(ID=(self.tmp_id)%max_id, message="Fail" ,message_type=1)
+            else:
+                send_No_hop(ID=(self.ID)%max_id, message="Fail" ,message_type=1)
             print("Ending stabilize.")
         self.On=0
         return
@@ -169,6 +173,8 @@ class No_hop_host:
         now=time.time()
         mes=message.payload
         ID=int(message.ID)
+        if self.ID==None:
+            self.tmp_id=ID
 
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
         if "S" in mes:
