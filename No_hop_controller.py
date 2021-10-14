@@ -129,7 +129,7 @@ class controller():
 
         for s in switches:
             print s
-            i = int(s["mac"].split(":")[-1])+1
+            i = int(self.topo["switches"][s]["mac"].split(":")[-1])+1
             print  i
             self.s_l.append( Switch(i, s, switches))
 
