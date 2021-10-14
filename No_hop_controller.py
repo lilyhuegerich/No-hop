@@ -308,8 +308,8 @@ class controller():
                 entry_index=index
                 new_entry=entry
                 break
-        else:
-            raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
+        #else:
+        #    raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
 
         #print (table_entry
         found=0
