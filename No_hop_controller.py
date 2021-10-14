@@ -128,6 +128,7 @@ class controller():
         self.topo=data
         i=1
         for s in switches:
+            print s, i
             self.s_l.append( Switch(i, s, switches))
             i+=1
 
