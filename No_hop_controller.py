@@ -308,8 +308,8 @@ class controller():
                 entry_index=index
                 new_entry=entry
                 break
-        #else:
-        #    raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
+        else:
+            raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
 
         #print (table_entry
         found=0
@@ -325,8 +325,8 @@ class controller():
                         to_change.s.DeleteTableEntry(e.table_entry)
                         found=1
                         break
-        if found==0:
-            raise ValueError("Could not find entry to delete")
+        #if found==0:
+            #raise ValueError("Could not find entry to delete")
         new_entry["action_params"]["port"]=new_port
         table_name = new_entry['table']
         match_fields = new_entry.get('match')
