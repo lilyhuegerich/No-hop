@@ -113,6 +113,7 @@ class controller():
         else:
             self.type="rewrite"
 
+
         self.h_ids=self.host_ids(data)
 
         self.p4info_helper = p4runtime_lib.helper.P4InfoHelper(str(switch_data["p4info"]))
@@ -193,7 +194,7 @@ class controller():
         """
         print "Recieved fail", str(fail), " from switch ", switch.name
         for i in fail:
-            self.rewrite_tables(i)
+            self.rewrite_tables(i, switch)
 
 
     def find_responsible(self, id):
@@ -236,21 +237,54 @@ class controller():
         else:
             raise ValueError("Both hosts to the same TOR switch failing at the same time is not yet implemented for No-hop-forward.") #TODO
 
-    def rewrite_tables(self, id):
+    def rewrite_tables(self, id, switch=0):
         """
         Update tables so that they do not forward to failed hosts.
         """
         if self.type=="forward":
             self.rewrite_forward_tables(id)
         else:
-            self.rewrite_rewirte_tables(id)
-
-    def rewrite_rewirte_tables(self, id):
+            self.rewrite_rewirte_tables(id, switch)
+        #TODO remove old id
+    def rewrite_rewirte_tables(self, id, switch):
         """
         Rewrite tables if network of type rewrite
         """
-        return
 
+        id=self.find_responsible(id)
+        failed_ip=self.find_host_ip(id)
+        succesor_id=self.succesor(id)
+        succesor_ip= self.find_host_ip(succesor_id)
+        
+        return
+    def succesor(self, id):
+        """
+        Return the next switch following the switch with id: id
+        """
+        for i, host in enumerate(self.host_ids):
+            if host==id:
+                if i==0:
+                    if self.verbose:
+                        print ("successor to id ", id, " is ", self.host_ids[-1])
+                    return self.host_ids[-1]
+                else:
+                    if self.verbose:
+                        print ("successor to id ", id, " is ", self.host_ids[i-1])
+                    return self.host_ids[i-1]
+        else:
+            raise ValueError("Could not find id ", id, " in ", str(self.host_ids))
+
+
+
+    def find_host_ip(self, id):
+        """
+        Return the ip of the host with id, id
+        """
+        for host in self.topo["hosts"]:
+            if str(id)==str(host).split("_")[1]:
+                return self.topo[host]["ip"]
+        else:
+            raise ValueError("Could not find host with id ", id, " in " str(self.topo["hosts"]))
     def rewrite_forward_tables(self, id):
         """
         Rewrite tables if network of type forward
@@ -286,6 +320,8 @@ class controller():
                 if (str(e.table_entry.table_id)== str(self.no_hop_table_id)):
                     if str(new_entry["action_params"]["port"]) in str(e.table_entry.action.action.params._values).split("\0")[-1]:
                         print "deleting table entry "#,  e.table_entry)
+                        if self.verbose:
+                            print e.table_entry
                         to_change.s.DeleteTableEntry(e.table_entry)
                         found=1
                         break
@@ -307,7 +343,7 @@ class controller():
             action_params=action_params,
             priority=priority)
         try:
-            to_change.s.WriteTableEntry(table_entry)
+            #to_change.s.WriteTableEntry(table_entry)
             print "Added table entry"# ", table_entry
         except Exception as ex:
             print (ex, to_change.name)
