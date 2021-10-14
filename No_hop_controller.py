@@ -126,11 +126,12 @@ class controller():
 
         self.s_l=[]
         self.topo=data
-        i=1
+
         for s in switches:
+            i = int(s["mac"].split(":")[-1])+1
             print s, i
             self.s_l.append( Switch(i, s, switches))
-            i+=1
+
 
 
     def host_ids(self, data):
