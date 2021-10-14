@@ -94,6 +94,20 @@ class Switch:
             for e in entry.entities:
                 print e.table_entry , i
                 i+=1
+
+    def write_table(self, table_entry):
+        """
+        Write table entry to switch, pass exceptions
+        """
+
+        try:
+            self.s.WriteTableEntry(table_entry)
+            print "Added table entry"# ", table_entry
+        except Exception as ex:
+            print (ex, self.name)
+            pass
+        return
+
 class controller():
     """
     Controller class
@@ -113,9 +127,7 @@ class controller():
         else:
             self.type="rewrite"
 
-
         self.h_ids=self.host_ids(data)
-
         self.p4info_helper = p4runtime_lib.helper.P4InfoHelper(str(switch_data["p4info"]))
 
         with open(str(switch_data["p4info"])) as p4_info:
@@ -128,12 +140,10 @@ class controller():
         self.topo=data
 
         for s in switches:
-            print s
             i = int(self.topo["switches"][s]["mac"].split(":")[-1])+1
-            print  i
+            if self.verbose:
+                print "switch ", s, i
             self.s_l.append( Switch(i, s, switches))
-
-
 
     def host_ids(self, data):
         """
@@ -259,6 +269,13 @@ class controller():
         succesor_id=self.succesor(id)
         succesor_ip= self.find_host_ip(succesor_id)
 
+        for entry in to_change.s.ReadTableEntries():
+            #pprint(dir(entry))
+            for e in entry.entities:
+                if e.table_id==self.no_hop_table_id:
+
+
+
         return
     def succesor(self, id):
         """
@@ -303,15 +320,16 @@ class controller():
                 break
         else:
             raise ValueError ("could not find responsible switch ", responsible[1], " in " , str([s.name for s in self.s_l]))
-
+        new_entries=[]
+        found=0
         for index, entry in enumerate(to_change.runtime_json["table_entries"]):
             #print ((int(entry["match"]["hdr.dht.id"][0]),  int(entry["match"]["hdr.dht.id"][1]), id), entry["action_name"])
             print int(entry["match"]["hdr.dht.id"][0]), int(entry["match"]["hdr.dht.id"][1])
             if (str(entry["action_name"]) ==  "ThisIngress.no_hop_forward") and (int(entry["match"]["hdr.dht.id"][0])<id) and  (int(entry["match"]["hdr.dht.id"][1])>=id) and not (int(entry["match"]["hdr.dht.id"][1])>=32 and int(entry["match"]["hdr.dht.id"][0])<=0):
-                entry_index=index
-                new_entry=entry
-                break
-        else:
+                new_entry.append(entry)
+                found=1
+
+        if found==0:
             raise ValueError("could not find table entry to modify for ID ", id , " and switch ", to_change.name)
 
         #print (table_entry
@@ -321,37 +339,39 @@ class controller():
             for e in entry.entities:
                 #print (e.table_entry.table_id, self.no_hop_table_id)
                 if (str(e.table_entry.table_id)== str(self.no_hop_table_id)):
-                    if str(new_entry["action_params"]["port"]) in str(e.table_entry.action.action.params._values).split("\0")[-1]:
+                    if str(new_entry[0]["action_params"]["port"]) in str(e.table_entry.action.action.params._values).split("\0")[-1]:
                         print "deleting table entry "#,  e.table_entry)
                         if self.verbose:
                             print e.table_entry
                         to_change.s.DeleteTableEntry(e.table_entry)
                         found=1
-                        break
-        #if found==0:
+                        #TODO test if multiple range mathes fit the host work
+        #if found==0: #TODO uncomment
             #raise ValueError("Could not find entry to delete")
-        new_entry["action_params"]["port"]=new_port
-        table_name = new_entry['table']
-        match_fields = new_entry.get('match')
-        action_name = new_entry['action_name']
-        default_action = new_entry.get('default_action')
-        action_params = new_entry['action_params']
-        priority = new_entry.get('priority')
+        self.write_new_forward_tables(new_entry, new_port, to_change)
 
-        table_entry = self.p4info_helper.buildTableEntry(
-            table_name=table_name,
-            match_fields=match_fields,
-            default_action=default_action,
-            action_name=action_name,
-            action_params=action_params,
-            priority=priority)
-        try:
-            #to_change.s.WriteTableEntry(table_entry)
-            print "Added table entry"# ", table_entry
-        except Exception as ex:
-            print (ex, to_change.name)
-            pass
-        return
+    def write_new_forward_tables(self, entries, new_port, to_change):
+        """
+        Write new entries with adjusted port to to_change
+        """
+        for entry in entries:
+            entry["action_params"]["port"]=new_port
+            table_name = new_entry['table']
+            match_fields = new_entry.get('match')
+            action_name = new_entry['action_name']
+            default_action = new_entry.get('default_action')
+            action_params = new_entry['action_params']
+            priority = new_entry.get('priority')
+
+            table_entry = self.p4info_helper.buildTableEntry(
+                table_name=table_name,
+                match_fields=match_fields,
+                default_action=default_action,
+                action_name=action_name,
+                action_params=action_params,
+                priority=priority)
+
+            to_change.write_table(entry)
 
     def handle_join(self, join, switch):
         """
