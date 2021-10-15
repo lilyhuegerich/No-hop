@@ -121,11 +121,11 @@ control ThisIngress(inout headers hdr,
 
         hash (hdr.dht.id,
                 HashAlgorithm.crc32,
-                bit<6> 0,
+                first_valid_id,
                 { hdr.ethernet.dstAddr,
 	               hdr.ethernet.srcAddr,
                    hdr.ethernet.etherType},
-                 bit<6> 32);
+                 last_valid_id);
         hdr.dht.message_type=1;
      }
 

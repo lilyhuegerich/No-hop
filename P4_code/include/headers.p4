@@ -2,6 +2,9 @@
 #define __HEADERS__
 
 #define CPU_OUT_PORT 255
+
+const bit<6> first_valid_id= 0;
+const bit<6> last_valid_id=32;
 // packet in
 @controller_header("packet_in")
 header packet_in_header_t {
