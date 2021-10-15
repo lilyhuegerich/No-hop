@@ -380,5 +380,5 @@ class controller():
         #switch.s.PacketOut() #Ether(dst='00:04:00:00:00:00', type=0x800) / IP(dst=addr, ttl=50, proto=2) / No_hop(message_type=int(message_type), ID=int(ID), gid=gid, counter=0) / message)
 
 if __name__ == "__main__":
-    c= controller()
+    c= controller(verbose=False)
     c.run()
