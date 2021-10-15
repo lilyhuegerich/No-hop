@@ -317,7 +317,7 @@ class controller():
                 break
         else:
             raise ValueError ("could not find responsible switch ", responsible[1], " in " , str([s.name for s in self.s_l]))
-        new_entries=[]
+        new_entry=[]
         found=0
         for index, entry in enumerate(to_change.runtime_json["table_entries"]):
             #print ((int(entry["match"]["hdr.dht.id"][0]),  int(entry["match"]["hdr.dht.id"][1]), id), entry["action_name"])
