@@ -118,6 +118,7 @@ control ThisIngress(inout headers hdr,
           hdr.packet_in.ingress_port = (bit<16>)standard_metadata.ingress_port;
       }
      action first_contact(){
+         
         hash (hdr.dht.id,
                 HashAlgorithm.crc32,
                 0,
