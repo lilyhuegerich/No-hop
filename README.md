@@ -5,16 +5,21 @@ No-hop DHT utilizes the programable data plane to speed up the key value look up
 
 No-hop has two versions, Forward, and Rewrite. Forward needs all switches to be programable while Rewrite only one. 
 
+### Pre-built Expirements
+In ````initialize_system/No_hop_forward_0```` and ````initialize_system/No_hop_rewrite_0```` there are two already built experirments.
+
+
 ### Generate Initial Build Files
 
-To generate a new rewrite experiment run:
+**For additional experiments:**
 
+**To generate a new rewrite experiment run:**
 ```bash
 $ cd initialize_system/
 $ python No_hop_Network.py rewrite
 ```
 
-To generate a new forward experiment run:
+**To generate a new forward experiment run:**
 
 ```bash
 $ cd initialize_system/
@@ -27,7 +32,7 @@ For more on generating build files please refer to [Init Docs](initialize_system
 
 ## Running Experiment
 
-To run an experiment: 
+**To run an experiment:**
 
 ```bash
 $ cd initialize_system/<Build folder name>
@@ -43,22 +48,38 @@ mininet> xterm host_name
 ```
 ![](gifs/xterm.gif)
 
-To see network:
+**To see network:**
 
 ```bash
 mininet> net
 ```
 ![](gifs/mininet_net.gif)
 
-In a host xterm to run the No_hop_host program.
+In a host xterm to run the No\_hop\_host program.
 
-To run a client:
+**To run a client:**
 
 ```bash
 # python ../../No_hop_host.py c
 ```
+**Sending messages:**
 
-To run a server without an ID (Will not run stabilize proccess until ID is assigned):
+
+Format: type, id, message
+
+**Type:**
+
+| Value        | Message\_type       
+| :------------- |:-------------:| 
+| 0    | First\_contact | 
+| 1     | Look\_up      | 
+| 2 | Fail    |  
+| 3 | Join    | 
+
+
+
+**To run a server without an ID** (Will not run stabilize proccess until ID is assigned):
+
 
 ```bash
 # python ../../No_hop_host.py
@@ -68,7 +89,7 @@ To assign an ID to a host, send with the client a message of type=1, ID=some id 
 
 ![](gifs/joinID.gif)
 
-To run a test:
+**To run a test:**
 
 ```bash
 # python ../../No_hop_host.py t=<Number of times each ID should be sent>
@@ -76,7 +97,7 @@ To run a test:
 
 ![](gifs/test.gif)
 
-To run hosts that immediatly start to stabilize pass them their ID at start:
+**To run hosts that immediatly start to stabilize pass them their ID at start:**
 
 ```bash
 # python ../../No_hop_host.py ID
@@ -84,12 +105,22 @@ To run hosts that immediatly start to stabilize pass them their ID at start:
 
 ![](gifs/stabilize.gif)
 
-To leave mininet:
+**Controller:**
+
+To catch failures and adjust the tables, in another window the controller has to be run. 
+
+```bash
+# python ../../No_hop_controller.py
+```
+![](gifs/controller_fail.gif)
+
+
+**To leave mininet:**
 
 ```bash
 mininet> exit
 ```
-then:
+**then:**
 
 ```bash
 $ sudo mn -c
