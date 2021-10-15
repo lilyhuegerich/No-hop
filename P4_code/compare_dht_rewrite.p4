@@ -115,6 +115,17 @@ control ThisIngress(inout headers hdr,
          hdr.packet_in.setValid();
         hdr.packet_in.ingress_port = (bit<16>)standard_metadata.ingress_port;
       }
+     action first_contact(){
+          hash (hdr.dht.id,
+                  HashAlgorithm.crc32,
+                  0,
+                  { hdr.ethernet.dstAddr,
+  	               hdr.ethernet.srcAddr,
+                     hdr.ipv4.etherType,
+                    },
+                   32);
+          hdr.dht.message_type=1;
+       }
 
     table no_hop_lookup {
         key={
@@ -145,6 +156,9 @@ control ThisIngress(inout headers hdr,
     apply {
         hdr.ipv4.ttl = hdr.ipv4.ttl-1;
         if (hdr.dht.isValid()){
+        if (hdr.dht.message_type==0){
+            first_contact();
+        }
         if (hdr.dht.message_type==1){
             no_hop_lookup.apply()
         }
