@@ -14,7 +14,7 @@ To see the structure of the network look in either the ```` topology.json````fil
 
 In rewrite systems only one switch needs to run No\_hop. This switch is in rewrite systems' ````network.pdf````dark blue. In forward all switches need to run No\_hop and are light blue in ````network.pdf````. The sizes are in relationship to the responisble id spaces.
 
-![](initialize_system/No_hop_rewrite_0/network.pdf)
+![](gifs/network.png)
 
 
 ### Generate Initial Build Files
