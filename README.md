@@ -8,6 +8,14 @@ No-hop has two versions, Forward, and Rewrite. Forward needs all switches to be 
 ### Pre-built Expirements
 In ````initialize_system/No_hop_forward_0```` and ````initialize_system/No_hop_rewrite_0```` there are two already built experirments.
 
+To see the structure of the network look in either the ```` topology.json````file or in the ````network.pdf```` file.
+
+**Network.pdf**
+
+In rewrite systems only one switch needs to run No\_hop. This switch is in rewrite systems' ````network.pdf````dark blue. In forward all switches need to run No\_hop and are light blue in ````network.pdf````. The sizes are in relationship to the responisble id spaces.
+
+![](initialize_system/No_hop_rewrite_0/network.pdf)
+
 
 ### Generate Initial Build Files
 
@@ -30,7 +38,7 @@ If ```rewrite_build_folders=1```in ```No_hop_Network.py``` The experiment folder
 
 For more on generating build files please refer to [Init Docs](initialize_system/No_hop_Init_system.pdf).
 
-## Running Experiment
+## Running Experiments
 
 **To run an experiment:**
 
