@@ -157,9 +157,9 @@ class No_hop_host:
             if (self.ID==None and self.client==False):
                 print("No ID or client status, cannot make log files.")
             elif not self.ID==None:
-                f= open("./packet_log_host_"+str(self.ID)+".txt", "w+")
+                f= open("./packet_log_host_"+str(self.ID)+".json", "w+")
             else:
-                f= open("./packet_log_host_client.txt", "w+")
+                f= open("./packet_log_host_client.json", "w+")
             print (self.Recieved)
             json.dump(self.Recieved,  f, sort_keys=True, indent=4)
             f.close()

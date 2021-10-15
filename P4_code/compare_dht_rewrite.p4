@@ -159,7 +159,7 @@ control ThisIngress(inout headers hdr,
             first_contact();
         }
         if (hdr.dht.message_type==1){
-            no_hop_lookup.apply()
+            no_hop_lookup.apply();
         }
         if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
             if (hdr.dht.message_type==2){
