@@ -273,10 +273,7 @@ class controller():
             #pprint(dir(entry))
             for e in entry.entities:
                 if e.table_id==self.no_hop_table_id:
-
-
-
-        return
+                    print("TODO")
     def succesor(self, id):
         """
         Return the next switch following the switch with id: id
