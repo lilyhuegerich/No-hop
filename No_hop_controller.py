@@ -323,6 +323,7 @@ class controller():
             #print ((int(entry["match"]["hdr.dht.id"][0]),  int(entry["match"]["hdr.dht.id"][1]), id), entry["action_name"])
             print int(entry["match"]["hdr.dht.id"][0]), int(entry["match"]["hdr.dht.id"][1])
             if (str(entry["action_name"]) ==  "ThisIngress.no_hop_forward"):
+                print (entry)
                 if  (int(entry["match"]["hdr.dht.id"][0])<id) and  (int(entry["match"]["hdr.dht.id"][1])>=id) and not (int(entry["match"]["hdr.dht.id"][1])>=32 and int(entry["match"]["hdr.dht.id"][0])<=0):
                     new_entry.append(entry)
                     found=1
