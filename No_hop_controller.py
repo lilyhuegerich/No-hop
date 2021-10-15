@@ -355,12 +355,12 @@ class controller():
         """
         for entry in entries:
             entry["action_params"]["port"]=new_port
-            table_name = new_entry['table']
-            match_fields = new_entry.get('match')
-            action_name = new_entry['action_name']
-            default_action = new_entry.get('default_action')
-            action_params = new_entry['action_params']
-            priority = new_entry.get('priority')
+            table_name = entry['table']
+            match_fields = entry.get('match')
+            action_name = entry['action_name']
+            default_action = entry.get('default_action')
+            action_params = entry['action_params']
+            priority = entry.get('priority')
 
             table_entry = self.p4info_helper.buildTableEntry(
                 table_name=table_name,
@@ -370,7 +370,7 @@ class controller():
                 action_params=action_params,
                 priority=priority)
 
-            to_change.write_table(entry)
+            to_change.write_table(table_entry)
 
     def handle_join(self, join, switch):
         """
