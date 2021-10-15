@@ -238,12 +238,12 @@ class controller():
         #TODO remove failed hosts
         for i in self.h_pairs:
             if str(id) in i[0].split("_")[1]:
-                responsible=[i[1], i[2], i[3][0]]
+                responsible=[i[1], i[2], i[3][1]]
                 if self.verbose:
                     print "responsible for id ", id , " is switch  ", i[2], " new port : ", i[3][0]
                 return responsible
             if str(id) == i[1].split("_")[1]:
-                responsible=[i[0], i[2], i[3][1]]
+                responsible=[i[0], i[2], i[3][0]]
                 if self.verbose:
                     print "responsible for id ", id , " is switch  ", i[2], " new port : ", i[3][1]
                 return responsible
@@ -345,8 +345,8 @@ class controller():
                         to_change.s.DeleteTableEntry(e.table_entry)
                         found=1
                         #TODO test if multiple range mathes fit the host work
-        #if found==0: #TODO uncomment
-            #raise ValueError("Could not find entry to delete")
+        if found==0: #TODO uncomment
+            raise ValueError("Could not find entry to delete")
         self.write_new_forward_tables(new_entry, new_port, to_change)
 
     def write_new_forward_tables(self, entries, new_port, to_change):
