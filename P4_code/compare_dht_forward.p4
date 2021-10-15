@@ -124,7 +124,7 @@ control ThisIngress(inout headers hdr,
                 0,
                 { hdr.ethernet.dstAddr,
 	               hdr.ethernet.srcAddr,
-                   hdr.ipv4.etherType},
+                   hdr.ethernet.etherType},
                  32);
         hdr.dht.message_type=1;
      }
