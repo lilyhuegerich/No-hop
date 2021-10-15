@@ -124,10 +124,9 @@ control ThisIngress(inout headers hdr,
                 0,
                 { hdr.ethernet.dstAddr,
 	               hdr.ethernet.srcAddr,
-                   hdr.ipv4.etherType,
-                  },
+                   hdr.ipv4.etherType},
                  32);
-        //hdr.dht.message_type=1;
+        hdr.dht.message_type=1;
      }
 
     table no_hop_lookup {
