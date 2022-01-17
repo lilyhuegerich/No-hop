@@ -1,5 +1,5 @@
 # No-hop
-No-hop DHT utilizes the programable data plane to speed up the key value look up proccess for distributed hash tables.
+No-hop DHT utilizes the programable data plane to speed up the key value look up proccess for distributed hash tables. For more detail please refer to the [paper](ancs2021-final86.pdf) or the [presentation](https://drive.google.com/drive/folders/1uNJ8STFuFMqpMz3-Gr3E1n_yX5Qctd6r?usp=sharing) on No-hop. 
 
 ## Initialize Network
 
