@@ -6,6 +6,7 @@
             "commands": [
                 "route add default gw 10.0.1.10  dev eth0",
                 "arp -i eth0 -s 10.0.1.10 08:00:00:00:01:00"
+		
             ]
         },
         "h_1": {
@@ -13,7 +14,8 @@
             "mac": "08:00:00:00:02:22",
             "commands": [
                 "route add default gw 10.0.2.20  dev eth0",
-                "arp -i eth0 -s 10.0.2.20 08:00:00:00:02:00"
+                "arp -i eth0 -s 10.0.2.20 08:00:00:00:02:00",
+		        "python ../../No_hop_host.py 1 &"
             ]
         },
         "h_5": {

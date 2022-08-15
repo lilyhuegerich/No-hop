@@ -282,16 +282,19 @@ def write_switch_json(table, switch, network):
 
     with open(network.folder+"/build/"+switch+"P4runtime.json", "w+") as f:
         json.dump(topo_dict, f, sort_keys=True, indent=4)
-def make_host_entry(ip_count):
+def make_host_entry(ip_count, h_id=None):
     """
     Generrate JSON entry for host for topology.json
     """
     entry=dict()
     entry["ip"]="10.0."+str(ip_count)+"."+str(ip_count)+"/24"
     entry["mac"]="08:00:00:00:0"+str(ip_count)+":"+str(ip_count)+str(ip_count)
+
     entry["commands"]=["route add default gw 10.0."+str(ip_count)+"."+str(ip_count)+"0  dev eth0",
-    "arp -i eth0 -s 10.0."+str(ip_count)+"."+str(ip_count)+"0 08:00:00:00:0"+str(ip_count)+":00"
+    "arp -i eth0 -s 10.0."+str(ip_count)+"."+str(ip_count)+"0 08:00:00:00:0"+str(ip_count)+":00", ""
     ]
+    if h_id:
+        entry["commands"].append("python ../../No_hop_host.py "+str(h_id)+" &")
     return entry
 
 def make_host_data(host_ids):
@@ -303,7 +306,7 @@ def make_host_data(host_ids):
     hosts["h_client"]=make_host_entry(ip_count)
     ip_count+=1
     for i in host_ids:
-        hosts["h_"+str(i)]=make_host_entry(ip_count)
+        hosts["h_"+str(i)]=make_host_entry(ip_count, h_id=i)
         ip_count+=1
     return hosts
 
