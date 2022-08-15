@@ -56,6 +56,7 @@ class No_hop_host:
         """
         Run corresponding systems for No-hop host
         """
+        
         print ("Starting No-hop")
         if self.client:
             self.send()
@@ -177,6 +178,7 @@ class No_hop_host:
             self.tmp_id=ID
 
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
+        self.write_logs()
         if "S" in mes:
             print "Sendng ack to "+ str((ID-1)%max_id)
             send_No_hop(ID=(ID-1)%max_id, message="ack" ,message_type=1)
@@ -250,4 +252,7 @@ if __name__ == "__main__":
             host= No_hop_host(client=False, ID=int(sys.argv[1]))
         else:
             raise Exception("Unvalid parameters:", str(sys.argv))
-    host.run()
+    try:
+        host.run()
+    finally:
+        host.write_logs()

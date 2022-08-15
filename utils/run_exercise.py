@@ -214,12 +214,14 @@ class ExerciseRunner:
 
         # some programming that must happen after the net has started
         self.program_hosts()
+        
         self.program_switches()
 
         # wait for that to finish. Not sure how to do this better
         sleep(1)
 
         self.do_net_cli()
+        
         # stop right after the CLI is exited
         self.net.stop()
 
@@ -328,7 +330,7 @@ class ExerciseRunner:
             h = self.net.get(host_name)
             if "commands" in host_info:
                 for cmd in host_info["commands"]:
-                    h.cmd(cmd)
+                    print(h.cmdPrint(cmd))
 
 
     def do_net_cli(self):
