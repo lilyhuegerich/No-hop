@@ -1,0 +1,168 @@
+pkg_info {
+  arch: "v1model"
+}
+tables {
+  preamble {
+    id: 41857858
+    name: "ThisIngress.no_hop_lookup"
+    alias: "no_hop_lookup"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.dht.group_id"
+    bitwidth: 6
+    match_type: EXACT
+  }
+  match_fields {
+    id: 2
+    name: "hdr.dht.id"
+    bitwidth: 6
+    match_type: RANGE
+  }
+  action_refs {
+    id: 22434720
+  }
+  action_refs {
+    id: 29480383
+  }
+  action_refs {
+    id: 21257015
+  }
+  size: 1024
+}
+tables {
+  preamble {
+    id: 43947418
+    name: "ThisIngress.ipv4_lpm"
+    alias: "ipv4_lpm"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.ipv4.dstAddr"
+    bitwidth: 32
+    match_type: LPM
+  }
+  action_refs {
+    id: 33010196
+  }
+  action_refs {
+    id: 22023282
+  }
+  action_refs {
+    id: 21257015
+  }
+  size: 1024
+}
+actions {
+  preamble {
+    id: 21257015
+    name: "NoAction"
+    alias: "NoAction"
+    annotations: "@noWarn(\"unused\")"
+  }
+}
+actions {
+  preamble {
+    id: 22023282
+    name: "ThisIngress.drop"
+    alias: "drop"
+  }
+}
+actions {
+  preamble {
+    id: 33010196
+    name: "ThisIngress.ipv4_forward"
+    alias: "ipv4_forward"
+  }
+  params {
+    id: 1
+    name: "dstAddr"
+    bitwidth: 48
+  }
+  params {
+    id: 2
+    name: "port"
+    bitwidth: 9
+  }
+}
+actions {
+  preamble {
+    id: 22434720
+    name: "ThisIngress.dht_rewrite"
+    alias: "dht_rewrite"
+  }
+  params {
+    id: 1
+    name: "dht_address"
+    bitwidth: 32
+  }
+}
+actions {
+  preamble {
+    id: 29480383
+    name: "ThisIngress.send_to_controller"
+    alias: "send_to_controller"
+  }
+}
+actions {
+  preamble {
+    id: 26558636
+    name: "ThisIngress.first_contact"
+    alias: "first_contact"
+  }
+}
+counters {
+  preamble {
+    id: 311060004
+    name: "ThisIngress.fail"
+    alias: "fail"
+  }
+  spec {
+    unit: PACKETS
+  }
+  size: 32
+}
+counters {
+  preamble {
+    id: 302069326
+    name: "ThisIngress.join"
+    alias: "join"
+  }
+  spec {
+    unit: PACKETS
+  }
+  size: 32
+}
+controller_packet_metadata {
+  preamble {
+    id: 81826293
+    name: "packet_in"
+    alias: "packet_in"
+    annotations: "@controller_header(\"packet_in\")"
+  }
+  metadata {
+    id: 1
+    name: "ingress_port"
+    bitwidth: 16
+  }
+}
+controller_packet_metadata {
+  preamble {
+    id: 76689799
+    name: "packet_out"
+    alias: "packet_out"
+    annotations: "@controller_header(\"packet_out\")"
+  }
+  metadata {
+    id: 1
+    name: "egress_port"
+    bitwidth: 16
+  }
+  metadata {
+    id: 2
+    name: "mcast_grp"
+    bitwidth: 16
+  }
+}
+type_info {
+}

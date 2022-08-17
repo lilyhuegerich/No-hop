@@ -39,7 +39,7 @@ class P4RuntimeSwitch(P4Switch):
                  enable_debugger = False,
                  log_file = None,
                  **kwargs):
-        Switch.__init__(self, name, dpid='0000000000000201', **kwargs)
+        Switch.__init__(self, name, **kwargs)
         assert (sw_path)
         self.sw_path = sw_path
         # make sure that the provided sw_path is valid
@@ -48,11 +48,9 @@ class P4RuntimeSwitch(P4Switch):
         if json_path is not None:
             # make sure that the provided JSON file exists
             if not os.path.isfile(json_path):
-                self.json_path = None
-                """error("Invalid JSON file: {}\n".format(json_path))
-                exit(1)"""
-            else:
-                self.json_path = json_path
+                error("Invalid JSON file: {}\n".format(json_path))
+                exit(1)
+            self.json_path = json_path
         else:
             self.json_path = None
 
@@ -102,7 +100,7 @@ class P4RuntimeSwitch(P4Switch):
     def start(self, controllers):
         info("Starting P4 switch {}.\n".format(self.name))
         args = [self.sw_path]
-        for port, intf in self.intfs.items():
+        for port, intf in list(self.intfs.items()):
             if not intf.IP():
                 args.extend(['-i', str(port) + "@" + intf.name])
         if self.pcap_dump:
@@ -123,6 +121,7 @@ class P4RuntimeSwitch(P4Switch):
             args.append('--thrift-port ' + str(self.thrift_port))
         if self.grpc_port:
             args.append("-- --grpc-server-addr 0.0.0.0:" + str(self.grpc_port))
+        args.append("-- --cpu_port 510")
         cmd = ' '.join(args)
         info(cmd + "\n")
 

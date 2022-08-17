@@ -141,13 +141,13 @@
   "header_union_stacks" : [],
   "field_lists" : [],
   "errors" : [
-    ["NoError", 1],
-    ["PacketTooShort", 2],
-    ["NoMatch", 3],
-    ["StackOutOfBounds", 4],
-    ["HeaderTooShort", 5],
-    ["ParserTimeout", 6],
-    ["ParserInvalidArgument", 7]
+    ["NoError", 0],
+    ["PacketTooShort", 1],
+    ["NoMatch", 2],
+    ["StackOutOfBounds", 3],
+    ["HeaderTooShort", 4],
+    ["ParserTimeout", 5],
+    ["ParserInvalidArgument", 6]
   ],
   "enums" : [],
   "parsers" : [
@@ -163,12 +163,13 @@
           "transitions" : [
             {
               "type" : "hexstr",
-              "value" : "0x00ff",
+              "value" : "0x01fe",
               "mask" : null,
               "next_state" : "parse_packet_out"
             },
             {
-              "value" : "default",
+              "type" : "default",
+              "value" : null,
               "mask" : null,
               "next_state" : "parse_ethernet"
             }
@@ -196,7 +197,8 @@
           ],
           "transitions" : [
             {
-              "value" : "default",
+              "type" : "default",
+              "value" : null,
               "mask" : null,
               "next_state" : "parse_ethernet"
             }
@@ -225,7 +227,8 @@
               "next_state" : "parse_ipv4"
             },
             {
-              "value" : "default",
+              "type" : "default",
+              "value" : null,
               "mask" : null,
               "next_state" : "parse_ipv4"
             }
@@ -253,7 +256,8 @@
           ],
           "transitions" : [
             {
-              "value" : "default",
+              "type" : "default",
+              "value" : null,
               "mask" : null,
               "next_state" : null
             }
@@ -282,7 +286,8 @@
               "next_state" : "parse_dht"
             },
             {
-              "value" : "default",
+              "type" : "default",
+              "value" : null,
               "mask" : null,
               "next_state" : null
             }
@@ -308,7 +313,8 @@
         "column" : 8,
         "source_fragment" : "ThisDeparser"
       },
-      "order" : ["packet_in", "ethernet", "ipv4", "dht"]
+      "order" : ["packet_in", "ethernet", "ipv4", "dht"],
+      "primitives" : []
     }
   ],
   "meter_arrays" : [],
@@ -571,14 +577,14 @@
             },
             {
               "type" : "hexstr",
-              "value" : "0x00ff"
+              "value" : "0x01fe"
             }
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
             "line" : 116,
             "column" : 10,
-            "source_fragment" : "standard_metadata.egress_spec = 255"
+            "source_fragment" : "standard_metadata.egress_spec = 510"
           }
         },
         {
@@ -684,7 +690,7 @@
       ]
     },
     {
-      "name" : "act",
+      "name" : "compare_dht_forward159",
       "id" : 7,
       "runtime_data" : [],
       "primitives" : [
@@ -733,7 +739,7 @@
       ]
     },
     {
-      "name" : "act_0",
+      "name" : "compare_dht_forward170",
       "id" : 8,
       "runtime_data" : [],
       "primitives" : [
@@ -791,7 +797,7 @@
       ]
     },
     {
-      "name" : "act_1",
+      "name" : "compare_dht_forward173",
       "id" : 9,
       "runtime_data" : [],
       "primitives" : [
@@ -862,7 +868,7 @@
       "init_table" : "node_2",
       "tables" : [
         {
-          "name" : "tbl_act",
+          "name" : "tbl_compare_dht_forward159",
           "id" : 0,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
@@ -878,10 +884,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [7],
-          "actions" : ["act"],
+          "actions" : ["compare_dht_forward159"],
           "base_default_next" : "node_4",
           "next_tables" : {
-            "act" : "node_4"
+            "compare_dht_forward159" : "node_4"
           },
           "default_entry" : {
             "action_id" : 7,
@@ -963,7 +969,7 @@
           }
         },
         {
-          "name" : "tbl_act_0",
+          "name" : "tbl_compare_dht_forward170",
           "id" : 3,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
@@ -979,10 +985,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [8],
-          "actions" : ["act_0"],
+          "actions" : ["compare_dht_forward170"],
           "base_default_next" : "node_12",
           "next_tables" : {
-            "act_0" : "node_12"
+            "compare_dht_forward170" : "node_12"
           },
           "default_entry" : {
             "action_id" : 8,
@@ -992,7 +998,7 @@
           }
         },
         {
-          "name" : "tbl_act_1",
+          "name" : "tbl_compare_dht_forward173",
           "id" : 4,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
@@ -1008,10 +1014,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [9],
-          "actions" : ["act_1"],
+          "actions" : ["compare_dht_forward173"],
           "base_default_next" : "tbl_send_to_controller",
           "next_tables" : {
-            "act_1" : "tbl_send_to_controller"
+            "compare_dht_forward173" : "tbl_send_to_controller"
           },
           "default_entry" : {
             "action_id" : 9,
@@ -1110,7 +1116,7 @@
               }
             }
           },
-          "true_next" : "tbl_act",
+          "true_next" : "tbl_compare_dht_forward159",
           "false_next" : "node_4"
         },
         {
@@ -1257,7 +1263,7 @@
               }
             }
           },
-          "true_next" : "tbl_act_0",
+          "true_next" : "tbl_compare_dht_forward170",
           "false_next" : "node_12"
         },
         {
@@ -1283,7 +1289,7 @@
               }
             }
           },
-          "true_next" : "tbl_act_1",
+          "true_next" : "tbl_compare_dht_forward173",
           "false_next" : "tbl_send_to_controller"
         }
       ]
@@ -1373,7 +1379,7 @@
   ],
   "program" : "../../P4_code/compare_dht_forward.p4",
   "__meta__" : {
-    "version" : [2, 18],
+    "version" : [2, 23],
     "compiler" : "https://github.com/p4lang/p4c"
   }
 }

@@ -35,7 +35,7 @@ endif
 all: run
 
 run: build
-	sudo python $(RUN_SCRIPT) -t $(TOPO) $(run_args)
+	sudo python3 $(RUN_SCRIPT) -t $(TOPO) $(run_args)
 
 stop:
 	sudo mn -c

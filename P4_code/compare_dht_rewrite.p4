@@ -35,7 +35,7 @@ parser ThisParser(packet_in packet,
 
     state start {
         transition select(standard_metadata.ingress_port){
-            CPU_OUT_PORT: parse_packet_out;
+            CPU_PORT: parse_packet_out;
             default: parse_ethernet;
         }
     }
@@ -111,7 +111,7 @@ control ThisIngress(inout headers hdr,
     }
 
     action send_to_controller(){
-         standard_metadata.egress_spec = CPU_OUT_PORT;
+         standard_metadata.egress_spec = CPU_PORT;
          hdr.packet_in.setValid();
         hdr.packet_in.ingress_port = (bit<16>)standard_metadata.ingress_port;
       }

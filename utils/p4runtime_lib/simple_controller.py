@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 #
 # Copyright 2017-present Open Networking Foundation
 #
@@ -19,15 +19,15 @@ import json
 import os
 import sys
 
-import bmv2
-import helper
+from . import bmv2
+from . import helper
 
 
 def error(msg):
-    print >> sys.stderr, ' - ERROR! ' + msg
+    print(' - ERROR! ' + msg, file=sys.stderr)
 
 def info(msg):
-    print >> sys.stdout, ' - ' + msg
+    print(' - ' + msg, file=sys.stdout)
 
 
 class ConfException(Exception):
@@ -127,6 +127,21 @@ def program_switch(addr, device_id, sw_conf_file, workdir, proto_dump_fpath):
             for entry in table_entries:
                 info(tableEntryToString(entry))
                 insertTableEntry(sw, entry, p4info_helper)
+
+        if 'multicast_group_entries' in sw_conf:
+            group_entries = sw_conf['multicast_group_entries']
+            info("Inserting %d group entries..." % len(group_entries))
+            for entry in group_entries:
+                info(groupEntryToString(entry))
+                insertMulticastGroupEntry(sw, entry, p4info_helper)
+
+        if 'clone_session_entries' in sw_conf:
+            clone_entries = sw_conf['clone_session_entries']
+            info("Inserting %d clone entries..." % len(clone_entries))
+            for entry in clone_entries:
+                info(cloneEntryToString(entry))
+                insertCloneGroupEntry(sw, entry, p4info_helper)
+
     finally:
         sw.shutdown()
 
@@ -150,16 +165,13 @@ def insertTableEntry(sw, flow, p4info_helper):
     sw.WriteTableEntry(table_entry)
 
 
-# object hook for josn library, use str instead of unicode object
-# https://stackoverflow.com/questions/956867/how-to-get-string-objects-instead-of-unicode-from-json
 def json_load_byteified(file_handle):
-    return _byteify(json.load(file_handle, object_hook=_byteify),
-                    ignore_dicts=True)
+    return json.load(file_handle)
 
 
 def _byteify(data, ignore_dicts=False):
     # if this is a unicode string, return its string representation
-    if isinstance(data, unicode):
+    if isinstance(data, str):
         return data.encode('utf-8')
     # if this is a list of values, return list of byteified values
     if isinstance(data, list):
@@ -169,7 +181,7 @@ def _byteify(data, ignore_dicts=False):
     if isinstance(data, dict) and not ignore_dicts:
         return {
             _byteify(key, ignore_dicts=True): _byteify(value, ignore_dicts=True)
-            for key, value in data.iteritems()
+            for key, value in data.items()
         }
     # if it's anything else, return it in its original form
     return data
@@ -189,6 +201,32 @@ def tableEntryToString(flow):
     params = ', '.join(params)
     return "%s: %s => %s(%s)" % (
         flow['table'], match_str, flow['action_name'], params)
+
+
+def groupEntryToString(rule):
+    group_id = rule["multicast_group_id"]
+    replicas = ['%d' % replica["egress_port"] for replica in rule['replicas']]
+    ports_str = ', '.join(replicas)
+    return 'Group {0} => ({1})'.format(group_id, ports_str)
+
+def cloneEntryToString(rule):
+    clone_id = rule["clone_session_id"]
+    if "packet_length_bytes" in rule:
+        packet_length_bytes = str(rule["packet_length_bytes"])+"B"
+    else:
+        packet_length_bytes = "NO_TRUNCATION"
+    replicas = ['%d' % replica["egress_port"] for replica in rule['replicas']]
+    ports_str = ', '.join(replicas)
+    return 'Clone Session {0} => ({1}) ({2})'.format(clone_id, ports_str, packet_length_bytes)
+
+def insertMulticastGroupEntry(sw, rule, p4info_helper):
+    mc_entry = p4info_helper.buildMulticastGroupEntry(rule["multicast_group_id"], rule['replicas'])
+    sw.WritePREEntry(mc_entry)
+
+def insertCloneGroupEntry(sw, rule, p4info_helper):
+    clone_entry = p4info_helper.buildCloneSessionEntry(rule['clone_session_id'], rule['replicas'],
+                                                       rule.get('packet_length_bytes', 0))
+    sw.WritePREEntry(clone_entry)
 
 
 if __name__ == '__main__':

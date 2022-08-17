@@ -29,30 +29,20 @@ def matchesMac(mac_addr_string):
     return mac_pattern.match(mac_addr_string) is not None
 
 def encodeMac(mac_addr_string):
-    return mac_addr_string.replace(':', '').decode('hex')
+    return bytes.fromhex(mac_addr_string.replace(':', ''))
 
 def decodeMac(encoded_mac_addr):
-    return ':'.join(s.encode('hex') for s in encoded_mac_addr)
+    return ':'.join(s.hex() for s in encoded_mac_addr)
 
 ip_pattern = re.compile('^(\d{1,3}\.){3}(\d{1,3})$')
-ipv6_pattern = re.compile('^(\w{0,4}){0,5}(\w{0,4})$')
 def matchesIPv4(ip_addr_string):
     return ip_pattern.match(ip_addr_string) is not None
-# enable ipv6
-def matchesIPv6(ip_addr_string):
-    return ipv6_pattern.match(ip_addr_string) is not None
 
 def encodeIPv4(ip_addr_string):
     return socket.inet_aton(ip_addr_string)
 
-def encodeIPv6(ip_addr_string):
-    return socket.inet_pton(socket.AF_INET6,ip_addr_string)
-
 def decodeIPv4(encoded_ip_addr):
     return socket.inet_ntoa(encoded_ip_addr)
-
-def decodeIPv6(encoded_ip_addr):
-    return socket.inet_ntop(encoded_ip_addr)
 
 def bitwidthToBytes(bitwidth):
     return int(math.ceil(bitwidth / 8.0))
@@ -62,10 +52,10 @@ def encodeNum(number, bitwidth):
     num_str = '%x' % number
     if number >= 2 ** bitwidth:
         raise Exception("Number, %d, does not fit in %d bits" % (number, bitwidth))
-    return ('0' * (byte_len * 2 - len(num_str)) + num_str).decode('hex')
+    return bytes.fromhex('0' * (byte_len * 2 - len(num_str)) + num_str)
 
 def decodeNum(encoded_number):
-    return int(encoded_number.encode('hex'), 16)
+    return int(encoded_number.hex(), 16)
 
 def encode(x, bitwidth):
     'Tries to infer the type of `x` and encode it'
@@ -78,13 +68,9 @@ def encode(x, bitwidth):
             encoded_bytes = encodeMac(x)
         elif matchesIPv4(x):
             encoded_bytes = encodeIPv4(x)
-        #elif matchesIPv6(x):
-        #    encoded_bytes = encodeIPv6(x)
         else:
             # Assume that the string is already encoded
             encoded_bytes = x
-            # using encode IPV6 
-            # encoded_bytes = encodeIPv6(x)
     elif type(x) == int:
         encoded_bytes = encodeNum(x, bitwidth)
     else:
@@ -130,4 +116,4 @@ if __name__ == '__main__':
         enc_num = encodeNum(num, 8)
         raise Exception("expected exception")
     except Exception as e:
-        print e
+        print(e)

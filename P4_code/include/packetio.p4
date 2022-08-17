@@ -2,7 +2,7 @@
 #define __PACKETIO__
 
 #include "headers.p4"
-
+#define CPU_PORT 510
 control packetio_ingress(inout headers hdr,
                          inout standard_metadata_t standard_metadata) {
     apply {
