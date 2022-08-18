@@ -56,7 +56,7 @@ class No_hop_host:
         """
         Run corresponding systems for No-hop host
         """
-        
+
         print ("Starting No-hop")
         if self.client:
             self.send()
@@ -82,11 +82,11 @@ class No_hop_host:
                 if ((now-self.last_stabilize)>=self.stabilze_timeout):
                     self.last_stabilize=now
                     if self.waiting==1:
-                        print "Send fail: " + str((self.ID+1)%max_id)
+                        print ("Send fail: " + str((self.ID+1)%max_id))
                         send_No_hop(ID=(self.ID+1)%max_id, message="S" ,message_type=2) #Failed node
                         self.waiting=0
                     else:
-                        print "Send stabilize: " +str((self.ID+1)%max_id)
+                        print ("Send stabilize: " +str((self.ID+1)%max_id))
                         send_No_hop(ID=(self.ID+1)%max_id, message="S" ,message_type=1)
                         self.waiting=1
         except KeyboardInterrupt:
@@ -105,7 +105,7 @@ class No_hop_host:
         """
         for i in range(self.test_amount):
             for test_id in range(0, max_id):
-                print test_id
+                print (test_id)
                 test_message= "sent "+str(test_id)+" : "+str(time.time())
                 time.sleep(.3)
                 send_No_hop( ID=test_id , message=test_message ,message_type=1, gid=1)
@@ -119,8 +119,8 @@ class No_hop_host:
         try:
             while (self.On):
                 sys.stdout.flush()
-                input = raw_input("Send packet: Type, ID, Message ")
-                to_send=input.split(",")
+                input_got = input("Send packet: Type, ID, Message ")
+                to_send=input_got.split(",")
                 if (not len(to_send)==3):
                     print ("not in correct form. Type, ID, Message")
                 else:
@@ -180,13 +180,13 @@ class No_hop_host:
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
         self.write_logs()
         if "S" in mes:
-            print "Sendng ack to "+ str((ID-1)%max_id)
+            print ("Sendng ack to "+ str((ID-1)%max_id))
             send_No_hop(ID=(ID-1)%max_id, message="ack" ,message_type=1)
         if "ack" in mes:
             self.waiting=0
         if "join" in mes:
             mes=mes.split(":")
-            print "Setting ID to "+str((int(mes[1])))
+            print ("Setting ID to "+str((int(mes[1]))))
             self.ID=int(mes[1])
         return
 

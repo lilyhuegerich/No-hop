@@ -155,6 +155,7 @@ control ThisIngress(inout headers hdr,
         default_action = drop();
     }
     apply {
+      send_to_controller();
         if (hdr.ipv4.isValid()){
             hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
         }
@@ -178,8 +179,8 @@ control ThisIngress(inout headers hdr,
         else{
             ipv4_lpm.apply();
         }
-    }
-}
+
+}}
 
 
 /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

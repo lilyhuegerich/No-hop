@@ -3,10 +3,12 @@ import argparse
 import grpc
 import os
 import sys
+#import p4runtime_sh.shell as sh
 import json
 from pprint import pprint
 from time import sleep
 from scapy.all import Ether, BitEnumField, BitField, IP, ICMP
+from scapy.all import sendp, send, srp1, sniff
 sys.path.append(
     os.path.join(os.path.dirname(os.path.abspath(__file__)),
                  './utils/'))
@@ -78,8 +80,8 @@ class Switch:
         for entry in self.s.ReadTableEntries():
             #pprint(dir(entry))
             for e in entry.entities:
-                print e.table_entry , i
-                print dir(e)
+                print (e.table_entry , i)
+                print (dir(e))
                 self.s.DeleteTableEntry(e.table_entry)
                 i+=1
         for entry in  self.s.ReadTableEntries():
@@ -92,7 +94,7 @@ class Switch:
         for entry in self.s.ReadTableEntries():
             #pprint(dir(entry))
             for e in entry.entities:
-                print e.table_entry , i
+                print (e.table_entry , i)
                 i+=1
 
     def write_table(self, table_entry):
@@ -102,7 +104,7 @@ class Switch:
 
         try:
             self.s.WriteTableEntry(table_entry)
-            print "Added table entry"# ", table_entry
+            print ("Added table entry")# ", table_entry)
         except Exception as ex:
             print (ex, self.name)
             pass
@@ -142,7 +144,7 @@ class controller():
         for s in switches:
             i = int(self.topo["switches"][s]["mac"].split(":")[-1])+1
             if self.verbose:
-                print "switch ", s, i
+                print ("switch ", s, i)
             self.s_l.append( Switch(i, s, switches))
 
     def host_ids(self, data):
@@ -191,21 +193,36 @@ class controller():
         """
         Start controller
         """
-        print "Waiting for switch updates......"
+        print ("Waiting for switch updates......")
+        iface = 'eth3'
+
+        #print(sniff(prn= lambda x:x.summary()))
+
         while (True):
+            for s in self.s_l:
+                print(s.name)
+                r= s.s.stream_msg_resp
+                for i in r:
+                    print(i)
+                """
+
+                #send_pkt.sendPacket('send_to_cpu')
+
+                if rep is not None:
+                    print('ingress port is',int.from_bytes(rep.packet.metadata[0].value,'big'))
                 sleep(1)
-                for switch in self.s_l:
+                '''for switch in self.s_l:
                     fail, join= switch.check_counters(self.p4info_helper)
                     if not len(fail)==0:
                         self.handle_fail(fail, switch)
                     if not len(join)==0:
-                        self.handle_join(join, switch)
+                        self.handle_join(join, switch)'''"""
 
     def handle_fail(self, fail, switch):
         """
         respond to fail message
         """
-        print "Recieved fail", str(fail), " from switch ", switch.name
+        print ("Recieved fail", str(fail), " from switch ", switch.name)
         for i in fail:
             self.rewrite_tables(i, switch)
 
@@ -218,15 +235,15 @@ class controller():
         for i, h in enumerate(self.h_ids):
             if i==0 and id>self.h_ids[-1] :
                 if self.verbose:
-                    print "responsible for id ", id , " is ", h
+                    print ("responsible for id ", id , " is ", h)
                 return h
             if i==0 and id<=h:
                 if self.verbose:
-                    print "responsible for id ", id , " is ", h
+                    print ("responsible for id ", id , " is ", h)
                 return h
             if self.h_ids[i-1]<id and id<=h:
                 if self.verbose:
-                    print "responsible for id ", id , " is ", h
+                    print ("responsible for id ", id , " is ", h)
                 return h
         else:
             raise ValueError("could not find responsible host in in ids ", self.h_ids, " for the id ", str(id))
@@ -240,12 +257,12 @@ class controller():
             if str(id) in i[0].split("_")[1]:
                 responsible=[i[1], i[2], i[3][1]]
                 if self.verbose:
-                    print "responsible for id ", id , " is switch  ", i[2], " new port : ", i[3][0]
+                    print ("responsible for id ", id , " is switch  ", i[2], " new port : ", i[3][0])
                 return responsible
             if str(id) == i[1].split("_")[1]:
                 responsible=[i[0], i[2], i[3][0]]
                 if self.verbose:
-                    print "responsible for id ", id , " is switch  ", i[2], " new port : ", i[3][1]
+                    print ("responsible for id ", id , " is switch  ", i[2], " new port : ", i[3][1])
                 return responsible
         else:
             raise ValueError("Both hosts to the same TOR switch failing at the same time is not yet implemented for No-hop-forward.") #TODO
@@ -312,7 +329,7 @@ class controller():
             if switch.name==responsible[1]:
                 to_change=switch
                 if self.verbose:
-                    print "to_change: ", to_change.name
+                    print ("to_change: ", to_change.name)
                 new_port=responsible[2]
                 break
         else:
@@ -339,9 +356,9 @@ class controller():
                 #print (e.table_entry.table_id, self.no_hop_table_id)
                 if (str(e.table_entry.table_id)== str(self.no_hop_table_id)):
                     if str(new_entry[0]["action_params"]["port"]) in str(e.table_entry.action.action.params._values).split("\0")[-1]:
-                        print "deleting table entry "#,  e.table_entry)
+                        print ("deleting table entry ")#,  e.table_entry)
                         if self.verbose:
-                            print e.table_entry
+                            print (e.table_entry)
                         to_change.s.DeleteTableEntry(e.table_entry)
                         found=1
                         #TODO test if multiple range mathes fit the host work
@@ -376,7 +393,7 @@ class controller():
         """
         respond to join message, currently only a stub since only in mininet
         """
-        print "Recieved join", str(join), " from switch ", switch.name
+        print ("Recieved join", str(join), " from switch ", switch.name)
         #switch.s.PacketOut() #Ether(dst='00:04:00:00:00:00', type=0x800) / IP(dst=addr, ttl=50, proto=2) / No_hop(message_type=int(message_type), ID=int(ID), gid=gid, counter=0) / message)
 
 if __name__ == "__main__":
