@@ -3,6 +3,26 @@ pkg_info {
 }
 tables {
   preamble {
+    id: 43947418
+    name: "ThisIngress.ipv4_lpm"
+    alias: "ipv4_lpm"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.ipv4.dstAddr"
+    bitwidth: 32
+    match_type: LPM
+  }
+  action_refs {
+    id: 33010196
+  }
+  action_refs {
+    id: 25918552
+  }
+  size: 1024
+}
+tables {
+  preamble {
     id: 41857858
     name: "ThisIngress.no_hop_lookup"
     alias: "no_hop_lookup"
@@ -27,29 +47,6 @@ tables {
   }
   size: 1024
 }
-tables {
-  preamble {
-    id: 43947418
-    name: "ThisIngress.ipv4_lpm"
-    alias: "ipv4_lpm"
-  }
-  match_fields {
-    id: 1
-    name: "hdr.ipv4.dstAddr"
-    bitwidth: 32
-    match_type: LPM
-  }
-  action_refs {
-    id: 33010196
-  }
-  action_refs {
-    id: 22023282
-  }
-  action_refs {
-    id: 21257015
-  }
-  size: 1024
-}
 actions {
   preamble {
     id: 21257015
@@ -60,9 +57,28 @@ actions {
 }
 actions {
   preamble {
-    id: 22023282
-    name: "ThisIngress.drop"
-    alias: "drop"
+    id: 24782359
+    name: "ThisIngress.send_to_controller_simple"
+    alias: "send_to_controller_simple"
+  }
+}
+actions {
+  preamble {
+    id: 25918552
+    name: "ThisIngress.my_drop"
+    alias: "my_drop"
+  }
+}
+actions {
+  preamble {
+    id: 28684586
+    name: "ThisIngress.no_hop_forward"
+    alias: "no_hop_forward"
+  }
+  params {
+    id: 1
+    name: "port"
+    bitwidth: 9
   }
 }
 actions {
@@ -80,25 +96,6 @@ actions {
     id: 2
     name: "port"
     bitwidth: 9
-  }
-}
-actions {
-  preamble {
-    id: 28684586
-    name: "ThisIngress.no_hop_forward"
-    alias: "no_hop_forward"
-  }
-  params {
-    id: 1
-    name: "port"
-    bitwidth: 9
-  }
-}
-actions {
-  preamble {
-    id: 29480383
-    name: "ThisIngress.send_to_controller"
-    alias: "send_to_controller"
   }
 }
 actions {
@@ -132,19 +129,6 @@ counters {
 }
 controller_packet_metadata {
   preamble {
-    id: 81826293
-    name: "packet_in"
-    alias: "packet_in"
-    annotations: "@controller_header(\"packet_in\")"
-  }
-  metadata {
-    id: 1
-    name: "ingress_port"
-    bitwidth: 16
-  }
-}
-controller_packet_metadata {
-  preamble {
     id: 76689799
     name: "packet_out"
     alias: "packet_out"
@@ -152,14 +136,113 @@ controller_packet_metadata {
   }
   metadata {
     id: 1
-    name: "egress_port"
+    name: "opcode"
+    bitwidth: 8
+  }
+  metadata {
+    id: 2
+    name: "reserved1"
+    bitwidth: 8
+  }
+  metadata {
+    id: 3
+    name: "operand0"
+    bitwidth: 32
+  }
+  metadata {
+    id: 4
+    name: "operand1"
+    bitwidth: 32
+  }
+  metadata {
+    id: 5
+    name: "operand2"
+    bitwidth: 32
+  }
+  metadata {
+    id: 6
+    name: "operand3"
+    bitwidth: 32
+  }
+}
+controller_packet_metadata {
+  preamble {
+    id: 81826293
+    name: "packet_in"
+    alias: "packet_in"
+    annotations: "@controller_header(\"packet_in\")"
+  }
+  metadata {
+    id: 1
+    name: "input_port"
     bitwidth: 16
   }
   metadata {
     id: 2
-    name: "mcast_grp"
-    bitwidth: 16
+    name: "punt_reason"
+    bitwidth: 8
+  }
+  metadata {
+    id: 3
+    name: "opcode"
+    bitwidth: 8
+  }
+  metadata {
+    id: 4
+    name: "operand0"
+    bitwidth: 32
+  }
+  metadata {
+    id: 5
+    name: "operand1"
+    bitwidth: 32
+  }
+  metadata {
+    id: 6
+    name: "operand2"
+    bitwidth: 32
+  }
+  metadata {
+    id: 7
+    name: "operand3"
+    bitwidth: 32
   }
 }
 type_info {
+  serializable_enums {
+    key: "ControllerOpcode_t"
+    value {
+      underlying_type {
+        bitwidth: 8
+      }
+      members {
+        name: "NO_OP"
+        value: "\000"
+      }
+      members {
+        name: "SEND_TO_PORT_IN_OPERAND0"
+        value: "\001"
+      }
+    }
+  }
+  serializable_enums {
+    key: "PuntReason_t"
+    value {
+      underlying_type {
+        bitwidth: 8
+      }
+      members {
+        name: "IP_OPTIONS"
+        value: "\001"
+      }
+      members {
+        name: "UNRECOGNIZED_OPCODE"
+        value: "\002"
+      }
+      members {
+        name: "DEST_ADDRESS_FOR_US"
+        value: "\003"
+      }
+    }
+  }
 }

@@ -99,6 +99,7 @@ class P4Switch(Switch):
             self.device_id = P4Switch.device_id
             P4Switch.device_id += 1
         self.nanomsg = "ipc:///tmp/bm-{}-log.ipc".format(self.device_id)
+        self.cpu_port=510
 
     @classmethod
     def setup(cls):

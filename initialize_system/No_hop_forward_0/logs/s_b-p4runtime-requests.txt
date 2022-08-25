@@ -1,10 +1,10 @@
 
-[2022-08-19 15:47:00.837] /p4.v1.P4Runtime/SetForwardingPipelineConfig
+[2022-08-25 16:43:16.648] /p4.v1.P4Runtime/SetForwardingPipelineConfig
 ---
-Message too long (59449 bytes)! Skipping log...
+Message too long (58094 bytes)! Skipping log...
 ---
 
-[2022-08-19 15:47:00.878] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.679] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {
@@ -43,7 +43,7 @@ updates {
 }
 ---
 
-[2022-08-19 15:47:00.893] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.683] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {
@@ -82,7 +82,7 @@ updates {
 }
 ---
 
-[2022-08-19 15:47:00.896] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.686] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {
@@ -121,7 +121,7 @@ updates {
 }
 ---
 
-[2022-08-19 15:47:00.899] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.688] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {
@@ -160,7 +160,7 @@ updates {
 }
 ---
 
-[2022-08-19 15:47:00.902] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.692] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {
@@ -196,7 +196,7 @@ updates {
 }
 ---
 
-[2022-08-19 15:47:00.909] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.698] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {
@@ -232,7 +232,7 @@ updates {
 }
 ---
 
-[2022-08-19 15:47:00.913] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.701] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {
@@ -268,7 +268,7 @@ updates {
 }
 ---
 
-[2022-08-19 15:47:00.916] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.706] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {
@@ -304,7 +304,7 @@ updates {
 }
 ---
 
-[2022-08-19 15:47:00.922] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.710] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {
@@ -340,7 +340,7 @@ updates {
 }
 ---
 
-[2022-08-19 15:47:00.925] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.723] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {
@@ -376,7 +376,7 @@ updates {
 }
 ---
 
-[2022-08-19 15:47:00.929] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.727] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {
@@ -412,7 +412,7 @@ updates {
 }
 ---
 
-[2022-08-19 15:47:00.934] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.735] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {
@@ -448,7 +448,7 @@ updates {
 }
 ---
 
-[2022-08-19 15:47:00.938] /p4.v1.P4Runtime/Write
+[2022-08-25 16:43:16.740] /p4.v1.P4Runtime/Write
 ---
 device_id: 1
 election_id {

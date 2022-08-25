@@ -20,6 +20,7 @@ import grpc
 from p4.v1 import p4runtime_pb2
 from p4.v1 import p4runtime_pb2_grpc
 from p4.tmp import p4config_pb2
+import time
 
 MSG_LOG_MAX_LEN = 1024
 
@@ -42,8 +43,11 @@ class SwitchConnection(object):
         if proto_dump_file is not None:
             interceptor = GrpcRequestLogger(proto_dump_file)
             self.channel = grpc.intercept_channel(self.channel, interceptor)
+        # create P4RuntimeStub instance
         self.client_stub = p4runtime_pb2_grpc.P4RuntimeStub(self.channel)
+        # create requests queue
         self.requests_stream = IterableQueue()
+        # get response via requests queue
         self.stream_msg_resp = self.client_stub.StreamChannel(iter(self.requests_stream))
         self.proto_dump_file = proto_dump_file
         connections.append(self)
@@ -56,20 +60,41 @@ class SwitchConnection(object):
         self.requests_stream.close()
         self.stream_msg_resp.cancel()
 
+    def packet_out_msg(self,pl,meta):
+        return p4runtime_pb2.PacketOut(payload=pl,metadata=meta)
+
+    def PacketOut(self,pl_arr,meta_arr):
+        request = p4runtime_pb2.StreamMessageRequest()
+
+        # Create request list via self.packet_out_msg
+        # print (debug)
+
+        # using self.requests_stream.put() to append request
+
+        # Get response from self.stream_msg_resp
+        # print out packet_out ()
+
+        for response in self.stream_msg_resp:
+            if response.WhichOneof("update") is "packet":
+                print("=============================================================")
+                print("Received packet-in payload %s" % (response.packet.payload))
+                print("Received packet-in metadata: ")
+                for metadata in response.packet.metadata:
+                    # uint32
+                    print("\tmetadata id: %s" %s (metadata.metadata_id))
+                    # bytes
+                    print("\tmetadata value: %s" %s (metadata.value))
+                print("=============================================================")
+
     def MasterArbitrationUpdate(self, dry_run=False, **kwargs):
         request = p4runtime_pb2.StreamMessageRequest()
         request.arbitration.device_id = self.device_id
         request.arbitration.election_id.high = 0
         request.arbitration.election_id.low = 1
-
-        if dry_run:
-            print("P4Runtime MasterArbitrationUpdate: ", request)
-        else:
-            self.requests_stream.put(request)
-            for item in self.stream_msg_resp:
-                return item # just one
+        self.requests_stream.put(request)
 
     def SetForwardingPipelineConfig(self, p4info, dry_run=False, **kwargs):
+        print (kwargs)
         device_config = self.buildDeviceConfig(**kwargs)
         request = p4runtime_pb2.SetForwardingPipelineConfigRequest()
         request.election_id.low = 1
@@ -80,25 +105,41 @@ class SwitchConnection(object):
         config.p4_device_config = device_config.SerializeToString()
 
         request.action = p4runtime_pb2.SetForwardingPipelineConfigRequest.VERIFY_AND_COMMIT
-        if dry_run:
-            print("P4Runtime SetForwardingPipelineConfig:", request)
-        else:
-            self.client_stub.SetForwardingPipelineConfig(request)
+        self.client_stub.SetForwardingPipelineConfig(request)
 
     def WriteTableEntry(self, table_entry, dry_run=False):
         request = p4runtime_pb2.WriteRequest()
         request.device_id = self.device_id
         request.election_id.low = 1
         update = request.updates.add()
-        if table_entry.is_default_action:
-            update.type = p4runtime_pb2.Update.MODIFY
-        else:
-            update.type = p4runtime_pb2.Update.INSERT
+        update.type = p4runtime_pb2.Update.INSERT
         update.entity.table_entry.CopyFrom(table_entry)
-        if dry_run:
-            print("P4Runtime Write:", request)
-        else:
-            self.client_stub.Write(request)
+
+        self.client_stub.Write(request)
+
+    # Modify
+    def ModifyTableEntry(self, table_entry, dry_run=False):
+        request = p4runtime_pb2.WriteRequest()
+        request.device_id = self.device_id
+        request.election_id.low = 1
+        update = request.updates.add()
+        # Assign Modify Type for it
+        update.type = p4runtime_pb2.Update.MODIFY
+        update.entity.table_entry.CopyFrom(table_entry)
+
+        self.client_stub.Write(request)
+
+    # Delete
+    def DeleteTableEntry(self, table_entry, dry_run=False):
+        request = p4runtime_pb2.WriteRequest()
+        request.device_id = self.device_id
+        request.election_id.low = 1
+        update = request.updates.add()
+        # Assign DELETE Type for it
+        update.type = p4runtime_pb2.Update.DELETE
+        update.entity.table_entry.CopyFrom(table_entry)
+
+        self.client_stub.Write(request)
 
     def ReadTableEntries(self, table_id=None, dry_run=False):
         request = p4runtime_pb2.ReadRequest()
@@ -109,11 +150,9 @@ class SwitchConnection(object):
             table_entry.table_id = table_id
         else:
             table_entry.table_id = 0
-        if dry_run:
-            print("P4Runtime Read:", request)
-        else:
-            for response in self.client_stub.Read(request):
-                yield response
+
+        for response in self.client_stub.Read(request):
+            yield response
 
     def ReadCounters(self, counter_id=None, index=None, dry_run=False):
         request = p4runtime_pb2.ReadRequest()
@@ -126,24 +165,91 @@ class SwitchConnection(object):
             counter_entry.counter_id = 0
         if index is not None:
             counter_entry.index.index = index
-        if dry_run:
-            print("P4Runtime Read:", request)
+
+
+        for response in self.client_stub.Read(request):
+            yield response
+
+    def ReadDirectCounter(self, table_id=False, dry_run=False):
+        request = p4runtime_pb2.ReadRequest()
+        request.device_id = self.device_id
+        entity = request.entities.add()
+        direct_counter_entry = entity.direct_counter_entry
+        # assign
+        if table_id is not None:
+            direct_counter_entry.table_entry.table_id = table_id
         else:
-            for response in self.client_stub.Read(request):
-                yield response
+            direct_counter_entry.table_entry.table_id = 0
 
+        for response in self.client_stub.Read(request):
+            yield response
 
-    def WritePREEntry(self, pre_entry, dry_run=False):
+    # Read Register
+    def ReadRegister(self, register_id=None, index=None, dry_run=False):
+        request = p4runtime_pb2.ReadRequest()
+        request.device_id = self.device_id
+        entity = request.entities.add()
+        register_entry = entity.register_entry
+
+        if register_id is not None:
+            register_entry.register_id = register_id
+        else:
+            register_entry.register_id = 0
+        if index is not None:
+            register_entry.index.index = index
+
+        for response in self.client_stub.Read(request):
+            yield response
+
+    # Write PRE (multicast group)
+    def WritePRE(self, mc_group, dry_run=False):
         request = p4runtime_pb2.WriteRequest()
         request.device_id = self.device_id
         request.election_id.low = 1
         update = request.updates.add()
         update.type = p4runtime_pb2.Update.INSERT
-        update.entity.packet_replication_engine_entry.CopyFrom(pre_entry)
-        if dry_run:
-            print("P4Runtime Write:", request)
-        else:
-            self.client_stub.Write(request)
+        update.entity.packet_replication_engine_entry.multicast_group_entry.CopyFrom(mc_group)
+
+
+        self.client_stub.Write(request)
+
+    def PacketOut(self, packet, dry_run=False, **kwargs):
+        request = p4runtime_pb2.StreamMessageRequest()
+        request.packet.CopyFrom(packet)
+        self.requests_stream.put(request)
+        for item in self.stream_msg_resp:
+            return item
+
+    def PacketIn(self, dry_run=False, **kwargs):
+        request = p4runtime_pb2.StreamMessageRequest()
+        #print (request)
+        for item in self.stream_msg_resp:
+
+            return item
+
+    # Digest
+    def WriteDigestEntry(self, digest_entry, dry_run=False):
+        request = p4runtime_pb2.WriteRequest()
+        request.device_id = self.device_id
+        request.election_id.low = 1
+        update = request.updates.add()
+        update.type = p4runtime_pb2.Update.INSERT
+        update.entity.digest_entry.CopyFrom(digest_entry)
+
+        self.client_stub.Write(request)
+
+    def DigestListAck(self, digest_ack, dry_run=False, **kwargs):
+        request = p4runtime_pb2.StreamMessageRequest()
+        request.digest_ack.CopyFrom(digest_ack)
+        self.requests_stream.put(request)
+        for item in self.stream_msg_resp:
+            return item
+
+    def DigestList(self, dry_run=False, **kwargs):
+        request = p4runtime_pb2.StreamMessageRequest()
+        self.requests_stream.put(request)
+        for item in self.stream_msg_resp:
+            return item
 
 class GrpcRequestLogger(grpc.UnaryUnaryClientInterceptor,
                         grpc.UnaryStreamClientInterceptor):

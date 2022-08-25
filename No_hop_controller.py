@@ -20,7 +20,13 @@ import p4runtime_lib.bmv2
 from p4runtime_lib.switch import ShutdownAllSwitchConnections
 import p4runtime_lib.helper
 from No_hop_host import No_hop
+
+import threading
+
 max_id=32
+
+
+MODE="PASSIVE" #"ACTIVE" checks fail and join regesters periodically, "PASSIVE" waits for fail or join messages from switches
 
 class Switch:
     """
@@ -38,6 +44,8 @@ class Switch:
             self.runtime_json=json.load(f)
 
         self.s.MasterArbitrationUpdate(role=3, election_id = 1)
+        self.listened_to_by_thread=None #Thread that the controlller is listening on
+        self.controller_listening=False
 
     def check_counters(self, p4info_helper):
         """
@@ -110,6 +118,26 @@ class Switch:
             pass
         return
 
+    def listened_to(self):
+        print("Controller listening", self.name)
+        while self.controller_listening:
+            try:
+                r=self.s.PacketIn(timoeut=1)
+                packet=Ether(r.packet.payload)
+                if "IP" in packet:
+                    if packet["IP"].proto==2:
+                        pkt= packet["No_hop"]
+                        if pkt.message_type==2:
+                            self.controller_listening.handle_fail([pkt.ID], self)
+                        elif pkt.message_type==3:
+                            self.controller_listening.handle_join([pkt.ID], self)
+                        
+            except:
+                break
+
+        return
+
+
 class controller():
     """
     Controller class
@@ -135,8 +163,14 @@ class controller():
         with open(str(switch_data["p4info"])) as p4_info:
             p4_info_data=p4_info.readlines()
 
-        self.no_hop_table_id=p4_info_data[5].split(":")[-1][:-1].strip()
-        assert "no_hop" in str(p4_info_data[6])
+        for i, entry in enumerate(p4_info_data):
+            if "ThisIngress.no_hop_lookup" in entry:
+                self.no_hop_table_id=p4_info_data[i-1].split(":")[-1][:-1].strip()
+                break
+        else:
+            raise ValueError("Could not find Table id of No_hop-lookup.")
+        
+        self.running=True
 
         self.s_l=[]
         self.topo=data
@@ -177,8 +211,8 @@ class controller():
                     con_switch= str(link[(link.index(host)+1)%2]).split("-")[0]
                     port_a=int(str(link[(link.index(host)+1)%2]).split("-p")[1])
                     break
-            else:
-                raise ValueError ("Cannot find host ", str(host), " in ", str(data["links"]))
+            #else:
+            #   print("raise ValueError ("Cannot find host ", str(host), " in ", str(data["links"]))")
             for link in data["links"]:
                 if (con_switch in link[0] and "h"==link[1][0] and not link[1]==host):
                     port_b=int(str(link[0]).split("-p")[1])
@@ -188,36 +222,54 @@ class controller():
                 raise ValueError("Could not find pair for ", str(host), " in ", str(data["links"]), "h_pairs ", h_pairs)
         return h_pairs
 
+    def listen(self, s):
+        s.controller_listening=self
+        s.listened_to_by_thread=threading.Thread(target=s.listened_to)
+        s.listened_to_by_thread.start()
+        
 
+    def end_listening(self, s):
+        s.controller_listening=False
+        s.listened_to_by_thread.join()
+    
     def run(self):
         """
         Start controller
         """
+        import time
         print ("Waiting for switch updates......")
         iface = 'eth3'
 
         #print(sniff(prn= lambda x:x.summary()))
 
-        while (True):
-            for s in self.s_l:
-                print(s.name)
-                r= s.s.stream_msg_resp
-                for i in r:
-                    print(i)
-                """
+        
+        try:
+            
+            if MODE=="ACTIVE":
+                while (True):
+                    for switch in self.s_l:
+                        fail, join= switch.check_counters(self.p4info_helper)
+                        if not len(fail)==0:
+                            self.handle_fail(fail, switch)
+                        if not len(join)==0:
+                            self.handle_join(join, switch)
 
-                #send_pkt.sendPacket('send_to_cpu')
+            elif MODE=="PASSIVE":
+                for s in self.s_l:
+                    self.listen(s)
+                    
+            else:
+                raise ValueError("mode not known"+ str(MODE))
 
-                if rep is not None:
-                    print('ingress port is',int.from_bytes(rep.packet.metadata[0].value,'big'))
-                sleep(1)
-                '''for switch in self.s_l:
-                    fail, join= switch.check_counters(self.p4info_helper)
-                    if not len(fail)==0:
-                        self.handle_fail(fail, switch)
-                    if not len(join)==0:
-                        self.handle_join(join, switch)'''"""
+        except KeyboardInterrupt:
+            
+            if MODE=="PASSIVE":
+                for s in self.s_l:
+                    self.end_listening(s)
+    
+            
 
+       
     def handle_fail(self, fail, switch):
         """
         respond to fail message
@@ -352,19 +404,27 @@ class controller():
         found=0
         for entry in to_change.s.ReadTableEntries():
             #pprint(dir(entry))
+            print("here")
             for e in entry.entities:
+                print("here2")
                 #print (e.table_entry.table_id, self.no_hop_table_id)
                 if (str(e.table_entry.table_id)== str(self.no_hop_table_id)):
+                    print("table")
                     if str(new_entry[0]["action_params"]["port"]) in str(e.table_entry.action.action.params._values).split("\0")[-1]:
                         print ("deleting table entry ")#,  e.table_entry)
                         if self.verbose:
                             print (e.table_entry)
+                        print("here2.5")
+
                         to_change.s.DeleteTableEntry(e.table_entry)
                         found=1
+                        print("here3")
                         #TODO test if multiple range mathes fit the host work
+        print("here4")
         if found==0: #TODO uncomment
             raise ValueError("Could not find entry to delete")
         self.write_new_forward_tables(new_entry, new_port, to_change)
+        print("finished")
 
     def write_new_forward_tables(self, entries, new_port, to_change):
         """

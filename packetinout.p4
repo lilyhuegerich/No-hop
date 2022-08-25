@@ -46,7 +46,8 @@ header dht_t {
     bit<6> group_id;               /*tentative implementation of group defined DHT subdivision */
     bit<10>  counter;              /* please note that counter is not an actual field just for testing */
 }
-
+const bit<6> first_valid_id= 0;
+const bit<6> last_valid_id=32;
 
 
 typedef bit<16> PortIdToController_t;
@@ -142,9 +143,9 @@ control ingressImpl(inout headers_t hdr,
         hdr.packet_in.punt_reason = punt_reason;
         hdr.packet_in.opcode = ControllerOpcode_t.NO_OP;
         hdr.packet_in.operand0 = 1;
-        hdr.packet_in.operand1 = 0;
-        hdr.packet_in.operand2 = 0;
-        hdr.packet_in.operand3 = 0;
+        hdr.packet_in.operand1 = 2;
+        hdr.packet_in.operand2 = 3;
+        hdr.packet_in.operand3 = 4;
     }
     action send_to_controller_with_details(
         PuntReason_t       punt_reason,
@@ -201,6 +202,17 @@ control ingressImpl(inout headers_t hdr,
     counter(32, CounterType.packets) fail;
     counter(32, CounterType.packets) join;
 
+    action first_contact(){
+
+       hash (hdr.dht.id,
+               HashAlgorithm.crc32,
+               first_valid_id,
+               { hdr.ethernet.dstAddr,
+                hdr.ethernet.srcAddr,
+                  hdr.ethernet.etherType},
+                last_valid_id);
+       hdr.dht.message_type=1;
+    }
 
     table no_hop_lookup {
         key={
@@ -217,8 +229,34 @@ control ingressImpl(inout headers_t hdr,
 
     apply {
 
-                send_to_controller_simple(PuntReason_t.IP_OPTIONS);
 
+    if (hdr.ipv4.isValid()){
+          hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
+      }
+      if (hdr.dht.isValid()){
+          if (hdr.dht.message_type==0){
+              first_contact();
+          }
+      if (hdr.dht.message_type==1){
+          no_hop_lookup.apply();
+      }
+      if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
+           if (hdr.dht.message_type==2){
+               fail.count((bit<32>)  hdr.dht.id);
+           }
+           if (hdr.dht.message_type==3){
+               join.count((bit<32>)  hdr.dht.id);
+           }
+              send_to_controller_simple(PuntReason_t.IP_OPTIONS);
+
+          }
+    }
+      else{
+
+          //ipv4_lpm.apply();
+          send_to_controller_simple(PuntReason_t.IP_OPTIONS);
+
+          }send_to_controller_simple(PuntReason_t.IP_OPTIONS);
     }
 }
 

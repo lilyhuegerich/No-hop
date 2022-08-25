@@ -76,6 +76,7 @@ class P4RuntimeSwitch(P4Switch):
         self.pcap_dump = pcap_dump
         self.enable_debugger = enable_debugger
         self.log_console = log_console
+        self.cpu_port=510
         if log_file is not None:
             self.log_file = log_file
         else:
@@ -98,6 +99,7 @@ class P4RuntimeSwitch(P4Switch):
             sleep(0.5)
 
     def start(self, controllers):
+        from time import sleep
         info("Starting P4 switch {}.\n".format(self.name))
         args = [self.sw_path]
         for port, intf in list(self.intfs.items()):
@@ -105,31 +107,31 @@ class P4RuntimeSwitch(P4Switch):
                 args.extend(['-i', str(port) + "@" + intf.name])
         if self.pcap_dump:
             args.append("--pcap %s" % self.pcap_dump)
-        if self.nanomsg:
-            args.extend(['--nanolog', self.nanomsg])
+        #if self.nanomsg:
+        args.extend(['--nanolog', self.nanomsg])
         args.extend(['--device-id', str(self.device_id)])
         P4Switch.device_id += 1
         if self.json_path:
             args.append(self.json_path)
         else:
             args.append("--no-p4")
-        if self.enable_debugger:
-            args.append("--debugger")
+        #if self.enable_debugger:
+        #args.append("--debugger")
         if self.log_console:
             args.append("--log-console")
-        if self.thrift_port:
             args.append('--thrift-port ' + str(self.thrift_port))
         if self.grpc_port:
             args.append("-- --grpc-server-addr 0.0.0.0:" + str(self.grpc_port))
-        args.append("-- --cpu_port 510")
+        #args.append("--dump-packet-data 10000")
+        args.append("--cpu-port 510")
         cmd = ' '.join(args)
         info(cmd + "\n")
-
-
+        print(" ".join(args))
         pid = None
         with tempfile.NamedTemporaryFile() as f:
             self.cmd(cmd + ' >' + self.log_file + ' 2>&1 & echo $! >> ' + f.name)
             pid = int(f.read())
+        #sleep(2)
         debug("P4 switch {} PID is {}.\n".format(self.name, pid))
         if not self.check_switch_started(pid):
             error("P4 switch {} did not start correctly.\n".format(self.name))

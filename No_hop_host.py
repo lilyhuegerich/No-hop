@@ -178,7 +178,7 @@ class No_hop_host:
             self.tmp_id=ID
 
         self.Recieved["No_hop"].append({"time": now, "ID":ID, "message":mes})
-        self.write_logs()
+
         if "S" in mes:
             print ("Sendng ack to "+ str((ID-1)%max_id))
             send_No_hop(ID=(ID-1)%max_id, message="ack" ,message_type=1)

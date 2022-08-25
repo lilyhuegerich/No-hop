@@ -1,133 +1,228 @@
+/*
+Copyright 2021 Intel Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 #include <core.p4>
 #include <v1model.p4>
-#include "include/headers.p4"
-#include "include/packetio.p4"
-
-const bit<16> TYPE_DHT = 0x1212;
-const bit<16> TYPE_IPV4 = 0x800;
 
 
+header ethernet_t {
+    bit<48> dstAddr;
+    bit<48> srcAddr;
+    bit<16> etherType;
+}
+
+header ipv4_t {
+    bit<4>  version;
+    bit<4>  ihl;
+    bit<8>  diffserv;
+    bit<16> totalLen;
+    bit<16> identification;
+    bit<3>  flags;
+    bit<13> fragOffset;
+    bit<8>  ttl;
+    bit<8>  protocol;
+    bit<16> hdrChecksum;
+    bit<32> srcAddr;
+    bit<32> dstAddr;
+}
+
+#define CPU_PORT 510
+header dht_t {
+    bit<2>  message_type;       /* message type */
+    bit<6> id;                           /* packet id*/
+    bit<6> group_id;               /*tentative implementation of group defined DHT subdivision */
+    bit<10>  counter;              /* please note that counter is not an actual field just for testing */
+}
+const bit<6> first_valid_id= 0;
+const bit<6> last_valid_id=32;
 
 
+typedef bit<16> PortIdToController_t;
 
-/***** Below 6 lines taken from P4v16 language specification *****/
-/* special output port values for outgoing packet */
+enum bit<8> ControllerOpcode_t {
+    NO_OP                    = 0,
+    SEND_TO_PORT_IN_OPERAND0 = 1
+}
 
-typedef bit<9> PortId;
-const PortId DROP_PORT = 0xF;
-const PortId RECIRCULATE_OUT_PORT = 0xD;
-/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-   -:-:-:                           H E A D E R                             -:-:-:
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+enum bit<8> PuntReason_t {
+    IP_OPTIONS          = 1,
+    UNRECOGNIZED_OPCODE = 2,
+    DEST_ADDRESS_FOR_US = 3
+}
 
+@controller_header("packet_out")
+header packet_out_header_t {
+    ControllerOpcode_t   opcode;
+    bit<8>  reserved1;
+    bit<32> operand0;
+    bit<32> operand1;
+    bit<32> operand2;
+    bit<32> operand3;
+}
 
+@controller_header("packet_in")
+header packet_in_header_t {
+    PortIdToController_t input_port;
+    PuntReason_t         punt_reason;
+    ControllerOpcode_t   opcode;
+    bit<32> operand0;
+    bit<32> operand1;
+    bit<32> operand2;
+    bit<32> operand3;
+}
 
-/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-   -:-:-:                           P A R S E R                          -:-:-:
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+struct metadata_t {
+}
+
+struct headers_t {
+    packet_in_header_t  packet_in;
+    packet_out_header_t packet_out;
+    ethernet_t ethernet;
+    ipv4_t     ipv4;
+    dht_t dht;
+}
 
 parser ThisParser(packet_in packet,
-                out headers hdr,
-                inout metadata meta,
-                inout standard_metadata_t standard_metadata) {
+                  out headers_t hdr,
+                  inout metadata_t meta,
+                  inout standard_metadata_t standard_metadata)
+{
+    const bit<16> ETHERTYPE_IPV4 = 16w0x0800;
 
     state start {
-        transition select(standard_metadata.ingress_port){
-            CPU_PORT: parse_packet_out;
+        transition check_for_cpu_port;
+    }
+    state check_for_cpu_port {
+        transition select (standard_metadata.ingress_port) {
+            CPU_PORT: parse_controller_packet_out_header;
             default: parse_ethernet;
         }
     }
-
-    state parse_packet_out {
+    state parse_controller_packet_out_header {
         packet.extract(hdr.packet_out);
-        transition parse_ethernet;
+        transition accept;
     }
-
     state parse_ethernet {
         packet.extract(hdr.ethernet);
         transition select(hdr.ethernet.etherType) {
-            TYPE_IPV4: parse_ipv4;
+            ETHERTYPE_IPV4: parse_ipv4;
             default: parse_ipv4;
         }
     }
-
-    state parse_dht {
-        packet.extract(hdr.dht);
-        transition accept;
-    }
-
     state parse_ipv4 {
         packet.extract(hdr.ipv4);
         transition select (hdr.ipv4.protocol){
             2: parse_dht;
             default: accept;
         }
-
-	}
+    }
+    state parse_dht {
+        packet.extract(hdr.dht);
+        transition accept;
+    }
 }
 
-
-/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-   -:-:-:                 V E R I F Y _ C H E C K S U M                -:-:-:
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-
-control ThisChecksum( inout headers hdr, inout metadata meta) {
-     apply {  }
-}
-
-
-/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-   -:-:-:                         I N G R E S S                        -:-:-:
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-
-control ThisIngress(inout headers hdr,
-                  inout metadata meta,
-                  inout standard_metadata_t standard_metadata) {
-
-    counter(32, CounterType.packets) fail;
-    counter(32, CounterType.packets) join;
-
-    action drop() {
+control ThisIngress(inout headers_t hdr,
+                    inout metadata_t meta,
+                    inout standard_metadata_t standard_metadata)
+{
+    action send_to_controller_simple(PuntReason_t punt_reason) {
+        standard_metadata.egress_spec = CPU_PORT;
+        hdr.packet_in.setValid();
+        hdr.packet_in.input_port = (PortIdToController_t) standard_metadata.ingress_port;
+        hdr.packet_in.punt_reason = punt_reason;
+        hdr.packet_in.opcode = ControllerOpcode_t.NO_OP;
+        hdr.packet_in.operand0 = 1;
+        hdr.packet_in.operand1 = 2;
+        hdr.packet_in.operand2 = 3;
+        hdr.packet_in.operand3 = 4;
+    }
+    action send_to_controller_with_details(
+        PuntReason_t       punt_reason,
+        ControllerOpcode_t opcode,
+        bit<32> operand0,
+        bit<32> operand1,
+        bit<32> operand2,
+        bit<32> operand3)
+    {
+        standard_metadata.egress_spec = CPU_PORT;
+        hdr.packet_in.setValid();
+        hdr.packet_in.input_port = (PortIdToController_t) standard_metadata.ingress_port;
+        hdr.packet_in.punt_reason = punt_reason;
+        hdr.packet_in.opcode = opcode;
+        hdr.packet_in.operand0 = operand0;
+        hdr.packet_in.operand1 = operand1;
+        hdr.packet_in.operand2 = operand2;
+        hdr.packet_in.operand3 = operand3;
+    }
+    action my_drop() {
         mark_to_drop(standard_metadata);
     }
-
+    action no_hop_forward(bit<9> port) {
+        standard_metadata.egress_spec = port;
+        hdr.ipv4.ttl = hdr.ipv4.ttl |-| 1;
+    }
+    action punt_to_controller() {
+        send_to_controller_simple(PuntReason_t.DEST_ADDRESS_FOR_US);
+    }
     action ipv4_forward(bit<48>  dstAddr, bit<9> port) {
         hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
         hdr.ethernet.dstAddr = dstAddr;
         standard_metadata.egress_spec = port;
     }
 
-    action no_hop_forward(bit<9> port){
-        standard_metadata.egress_spec = port;
-
+    table ipv4_lpm {
+        key = {
+            hdr.ipv4.dstAddr: lpm;
+        }
+        actions = {
+            ipv4_forward;
+            my_drop;
+        }
+        default_action = my_drop;
     }
 
-    action send_to_controller(){
-          standard_metadata.egress_spec = CPU_PORT;
-          hdr.packet_in.setValid();
-          hdr.packet_in.ingress_port = (bit<16>)standard_metadata.ingress_port;
-      }
-     action first_contact(){
+    table dbgPacketOutHdr {
+        key = {
+            hdr.packet_out.opcode : exact;
+            hdr.packet_out.reserved1 : exact;
+            hdr.packet_out.operand0 : exact;
+            hdr.packet_out.operand1 : exact;
+            hdr.packet_out.operand2 : exact;
+            hdr.packet_out.operand3 : exact;
+        }
+        actions = { NoAction; }
+        const default_action = NoAction;
+    }
+    counter(32, CounterType.packets) fail;
+    counter(32, CounterType.packets) join;
 
-        hash (hdr.dht.id,
-                HashAlgorithm.crc32,
-                first_valid_id,
-                { hdr.ethernet.dstAddr,
-	               hdr.ethernet.srcAddr,
-                   hdr.ethernet.etherType},
-                 last_valid_id);
-        hdr.dht.message_type=1;
-     }
+    action first_contact(){
+
+       hash (hdr.dht.id,
+               HashAlgorithm.crc32,
+               first_valid_id,
+               { hdr.ethernet.dstAddr,
+                hdr.ethernet.srcAddr,
+                  hdr.ethernet.etherType},
+                last_valid_id);
+       hdr.dht.message_type=1;
+    }
+
+
 
     table no_hop_lookup {
         key={
@@ -139,97 +234,57 @@ control ThisIngress(inout headers hdr,
             NoAction;
         }
         size = 1024;
-        default_action = NoAction();
+        default_action = NoAction;
     }
 
-    table ipv4_lpm {
-        key = {
-            hdr.ipv4.dstAddr: lpm;
-        }
-        actions = {
-            ipv4_forward;
-            drop;
-            NoAction;
-        }
-        size = 1024;
-        default_action = drop();
-    }
     apply {
-      send_to_controller();
-        if (hdr.ipv4.isValid()){
-            hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
-        }
-        if (hdr.dht.isValid()){
-            if (hdr.dht.message_type==0){
-                first_contact();
-            }
-        if (hdr.dht.message_type==1){
-            no_hop_lookup.apply();
-        }
-        if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
-             if (hdr.dht.message_type==2){
-                 fail.count((bit<32>)  hdr.dht.id);
-             }
-             if (hdr.dht.message_type==3){
-                 join.count((bit<32>)  hdr.dht.id);
-             }
-            send_to_controller();
-            }
-	    }
-        else{
-            ipv4_lpm.apply();
-        }
-
-}}
 
 
-/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-   -:-:-:                           E G R E S S                          -:-:-:
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    if (hdr.ipv4.isValid()){
+        ipv4_lpm.apply();
+
+      }
+      if (hdr.dht.isValid()){
+          if (hdr.dht.message_type==0){
+              first_contact();
+              send_to_controller_simple(PuntReason_t.IP_OPTIONS);
+
+          }
+      if (hdr.dht.message_type==1){
+          no_hop_lookup.apply();
+      }
+      if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
+           if (hdr.dht.message_type==2){
+               fail.count((bit<32>)  hdr.dht.id);
+           }
+           if (hdr.dht.message_type==3){
+               join.count((bit<32>)  hdr.dht.id);
+           }
+              send_to_controller_simple(PuntReason_t.IP_OPTIONS);
+
+          }
+    }
+      else{
 
 
-control ThisEgress(inout headers hdr,
-                inout metadata meta,
-                    inout standard_metadata_t standard_metadata) {
-	apply {		}
-}
+         
 
-
-/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-   -:-:-:                 C O M P U T E _ C H E C K S U M                -:-:-:
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-control ThisChecksumCompute(inout headers  hdr, inout metadata meta) {
-     apply {
-	update_checksum(
-	    hdr.ipv4.isValid(),
-            { hdr.ipv4.version,
-	      hdr.ipv4.ihl,
-              hdr.ipv4.diffserv,
-              hdr.ipv4.totalLen,
-              hdr.ipv4.identification,
-              hdr.ipv4.flags,
-              hdr.ipv4.fragOffset,
-              hdr.ipv4.ttl,
-              hdr.ipv4.protocol,
-              hdr.ipv4.srcAddr,
-              hdr.ipv4.dstAddr },
-            hdr.ipv4.hdrChecksum,
-            HashAlgorithm.csum16);
+          } 
+         
     }
 }
-/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-   -:-:-:                         D E P A R S E R                        -:-:-:
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+control ThisEgress(inout headers_t hdr,
+                   inout metadata_t meta,
+                   inout standard_metadata_t standard_metadata)
+{
+    apply {
+    }
+}
 
-control ThisDeparser(packet_out packet, in headers hdr) {
+control ThisDeparser(packet_out packet,
+                     in headers_t hdr)
+{
     apply {
         packet.emit(hdr.packet_in);
         packet.emit(hdr.ethernet);
@@ -238,18 +293,45 @@ control ThisDeparser(packet_out packet, in headers hdr) {
     }
 }
 
-/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-   -:-:-:                 V 1   M O D E L   S W I T C H                -:-:-:
--:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+control verifyChecksum(inout headers_t hdr, inout metadata_t meta) {
+    apply {
+        verify_checksum(hdr.ipv4.isValid() && hdr.ipv4.ihl == 5,
+            { hdr.ipv4.version,
+                hdr.ipv4.ihl,
+                hdr.ipv4.diffserv,
+                hdr.ipv4.totalLen,
+                hdr.ipv4.identification,
+                hdr.ipv4.flags,
+                hdr.ipv4.fragOffset,
+                hdr.ipv4.ttl,
+                hdr.ipv4.protocol,
+                hdr.ipv4.srcAddr,
+                hdr.ipv4.dstAddr },
+            hdr.ipv4.hdrChecksum, HashAlgorithm.csum16);
+    }
+}
 
+control updateChecksum(inout headers_t hdr, inout metadata_t meta) {
+    apply {
+        update_checksum(hdr.ipv4.isValid() && hdr.ipv4.ihl == 5,
+            { hdr.ipv4.version,
+                hdr.ipv4.ihl,
+                hdr.ipv4.diffserv,
+                hdr.ipv4.totalLen,
+                hdr.ipv4.identification,
+                hdr.ipv4.flags,
+                hdr.ipv4.fragOffset,
+                hdr.ipv4.ttl,
+                hdr.ipv4.protocol,
+                hdr.ipv4.srcAddr,
+                hdr.ipv4.dstAddr },
+            hdr.ipv4.hdrChecksum, HashAlgorithm.csum16);
+    }
+}
 
-V1Switch(
-ThisParser(),
-ThisChecksum(),
-ThisIngress(),
-ThisEgress(),
-ThisChecksumCompute(),
-ThisDeparser()
-)main;
+V1Switch(ThisParser(),
+         verifyChecksum(),
+         ThisIngress(),
+         ThisEgress(),
+         updateChecksum(),
+         ThisDeparser()) main;
