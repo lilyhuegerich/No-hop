@@ -119,22 +119,23 @@ class Switch:
         return
 
     def listened_to(self):
+        """
+        Controller listens in on channel for fail or join messages from this switch.
+        """
         print("Controller listening", self.name)
         while self.controller_listening:
-            try:
-                r=self.s.PacketIn(timoeut=1)
-                packet=Ether(r.packet.payload)
-                if "IP" in packet:
-                    if packet["IP"].proto==2:
-                        pkt= packet["No_hop"]
-                        if pkt.message_type==2:
-                            self.controller_listening.handle_fail([pkt.ID], self)
-                        elif pkt.message_type==3:
-                            self.controller_listening.handle_join([pkt.ID], self)
+            
+            r=self.s.PacketIn(timoeut=1)
+            packet=Ether(r.packet.payload)
+            if "IP" in packet:
+                if packet["IP"].proto==2:
+                    pkt= packet["No_hop"]
+                    if pkt.message_type==2:
+                        self.controller_listening.handle_fail([pkt.ID], self)
+                    elif pkt.message_type==3:
+                        self.controller_listening.handle_join([pkt.ID], self)
                         
-            except:
-                break
-
+            
         return
 
 
@@ -223,12 +224,18 @@ class controller():
         return h_pairs
 
     def listen(self, s):
+        """
+        Start lisetening to switch s.
+        """
         s.controller_listening=self
         s.listened_to_by_thread=threading.Thread(target=s.listened_to)
         s.listened_to_by_thread.start()
-        
+       
 
     def end_listening(self, s):
+        """
+        End listening to switches and terminate listening thread.
+        """
         s.controller_listening=False
         s.listened_to_by_thread.join()
     
@@ -236,13 +243,7 @@ class controller():
         """
         Start controller
         """
-        import time
-        print ("Waiting for switch updates......")
-        iface = 'eth3'
-
-        #print(sniff(prn= lambda x:x.summary()))
-
-        
+        print ("Waiting for switch updates......")  
         try:
             
             if MODE=="ACTIVE":
@@ -404,22 +405,21 @@ class controller():
         found=0
         for entry in to_change.s.ReadTableEntries():
             #pprint(dir(entry))
-            print("here")
+            #print(entry)
             for e in entry.entities:
-                print("here2")
+                #print(e)
                 #print (e.table_entry.table_id, self.no_hop_table_id)
+         
                 if (str(e.table_entry.table_id)== str(self.no_hop_table_id)):
-                    print("table")
-                    if str(new_entry[0]["action_params"]["port"]) in str(e.table_entry.action.action.params._values).split("\0")[-1]:
+                    entries=e.table_entry.action.action.params[0].value
+                    if str(new_entry[0]["action_params"]["port"]) in str(entries).split("\0")[-1]:
                         print ("deleting table entry ")#,  e.table_entry)
                         if self.verbose:
                             print (e.table_entry)
-                        print("here2.5")
-
                         to_change.s.DeleteTableEntry(e.table_entry)
                         found=1
-                        print("here3")
                         #TODO test if multiple range mathes fit the host work
+            
         print("here4")
         if found==0: #TODO uncomment
             raise ValueError("Could not find entry to delete")
