@@ -90,7 +90,8 @@
         ["message_type", 2, false],
         ["id", 6, false],
         ["group_id", 6, false],
-        ["counter", 10, false]
+        ["counter", 10, false],
+        ["time", 48, false]
       ]
     }
   ],
@@ -319,7 +320,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "../../P4_code/compare_dht_forward.p4",
-        "line" : 285,
+        "line" : 287,
         "column" : 8,
         "source_fragment" : "ThisDeparser"
       },
@@ -334,7 +335,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "../../P4_code/compare_dht_forward.p4",
-        "line" : 210,
+        "line" : 211,
         "column" : 37,
         "source_fragment" : "fail"
       },
@@ -346,7 +347,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "../../P4_code/compare_dht_forward.p4",
-        "line" : 211,
+        "line" : 212,
         "column" : 37,
         "source_fragment" : "join"
       },
@@ -371,6 +372,10 @@
         },
         {
           "type" : "field",
+          "value" : ["standard_metadata", "ingress_global_timestamp"]
+        },
+        {
+          "type" : "field",
           "value" : ["ethernet", "etherType"]
         }
       ]
@@ -380,7 +385,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "../../P4_code/compare_dht_forward.p4",
-        "line" : 316,
+        "line" : 318,
         "column" : 8,
         "source_fragment" : "update_checksum(hdr.ipv4.isValid() && hdr.ipv4.ihl == 5, ..."
       },
@@ -437,7 +442,7 @@
       "id" : 2,
       "source_info" : {
         "filename" : "../../P4_code/compare_dht_forward.p4",
-        "line" : 298,
+        "line" : 300,
         "column" : 8,
         "source_fragment" : "verify_checksum(hdr.ipv4.isValid() && hdr.ipv4.ihl == 5, ..."
       },
@@ -517,7 +522,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 143,
+            "line" : 144,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = 510"
           }
@@ -532,7 +537,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 144,
+            "line" : 145,
             "column" : 8,
             "source_fragment" : "hdr.packet_in.setValid()"
           }
@@ -564,7 +569,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 145,
+            "line" : 146,
             "column" : 8,
             "source_fragment" : "hdr.packet_in.input_port = (PortIdToController_t) standard_metadata.ingress_port"
           }
@@ -583,7 +588,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 61,
+            "line" : 62,
             "column" : 17,
             "source_fragment" : "1, ..."
           }
@@ -602,7 +607,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 56,
+            "line" : 57,
             "column" : 12,
             "source_fragment" : "0, ..."
           }
@@ -621,7 +626,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 148,
+            "line" : 149,
             "column" : 8,
             "source_fragment" : "hdr.packet_in.operand0 = 1"
           }
@@ -640,7 +645,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 149,
+            "line" : 150,
             "column" : 8,
             "source_fragment" : "hdr.packet_in.operand1 = 2"
           }
@@ -659,7 +664,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 150,
+            "line" : 151,
             "column" : 8,
             "source_fragment" : "hdr.packet_in.operand2 = 3"
           }
@@ -678,194 +683,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 151,
-            "column" : 8,
-            "source_fragment" : "hdr.packet_in.operand3 = 4"
-          }
-        }
-      ]
-    },
-    {
-      "name" : "ThisIngress.send_to_controller_simple",
-      "id" : 2,
-      "runtime_data" : [],
-      "primitives" : [
-        {
-          "op" : "assign",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["standard_metadata", "egress_spec"]
-            },
-            {
-              "type" : "hexstr",
-              "value" : "0x01fe"
-            }
-          ],
-          "source_info" : {
-            "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 143,
-            "column" : 8,
-            "source_fragment" : "standard_metadata.egress_spec = 510"
-          }
-        },
-        {
-          "op" : "add_header",
-          "parameters" : [
-            {
-              "type" : "header",
-              "value" : "packet_in"
-            }
-          ],
-          "source_info" : {
-            "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 144,
-            "column" : 8,
-            "source_fragment" : "hdr.packet_in.setValid()"
-          }
-        },
-        {
-          "op" : "assign",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["packet_in", "input_port"]
-            },
-            {
-              "type" : "expression",
-              "value" : {
-                "type" : "expression",
-                "value" : {
-                  "op" : "&",
-                  "left" : {
-                    "type" : "field",
-                    "value" : ["standard_metadata", "ingress_port"]
-                  },
-                  "right" : {
-                    "type" : "hexstr",
-                    "value" : "0xffff"
-                  }
-                }
-              }
-            }
-          ],
-          "source_info" : {
-            "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 145,
-            "column" : 8,
-            "source_fragment" : "hdr.packet_in.input_port = (PortIdToController_t) standard_metadata.ingress_port"
-          }
-        },
-        {
-          "op" : "assign",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["packet_in", "punt_reason"]
-            },
-            {
-              "type" : "hexstr",
-              "value" : "0x01"
-            }
-          ],
-          "source_info" : {
-            "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 61,
-            "column" : 17,
-            "source_fragment" : "1, ..."
-          }
-        },
-        {
-          "op" : "assign",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["packet_in", "opcode"]
-            },
-            {
-              "type" : "hexstr",
-              "value" : "0x00"
-            }
-          ],
-          "source_info" : {
-            "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 56,
-            "column" : 12,
-            "source_fragment" : "0, ..."
-          }
-        },
-        {
-          "op" : "assign",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["packet_in", "operand0"]
-            },
-            {
-              "type" : "hexstr",
-              "value" : "0x00000001"
-            }
-          ],
-          "source_info" : {
-            "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 148,
-            "column" : 8,
-            "source_fragment" : "hdr.packet_in.operand0 = 1"
-          }
-        },
-        {
-          "op" : "assign",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["packet_in", "operand1"]
-            },
-            {
-              "type" : "hexstr",
-              "value" : "0x00000002"
-            }
-          ],
-          "source_info" : {
-            "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 149,
-            "column" : 8,
-            "source_fragment" : "hdr.packet_in.operand1 = 2"
-          }
-        },
-        {
-          "op" : "assign",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["packet_in", "operand2"]
-            },
-            {
-              "type" : "hexstr",
-              "value" : "0x00000003"
-            }
-          ],
-          "source_info" : {
-            "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 150,
-            "column" : 8,
-            "source_fragment" : "hdr.packet_in.operand2 = 3"
-          }
-        },
-        {
-          "op" : "assign",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["packet_in", "operand3"]
-            },
-            {
-              "type" : "hexstr",
-              "value" : "0x00000004"
-            }
-          ],
-          "source_info" : {
-            "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 151,
+            "line" : 152,
             "column" : 8,
             "source_fragment" : "hdr.packet_in.operand3 = 4"
           }
@@ -874,7 +692,7 @@
     },
     {
       "name" : "ThisIngress.my_drop",
-      "id" : 3,
+      "id" : 2,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -887,7 +705,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 172,
+            "line" : 173,
             "column" : 8,
             "source_fragment" : "mark_to_drop(standard_metadata)"
           }
@@ -896,7 +714,7 @@
     },
     {
       "name" : "ThisIngress.no_hop_forward",
-      "id" : 4,
+      "id" : 3,
       "runtime_data" : [
         {
           "name" : "port",
@@ -918,7 +736,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 175,
+            "line" : 176,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = port"
           }
@@ -960,7 +778,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 176,
+            "line" : 177,
             "column" : 8,
             "source_fragment" : "hdr.ipv4.ttl = hdr.ipv4.ttl |-| 1"
           }
@@ -969,7 +787,7 @@
     },
     {
       "name" : "ThisIngress.ipv4_forward",
-      "id" : 5,
+      "id" : 4,
       "runtime_data" : [
         {
           "name" : "dstAddr",
@@ -995,7 +813,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 182,
+            "line" : 183,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.srcAddr = hdr.ethernet.dstAddr"
           }
@@ -1014,7 +832,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 183,
+            "line" : 184,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.dstAddr = dstAddr"
           }
@@ -1033,7 +851,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 184,
+            "line" : 185,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = port"
           }
@@ -1042,7 +860,7 @@
     },
     {
       "name" : "ThisIngress.first_contact",
-      "id" : 6,
+      "id" : 5,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -1067,7 +885,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 215,
+            "line" : 216,
             "column" : 7,
             "source_fragment" : "hash (hdr.dht.id, ..."
           }
@@ -1081,21 +899,40 @@
             },
             {
               "type" : "hexstr",
-              "value" : "0x01"
+              "value" : "0x02"
             }
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 222,
+            "line" : 224,
             "column" : 7,
-            "source_fragment" : "hdr.dht.message_type=1"
+            "source_fragment" : "hdr.dht.message_type=2"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["dht", "time"]
+            },
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "ingress_global_timestamp"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "../../P4_code/compare_dht_forward.p4",
+            "line" : 225,
+            "column" : 7,
+            "source_fragment" : "hdr.dht.time=standard_metadata.ingress_global_timestamp"
           }
         }
       ]
     },
     {
-      "name" : "compare_dht_forward258",
-      "id" : 7,
+      "name" : "compare_dht_forward260",
+      "id" : 6,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -1125,7 +962,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 258,
+            "line" : 260,
             "column" : 26,
             "source_fragment" : "(bit<32>) hdr.dht.id"
           }
@@ -1144,7 +981,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 258,
+            "line" : 260,
             "column" : 15,
             "source_fragment" : "fail.count((bit<32>) hdr.dht.id)"
           }
@@ -1152,8 +989,8 @@
       ]
     },
     {
-      "name" : "compare_dht_forward261",
-      "id" : 8,
+      "name" : "compare_dht_forward263",
+      "id" : 7,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -1183,7 +1020,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 261,
+            "line" : 263,
             "column" : 26,
             "source_fragment" : "(bit<32>) hdr.dht.id"
           }
@@ -1202,7 +1039,7 @@
           ],
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 261,
+            "line" : 263,
             "column" : 15,
             "source_fragment" : "join.count((bit<32>) hdr.dht.id)"
           }
@@ -1216,7 +1053,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "../../P4_code/compare_dht_forward.p4",
-        "line" : 138,
+        "line" : 139,
         "column" : 8,
         "source_fragment" : "ThisIngress"
       },
@@ -1227,7 +1064,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 187,
+            "line" : 188,
             "column" : 10,
             "source_fragment" : "ipv4_lpm"
           },
@@ -1245,7 +1082,7 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [5, 3],
+          "action_ids" : [4, 2],
           "actions" : ["ThisIngress.ipv4_forward", "ThisIngress.my_drop"],
           "base_default_next" : "node_4",
           "next_tables" : {
@@ -1253,7 +1090,7 @@
             "ThisIngress.my_drop" : "node_4"
           },
           "default_entry" : {
-            "action_id" : 3,
+            "action_id" : 2,
             "action_const" : false,
             "action_data" : [],
             "action_entry_const" : false
@@ -1264,7 +1101,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 249,
+            "line" : 252,
             "column" : 14,
             "source_fragment" : "first_contact()"
           },
@@ -1275,43 +1112,14 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [6],
+          "action_ids" : [5],
           "actions" : ["ThisIngress.first_contact"],
-          "base_default_next" : "tbl_send_to_controller_simple",
+          "base_default_next" : "node_7",
           "next_tables" : {
-            "ThisIngress.first_contact" : "tbl_send_to_controller_simple"
+            "ThisIngress.first_contact" : "node_7"
           },
           "default_entry" : {
-            "action_id" : 6,
-            "action_const" : true,
-            "action_data" : [],
-            "action_entry_const" : true
-          }
-        },
-        {
-          "name" : "tbl_send_to_controller_simple",
-          "id" : 2,
-          "source_info" : {
-            "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 250,
-            "column" : 14,
-            "source_fragment" : "send_to_controller_simple(PuntReason_t.IP_OPTIONS)"
-          },
-          "key" : [],
-          "match_type" : "exact",
-          "type" : "simple",
-          "max_size" : 1024,
-          "with_counters" : false,
-          "support_timeout" : false,
-          "direct_meters" : null,
-          "action_ids" : [1],
-          "actions" : ["ThisIngress.send_to_controller_simple"],
-          "base_default_next" : "node_8",
-          "next_tables" : {
-            "ThisIngress.send_to_controller_simple" : "node_8"
-          },
-          "default_entry" : {
-            "action_id" : 1,
+            "action_id" : 5,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
@@ -1319,10 +1127,10 @@
         },
         {
           "name" : "ThisIngress.no_hop_lookup",
-          "id" : 3,
+          "id" : 2,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 227,
+            "line" : 230,
             "column" : 10,
             "source_fragment" : "no_hop_lookup"
           },
@@ -1346,12 +1154,12 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [4, 0],
+          "action_ids" : [3, 0],
           "actions" : ["ThisIngress.no_hop_forward", "NoAction"],
-          "base_default_next" : "node_10",
+          "base_default_next" : "node_9",
           "next_tables" : {
-            "ThisIngress.no_hop_forward" : "node_10",
-            "NoAction" : "node_10"
+            "ThisIngress.no_hop_forward" : "node_9",
+            "NoAction" : "node_9"
           },
           "default_entry" : {
             "action_id" : 0,
@@ -1361,11 +1169,11 @@
           }
         },
         {
-          "name" : "tbl_compare_dht_forward258",
-          "id" : 4,
+          "name" : "tbl_compare_dht_forward260",
+          "id" : 3,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 258,
+            "line" : 260,
             "column" : 15,
             "source_fragment" : "fail.count((bit<32>) hdr.dht.id)"
           },
@@ -1376,25 +1184,25 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [7],
-          "actions" : ["compare_dht_forward258"],
-          "base_default_next" : "node_13",
+          "action_ids" : [6],
+          "actions" : ["compare_dht_forward260"],
+          "base_default_next" : "node_12",
           "next_tables" : {
-            "compare_dht_forward258" : "node_13"
+            "compare_dht_forward260" : "node_12"
           },
           "default_entry" : {
-            "action_id" : 7,
+            "action_id" : 6,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
           }
         },
         {
-          "name" : "tbl_compare_dht_forward261",
-          "id" : 5,
+          "name" : "tbl_compare_dht_forward263",
+          "id" : 4,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 261,
+            "line" : 263,
             "column" : 15,
             "source_fragment" : "join.count((bit<32>) hdr.dht.id)"
           },
@@ -1405,25 +1213,25 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [8],
-          "actions" : ["compare_dht_forward261"],
-          "base_default_next" : "tbl_send_to_controller_simple_0",
+          "action_ids" : [7],
+          "actions" : ["compare_dht_forward263"],
+          "base_default_next" : "tbl_send_to_controller_simple",
           "next_tables" : {
-            "compare_dht_forward261" : "tbl_send_to_controller_simple_0"
+            "compare_dht_forward263" : "tbl_send_to_controller_simple"
           },
           "default_entry" : {
-            "action_id" : 8,
+            "action_id" : 7,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
           }
         },
         {
-          "name" : "tbl_send_to_controller_simple_0",
-          "id" : 6,
+          "name" : "tbl_send_to_controller_simple",
+          "id" : 5,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 263,
+            "line" : 265,
             "column" : 14,
             "source_fragment" : "send_to_controller_simple(PuntReason_t.IP_OPTIONS)"
           },
@@ -1434,14 +1242,14 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [2],
+          "action_ids" : [1],
           "actions" : ["ThisIngress.send_to_controller_simple"],
           "base_default_next" : null,
           "next_tables" : {
             "ThisIngress.send_to_controller_simple" : null
           },
           "default_entry" : {
-            "action_id" : 2,
+            "action_id" : 1,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
@@ -1455,7 +1263,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 243,
+            "line" : 246,
             "column" : 8,
             "source_fragment" : "hdr.ipv4.isValid()"
           },
@@ -1478,7 +1286,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 247,
+            "line" : 250,
             "column" : 10,
             "source_fragment" : "hdr.dht.isValid()"
           },
@@ -1501,7 +1309,7 @@
           "id" : 2,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 248,
+            "line" : 251,
             "column" : 14,
             "source_fragment" : "hdr.dht.message_type==0"
           },
@@ -1520,14 +1328,14 @@
             }
           },
           "true_next" : "tbl_first_contact",
-          "false_next" : "node_8"
+          "false_next" : "node_7"
         },
         {
-          "name" : "node_8",
+          "name" : "node_7",
           "id" : 3,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 253,
+            "line" : 255,
             "column" : 10,
             "source_fragment" : "hdr.dht.message_type==1"
           },
@@ -1546,14 +1354,14 @@
             }
           },
           "true_next" : "ThisIngress.no_hop_lookup",
-          "false_next" : "node_10"
+          "false_next" : "node_9"
         },
         {
-          "name" : "node_10",
+          "name" : "node_9",
           "id" : 4,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 256,
+            "line" : 258,
             "column" : 10,
             "source_fragment" : "hdr.dht.message_type==3 || hdr.dht.message_type==2"
           },
@@ -1592,14 +1400,14 @@
             }
           },
           "false_next" : null,
-          "true_next" : "node_11"
+          "true_next" : "node_10"
         },
         {
-          "name" : "node_11",
+          "name" : "node_10",
           "id" : 5,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 257,
+            "line" : 259,
             "column" : 15,
             "source_fragment" : "hdr.dht.message_type==2"
           },
@@ -1617,15 +1425,15 @@
               }
             }
           },
-          "true_next" : "tbl_compare_dht_forward258",
-          "false_next" : "node_13"
+          "true_next" : "tbl_compare_dht_forward260",
+          "false_next" : "node_12"
         },
         {
-          "name" : "node_13",
+          "name" : "node_12",
           "id" : 6,
           "source_info" : {
             "filename" : "../../P4_code/compare_dht_forward.p4",
-            "line" : 260,
+            "line" : 262,
             "column" : 15,
             "source_fragment" : "hdr.dht.message_type==3"
           },
@@ -1643,8 +1451,8 @@
               }
             }
           },
-          "true_next" : "tbl_compare_dht_forward261",
-          "false_next" : "tbl_send_to_controller_simple_0"
+          "true_next" : "tbl_compare_dht_forward263",
+          "false_next" : "tbl_send_to_controller_simple"
         }
       ]
     },
@@ -1653,7 +1461,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "../../P4_code/compare_dht_forward.p4",
-        "line" : 277,
+        "line" : 279,
         "column" : 8,
         "source_fragment" : "ThisEgress"
       },
@@ -1669,7 +1477,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "../../P4_code/compare_dht_forward.p4",
-        "line" : 316,
+        "line" : 318,
         "column" : 8,
         "source_fragment" : "update_checksum(hdr.ipv4.isValid() && hdr.ipv4.ihl == 5, ..."
       },
@@ -1715,7 +1523,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "../../P4_code/compare_dht_forward.p4",
-        "line" : 298,
+        "line" : 300,
         "column" : 8,
         "source_fragment" : "verify_checksum(hdr.ipv4.isValid() && hdr.ipv4.ihl == 5, ..."
       },

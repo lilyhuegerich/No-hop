@@ -18,6 +18,7 @@ limitations under the License.
 #include <v1model.p4>
 
 
+
 header ethernet_t {
     bit<48> dstAddr;
     bit<48> srcAddr;
@@ -41,14 +42,21 @@ header ipv4_t {
 
 #define CPU_PORT 510
 header dht_t {
-    bit<2>  message_type;       /* message type */
+    bit<2>  message_type;                 /* message type */
     bit<6> id;                           /* packet id*/
-    bit<6> group_id;               /*tentative implementation of group defined DHT subdivision */
-    bit<10>  counter;              /* please note that counter is not an actual field just for testing */
+    bit<6> group_id;                     /*tentative implementation of group defined DHT subdivision */
+    bit<10>  counter;                   /* please note that counter is not an actual field just for testing */
 }
 const bit<6> first_valid_id= 0;
 const bit<6> last_valid_id=32;
 
+
+#define MAX_HOPS 10 /* TODO max hop count adaption to topology */
+header source_int_t {
+    bit<1>    bos;
+    bit<1> to_metric;             /* 1 if metrics should be saved, 0 if not */
+    bit<14>   port;             
+}
 
 typedef bit<16> PortIdToController_t;
 
@@ -87,12 +95,15 @@ header packet_in_header_t {
 struct metadata_t {
 }
 
+const bit<16> ETHERTYPE_IPV4 = 16w0x0800;
+
 struct headers_t {
     packet_in_header_t  packet_in;
     packet_out_header_t packet_out;
     ethernet_t ethernet;
     ipv4_t     ipv4;
     dht_t dht;
+    source_int_t[MAX_HOPS] source_int;
 }
 
 parser ThisParser(packet_in packet,
@@ -126,12 +137,21 @@ parser ThisParser(packet_in packet,
         packet.extract(hdr.ipv4);
         transition select (hdr.ipv4.protocol){
             2: parse_dht;
+            3: parse_source_int;
             default: accept;
         }
     }
     state parse_dht {
         packet.extract(hdr.dht);
         transition accept;
+    }
+
+    state parse_source_int{
+        packet.extract(hdr.source_int);
+        transition select (hdr.source_int.bos){
+            1: accept;
+            0: parse_source_int;
+        }
     }
 }
 
@@ -184,6 +204,15 @@ control ThisIngress(inout headers_t hdr,
         standard_metadata.egress_spec = port;
     }
 
+    action source_int_forward(){
+        standard_metadata.egress_spec = (bit<9>)hdr.source_int[0].port;
+        hdr.srcRoutes.pop_front(1);
+    }
+
+    action source_int_finish() {
+        hdr.ethernet.etherType = ETHERTYPE_IPV4;
+    }
+
     table ipv4_lpm {
         key = {
             hdr.ipv4.dstAddr: lpm;
@@ -217,6 +246,7 @@ control ThisIngress(inout headers_t hdr,
                first_valid_id,
                { hdr.ethernet.dstAddr,
                 hdr.ethernet.srcAddr,
+                standard_metadata.ingress_global_timestamp,
                   hdr.ethernet.etherType},
                 last_valid_id);
        hdr.dht.message_type=1;
@@ -239,21 +269,27 @@ control ThisIngress(inout headers_t hdr,
 
     apply {
 
+    if (hdr.source_int[0].isValid()){
+            if (hdr.source_int[0].bos == 1){
+                source_int_finish();
+            }
+            source_int_forward();
+    } 
 
     if (hdr.ipv4.isValid()){
         ipv4_lpm.apply();
 
       }
-      if (hdr.dht.isValid()){
-          if (hdr.dht.message_type==0){
-              first_contact();
-              send_to_controller_simple(PuntReason_t.IP_OPTIONS);
 
-          }
-      if (hdr.dht.message_type==1){
-          no_hop_lookup.apply();
-      }
-      if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
+    if (hdr.dht.isValid()){
+        if (hdr.dht.message_type==0){
+            first_contact();
+
+        }
+        if (hdr.dht.message_type==1){
+            no_hop_lookup.apply();
+        }
+        if (hdr.dht.message_type==3 || hdr.dht.message_type==2){
            if (hdr.dht.message_type==2){
                fail.count((bit<32>)  hdr.dht.id);
            }
@@ -264,10 +300,7 @@ control ThisIngress(inout headers_t hdr,
 
           }
     }
-      else{
-
-
-         
+    else{     
 
           } 
          

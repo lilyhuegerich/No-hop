@@ -1,10 +1,10 @@
 
-[2022-08-26 13:24:01.978] /p4.v1.P4Runtime/SetForwardingPipelineConfig
+[2022-08-26 15:16:34.344] /p4.v1.P4Runtime/SetForwardingPipelineConfig
 ---
-Message too long (58081 bytes)! Skipping log...
+Message too long (52092 bytes)! Skipping log...
 ---
 
-[2022-08-26 13:24:02.009] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.366] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -42,7 +42,7 @@ updates {
 }
 ---
 
-[2022-08-26 13:24:02.022] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.370] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -80,7 +80,7 @@ updates {
 }
 ---
 
-[2022-08-26 13:24:02.025] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.372] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -118,7 +118,7 @@ updates {
 }
 ---
 
-[2022-08-26 13:24:02.027] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.375] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -156,7 +156,7 @@ updates {
 }
 ---
 
-[2022-08-26 13:24:02.029] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.378] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -191,7 +191,7 @@ updates {
 }
 ---
 
-[2022-08-26 13:24:02.031] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.381] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -226,7 +226,7 @@ updates {
 }
 ---
 
-[2022-08-26 13:24:02.035] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.383] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -261,7 +261,7 @@ updates {
 }
 ---
 
-[2022-08-26 13:24:02.039] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.386] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -296,7 +296,7 @@ updates {
 }
 ---
 
-[2022-08-26 13:24:02.043] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.389] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -331,7 +331,7 @@ updates {
 }
 ---
 
-[2022-08-26 13:24:02.046] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.391] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -366,7 +366,7 @@ updates {
 }
 ---
 
-[2022-08-26 13:24:02.048] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.394] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -401,7 +401,7 @@ updates {
 }
 ---
 
-[2022-08-26 13:24:02.054] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.396] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1
@@ -436,7 +436,7 @@ updates {
 }
 ---
 
-[2022-08-26 13:24:02.060] /p4.v1.P4Runtime/Write
+[2022-08-26 15:16:34.399] /p4.v1.P4Runtime/Write
 ---
 election_id {
   low: 1

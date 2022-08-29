@@ -13,15 +13,16 @@ sys.path.append(
     os.path.join(os.path.dirname(os.path.abspath(__file__)),
                  './utils/'))
 
-SWITCH_TO_HOST_PORT = 1
-SWITCH_TO_SWITCH_PORT = 2
 
+
+
+import threading
 import p4runtime_lib.bmv2
 from p4runtime_lib.switch import ShutdownAllSwitchConnections
 import p4runtime_lib.helper
-from No_hop_host import No_hop
 
-import threading
+from Packet_types import No_hop, Source_int
+
 
 max_id=32
 
@@ -130,6 +131,8 @@ class Switch:
             if "IP" in packet:
                 if packet["IP"].proto==2:
                     pkt= packet["No_hop"]
+                    pkt.show()
+                    continue
                     if pkt.message_type==2:
                         self.controller_listening.handle_fail([pkt.ID], self)
                     elif pkt.message_type==3:

@@ -88,6 +88,8 @@ class network:
 
         return used_ports_host, used_ports_switch, connection_ports
 
+
+
     def draw_network(self):
         """
         draws network to pdf in network folder

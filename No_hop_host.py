@@ -9,15 +9,14 @@ import socket
 import sys
 import threading
 
+from Packet_types import No_hop, Source_int
+from Source_int import Source_int_sender
+
+
 max_id=32
 
-class No_hop(Packet):
-    name = "No_hop"
-    fields_desc = [BitEnumField(name="message_type", default=2, size=2, enum={0:"FIRST_CONTACT",1:"LOOK_UP", 2:"FAILURE", 3:"JOIN" }),
-                        BitField(name="ID", default=0, size=6),
-                        BitField(name="gid", default=1, size=6),
-                        BitField(name="counter", default=0, size=10)]
-
+bind_layers(IP, Source_int, proto=3)
+bind_layers(Source_int, Source_int, bos=0)
 bind_layers(IP, No_hop, proto=2)
 bind_layers(Ether, IP, type=0x800)
 
@@ -51,6 +50,7 @@ class No_hop_host:
         self.stabilze_timeout=stabilze_timeout
         self.test_amount=test
         self.keep_log_files=keep_log_files
+        self.Source_int=None
 
     def run(self):
         """
@@ -99,6 +99,7 @@ class No_hop_host:
             print("Ending stabilize.")
         self.On=0
         return
+
     def test(self):
         """
         Send test many ids of every id to test system. Each test message has a payload the time of sending.
@@ -123,6 +124,10 @@ class No_hop_host:
                 to_send=input_got.split(",")
                 if (not len(to_send)==3):
                     print ("not in correct form. Type, ID, Message")
+                elif to_send[1]=="s":
+                    if not self.Source_int:
+                        self.Source_int=Source_int_sender()
+                    self.Source_int.send_source_int(id=int(to_send[1]))
                 else:
                     #print (to_send)
                     send_No_hop(ip="10.0.1.1", ID=int(to_send[1]), message=to_send[2] ,message_type=to_send[0])
